@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aftergrid: when the grid goes down, your laptop still knows what to do</title>
+<meta name="description" content="Aftergrid turns any PC into an offline survival and medical station: a backup of Wikipedia's medical library, 30 first-aid cards with diagrams, offline maps and a private AI that answers from the library, all from one USB stick. No internet needed. $19.99.">
+<meta property="og:title" content="Aftergrid: when the grid goes down, Aftergrid boots up">
+<meta property="og:description" content="Offline medical and survival library, maps and an on-device AI on one USB stick. Boots any PC. No internet needed.">
+<meta property="og:image" content="/assets/img/home-day.webp">
+<meta name="theme-color" content="#faf9f5">
+<link rel="icon" href="/favicon.ico">
+<link rel="preload" href="/assets/fonts/archivo-black.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:"Inter";src:url(/assets/fonts/inter-regular.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Inter";src:url(/assets/fonts/inter-medium.woff2) format("woff2");font-weight:500;font-display:swap}
+@font-face{font-family:"Inter";src:url(/assets/fonts/inter-semibold.woff2) format("woff2");font-weight:600;font-display:swap}
+@font-face{font-family:"Inter";src:url(/assets/fonts/inter-bold.woff2) format("woff2");font-weight:700;font-display:swap}
+@font-face{font-family:"Lora";src:url(/assets/fonts/lora.woff2) format("woff2");font-weight:400 700;font-display:swap}
+@font-face{font-family:"Archivo Black";src:url(/assets/fonts/archivo-black.woff2) format("woff2");font-display:swap}
+
+:root{
+  --bg:#faf9f5; --surface:#fff; --sunk:#f2f0e8; --line:#e6e2d7; --line2:#d9d4c6;
+  --txt:#1f1e1c; --dim:#6e6a60; --faint:#9a958a;
+  --acc:#f2a33a; --acc-ink:#a65a0b; --acc-soft:#fcefd9; --on-acc:#2a1a04;
+  --slate:#3a444c; --night:#111315; --night2:#1a1d21; --nightline:#2b3035;
+  --bad:#c2402c; --ok:#2f8a57;
+  --serif:"Lora",Georgia,serif; --sans:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif; --display:"Archivo Black","Inter",sans-serif;
+  --r:16px; --shadow:0 1px 2px rgba(31,30,28,.05),0 10px 30px rgba(31,30,28,.07);
+  --max:1160px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--txt);font:17px/1.6 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%;display:block}
+a{color:inherit}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+h1,h2,h3{margin:0;line-height:1.1}
+.display{font-family:var(--display);letter-spacing:.01em;text-transform:uppercase}
+.serif{font-family:var(--serif)}
+.eyebrow{font:600 12px/1 var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--acc-ink);display:inline-flex;align-items:center;gap:10px}
+.eyebrow::before{content:"";width:22px;height:2px;background:var(--acc)}
+.dim{color:var(--dim)}
+section{position:relative}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border-radius:999px;padding:16px 28px;font:600 16px/1 var(--sans);text-decoration:none;border:0;cursor:pointer;transition:transform .15s ease,box-shadow .2s ease,background .2s}
+.btn:active{transform:translateY(1px)}
+.btn-buy{background:var(--acc);color:var(--on-acc);box-shadow:0 6px 24px rgba(242,163,58,.35)}
+.btn-buy:hover{background:#f5ad49;box-shadow:0 10px 34px rgba(242,163,58,.5);transform:translateY(-1px)}
+.btn-buy .price{font-weight:700;opacity:.9;padding-left:10px;border-left:1px solid rgba(42,26,4,.25)}
+.btn-ghost{background:transparent;color:var(--txt);border:1.5px solid var(--line2)}
+.btn-ghost:hover{border-color:var(--txt)}
+.on-dark .btn-ghost{color:#e9e7e1;border-color:#3a4147}
+.on-dark .btn-ghost:hover{border-color:#e9e7e1}
+.gh{width:18px;height:18px}
+
+/* nav */
+nav.top{position:fixed;inset:0 0 auto 0;z-index:50;transition:background .3s,box-shadow .3s,color .3s}
+nav.top .wrap{display:flex;align-items:center;justify-content:space-between;height:68px}
+nav.top.scrolled{background:rgba(250,249,245,.86);backdrop-filter:saturate(1.4) blur(12px);box-shadow:0 1px 0 var(--line)}
+nav.top.dark{color:#e9e7e1}
+nav.top.dark.scrolled{background:rgba(17,19,21,.82);box-shadow:0 1px 0 var(--nightline)}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.brand img{width:26px;height:26px}
+.brand span{font:20px/1 var(--display);letter-spacing:.08em}
+.navlinks{display:flex;gap:26px;align-items:center;font-size:15px}
+.navlinks a{text-decoration:none;opacity:.75}
+.navlinks a:hover{opacity:1}
+.navlinks .btn{padding:11px 18px;font-size:14px;opacity:1}
+@media(max-width:860px){.navlinks a:not(.btn){display:none}}
+
+/* hero */
+.hero{min-height:100vh;display:flex;align-items:center;padding:96px 0 64px;overflow:hidden}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+@media(max-width:960px){.hero-grid{grid-template-columns:1fr}}
+.hero h1{font:clamp(38px,5.2vw,68px)/.98 var(--display);text-transform:uppercase;letter-spacing:-.005em}
+.hero h1 .amber{color:var(--acc)}
+.hero p.lede{font:clamp(17px,1.7vw,20px)/1.5 var(--serif);color:var(--dim);max-width:540px;margin:22px 0 28px}
+.cta-row{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.trust{display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:34px;font-size:14px;color:var(--dim)}
+.trust b{color:var(--txt);font-weight:600}
+.trust span{display:flex;align-items:center;gap:8px}
+.trust span::before{content:"";width:7px;height:7px;border-radius:2px;background:var(--acc)}
+.device{position:relative;border-radius:18px;background:#0e1012;padding:12px 12px 0;box-shadow:0 40px 80px -20px rgba(31,30,28,.35),0 0 0 1px rgba(0,0,0,.06)}
+.device::after{content:"";display:block;height:16px}
+.device img{border-radius:8px}
+.device .stick{position:absolute;right:-26px;bottom:62px;width:86px;height:34px;border-radius:7px;background:linear-gradient(#3a444c,#262d33);box-shadow:0 8px 18px rgba(0,0,0,.25)}
+.device .stick::before{content:"";position:absolute;left:-18px;top:8px;width:20px;height:18px;background:#b9bec3;border-radius:2px}
+.device .stick i{position:absolute;right:10px;top:12px;width:9px;height:9px;border-radius:50%;background:var(--acc);box-shadow:0 0 10px var(--acc);animation:blink 1.6s infinite}
+@keyframes blink{50%{opacity:.25}}
+.hero-art{position:relative}
+.hero-art .phone{position:absolute;left:-34px;bottom:-56px;width:118px;border-radius:22px;border:6px solid #0e1012;box-shadow:0 30px 60px -10px rgba(31,30,28,.4)}
+@media(max-width:960px){.hero-art .phone{left:auto;right:-6px;width:110px}}
+
+/* blackout cinematic */
+.blackout{height:340vh;background:var(--bg)}
+.blackout .stage{position:sticky;top:0;height:100vh;overflow:hidden;display:grid;place-items:center;background:var(--bg);color:var(--txt)}
+.blackout .lines{position:relative;text-align:center;max-width:900px;padding:0 24px}
+.blackout .line{position:absolute;inset:0;display:grid;place-items:center;opacity:0;transform:translateY(16px);transition:opacity .5s,transform .5s;font:clamp(28px,4.6vw,60px)/1.1 var(--serif)}
+.blackout .line.on{opacity:1;transform:none}
+.blackout .line small{display:block;font:500 clamp(14px,1.4vw,17px)/1.5 var(--sans);color:#8a8579;margin-top:18px;letter-spacing:.02em}
+.blackout .lines{height:260px;width:100%}
+.blackout .glow{position:absolute;width:60vmax;height:60vmax;border-radius:50%;background:radial-gradient(circle,rgba(242,163,58,.35),rgba(242,163,58,0) 60%);opacity:0;transition:opacity 1s;pointer-events:none}
+.blackout .bootmark{position:absolute;inset:auto 0 12vh 0;display:flex;flex-direction:column;align-items:center;gap:14px;opacity:0;transition:opacity .8s}
+.blackout .bootmark .grid9{display:grid;grid-template-columns:repeat(3,18px);gap:6px}
+.blackout .bootmark .grid9 i{width:18px;height:18px;border-radius:4px;background:#3a444c;opacity:.25;transition:opacity .25s,background .25s}
+.blackout .bootmark .grid9 i.lit{opacity:1;background:#5b6772}
+.blackout .bootmark .grid9 i.amb{background:var(--acc);opacity:1;box-shadow:0 0 18px rgba(242,163,58,.7)}
+.blackout .bootmark span{font:16px/1 var(--display);letter-spacing:.3em;color:#e9e7e1}
+.flicker{animation:flick .9s steps(1) 1}
+@keyframes flick{0%{opacity:1}10%{opacity:.2}20%{opacity:1}30%{opacity:.05}45%{opacity:.8}55%{opacity:0}100%{opacity:1}}
+.skip{position:absolute;right:24px;bottom:24px;font-size:13px;color:#8a8579;text-decoration:none;border:1px solid currentColor;padding:8px 12px;border-radius:999px;opacity:.7}
+
+/* generic sections */
+.sec{padding:120px 0}
+.sec-head{max-width:760px;margin-bottom:56px}
+.sec-head h2{font:clamp(32px,4.4vw,56px)/1.05 var(--display);text-transform:uppercase;margin:16px 0 18px}
+.sec-head p{font:clamp(17px,1.6vw,20px)/1.55 var(--serif);color:var(--dim);margin:0}
+.on-dark{background:var(--night);color:#e9e7e1}
+.on-dark .dim,.on-dark .sec-head p{color:#a29e95}
+.on-dark .eyebrow{color:var(--acc)}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+.d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}
+
+/* AI demo */
+.ai-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:start}
+@media(max-width:960px){.ai-grid{grid-template-columns:1fr}}
+.term{background:var(--night2);border:1px solid var(--nightline);border-radius:20px;overflow:hidden;box-shadow:0 30px 80px -20px rgba(0,0,0,.6)}
+.term-bar{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--nightline);font-size:13px;color:#a29e95}
+.term-bar .pill{margin-left:auto;font:600 11px/1 var(--sans);letter-spacing:.12em;color:var(--acc);border:1px solid #5a4423;background:#2a2216;padding:6px 9px;border-radius:999px;display:flex;gap:6px;align-items:center}
+.term-bar .pill::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--acc);animation:blink 1.6s infinite}
+.term-body{padding:22px;min-height:560px}
+.askbox{display:flex;gap:10px;align-items:center;background:#121417;border:1px solid #3a4147;border-radius:999px;padding:8px 8px 8px 20px;font-size:16px}
+.askbox .q{flex:1;min-height:24px;color:#e9e7e1}
+.askbox .q::after{content:"";display:inline-block;width:2px;height:19px;background:var(--acc);vertical-align:-3px;margin-left:2px;animation:blink 1s infinite}
+.askbox b{background:var(--acc);color:var(--on-acc);border-radius:999px;padding:9px 16px;font-size:14px}
+.answer{margin-top:22px;font:16px/1.65 var(--serif);color:#e9e7e1;min-height:220px}
+.answer .who{font:600 13px/1 var(--sans);display:flex;gap:10px;align-items:center;margin-bottom:12px;color:#e9e7e1}
+.answer .who em{font-style:normal;font-size:10px;letter-spacing:.14em;color:var(--acc);border:1px solid #5a4423;padding:4px 7px;border-radius:999px}
+.answer .think{font:14px var(--sans);color:#a29e95}
+.answer sup{font:600 11px var(--sans);color:var(--on-acc);background:var(--acc);border-radius:4px;padding:1px 5px;margin-left:2px}
+.answer strong{color:#fff}
+.srcs{margin-top:16px;display:flex;flex-wrap:wrap;gap:8px}
+.srcs a{font:500 13px/1.3 var(--sans);text-decoration:none;color:#e9e7e1;background:#121417;border:1px solid #3a4147;border-radius:10px;padding:8px 11px;display:flex;gap:8px;align-items:center}
+.srcs a b{color:var(--acc)}
+.figs{display:flex;gap:10px;margin-top:16px}
+.figs img{width:150px;border-radius:10px;background:#fff;opacity:0;transform:translateY(10px);transition:all .5s}
+.figs img.in{opacity:1;transform:none}
+.qchips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.qchips button{font:500 13px var(--sans);background:transparent;color:#a29e95;border:1px solid #3a4147;border-radius:999px;padding:8px 12px;cursor:pointer}
+.qchips button.on,.qchips button:hover{color:#e9e7e1;border-color:var(--acc)}
+.ai-points{display:grid;gap:14px}
+.pt{border:1px solid var(--nightline);background:#16191c;border-radius:16px;padding:20px 22px}
+.pt h3{font:600 17px/1.3 var(--sans);margin-bottom:6px;color:#fff;display:flex;gap:10px;align-items:center}
+.pt h3 i{width:26px;height:26px;border-radius:8px;background:#2a2216;border:1px solid #5a4423;display:grid;place-items:center;font-style:normal;color:var(--acc);font-size:14px}
+.pt p{margin:0;font-size:15px;color:#a29e95}
+.shot-pair{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:6px}
+.shot-pair img{border-radius:14px;border:1px solid var(--nightline)}
+
+/* library */
+.wiki{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+@media(max-width:900px){.wiki{grid-template-columns:1fr}}
+.wcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:28px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.wcard .tag{font:600 11px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;padding:6px 9px;border-radius:999px;display:inline-block;margin-bottom:18px}
+.tag.in{background:var(--acc-soft);color:var(--acc-ink)}
+.tag.add{background:var(--sunk);color:var(--dim)}
+.wcard h3{font:26px/1.15 var(--serif);margin-bottom:10px}
+.wcard p{margin:0;color:var(--dim);font-size:15.5px}
+.wcard .big{font:44px/1 var(--display);color:var(--acc);margin:18px 0 4px}
+.wcard .W{position:absolute;right:-14px;top:-26px;font:160px/1 var(--serif);color:var(--sunk);pointer-events:none;z-index:0}
+.wcard>*{position:relative;z-index:1}
+.shelf{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:22px}
+@media(max-width:900px){.shelf{grid-template-columns:1fr 1fr}}
+.book{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px;font-size:14.5px}
+.book b{display:block;font-weight:600;margin-bottom:2px}
+.book span{color:var(--dim);font-size:13px}
+
+/* first aid */
+.fa-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:48px;align-items:center}
+@media(max-width:960px){.fa-grid{grid-template-columns:1fr}}
+.cardlist{display:flex;flex-wrap:wrap;gap:8px;margin:26px 0}
+.cardlist span{font-size:14px;background:var(--surface);border:1px solid var(--line);padding:7px 12px;border-radius:999px}
+.diagrams{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.diagrams figure{margin:0;background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px;box-shadow:var(--shadow)}
+.diagrams figcaption{font-size:12.5px;color:var(--dim);padding:6px 4px 0}
+.dl{display:flex;align-items:center;gap:14px;margin-top:24px;padding:16px 18px;border:1.5px dashed var(--line2);border-radius:14px;text-decoration:none;font-size:15px}
+.dl:hover{border-color:var(--acc)}
+.dl i{width:38px;height:38px;border-radius:10px;background:var(--acc-soft);display:grid;place-items:center;font-style:normal;color:var(--acc-ink);font-weight:700}
+
+/* features */
+.feat{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+@media(max-width:960px){.feat{grid-template-columns:1fr 1fr}}
+@media(max-width:620px){.feat{grid-template-columns:1fr}}
+.f{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column}
+.f .ph{aspect-ratio:16/10;overflow:hidden;border-bottom:1px solid var(--line);background:var(--bg)}.f .ph img{width:100%;height:100%;object-fit:cover;object-position:0 0;transform:scale(1.55);transform-origin:12% 4%}
+.f>div:last-child{padding:20px 22px 24px}
+.f h3{font:600 18px/1.3 var(--sans);margin-bottom:6px}
+.f p{margin:0;color:var(--dim);font-size:15px}
+.mini-feats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:18px}
+@media(max-width:960px){.mini-feats{grid-template-columns:1fr 1fr}}
+.mf{border:1px solid var(--line);border-radius:14px;padding:18px;background:var(--surface)}
+.mf b{display:block;margin-bottom:4px}
+.mf span{font-size:14px;color:var(--dim)}
+
+/* maps */
+.maps-wrap{position:relative;border-radius:20px;overflow:hidden;border:1px solid var(--nightline)}
+.maps-wrap img{width:100%}
+.regions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.regions span{font-size:14px;border:1px solid #3a4147;border-radius:999px;padding:8px 13px;color:#e9e7e1}
+.regions span.add{color:#a29e95;border-style:dashed}
+
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;counter-reset:s}
+@media(max-width:960px){.steps{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.steps{grid-template-columns:1fr}}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:24px;position:relative}
+.step::before{counter-increment:s;content:counter(s);font:28px/1 var(--display);color:var(--acc);display:block;margin-bottom:14px}
+.step h3{font:600 17px/1.3 var(--sans);margin-bottom:6px}
+.step p{margin:0;font-size:15px;color:var(--dim)}
+.step img{margin-top:14px;border-radius:10px;border:1px solid var(--line)}
+
+/* pricing */
+.price-card{max-width:920px;margin:0 auto;display:grid;grid-template-columns:1.1fr .9fr;background:var(--surface);border-radius:24px;overflow:hidden;box-shadow:0 40px 90px -30px rgba(31,30,28,.35);border:1px solid var(--line)}
+@media(max-width:860px){.price-card{grid-template-columns:1fr}}
+.price-l{padding:40px}
+.price-r{padding:40px;background:var(--night);color:#e9e7e1;display:flex;flex-direction:column;justify-content:center}
+.price-r .amt{font:76px/1 var(--display);color:#fff}
+.price-r .amt sup{font-size:30px;vertical-align:38px;margin-right:4px;color:var(--acc)}
+.price-r .once{color:#a29e95;margin:8px 0 28px}
+.price-r .btn{width:100%;padding:20px;font-size:18px}
+.price-r small{display:block;color:#a29e95;margin-top:14px;font-size:13px;text-align:center}
+.incl{list-style:none;padding:0;margin:20px 0 0;display:grid;gap:11px}
+.incl li{display:flex;gap:12px;font-size:15.5px}
+.incl li::before{content:"";flex:0 0 18px;height:18px;margin-top:3px;border-radius:5px;background:var(--acc) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5l3 3 6-7' fill='none' stroke='%232a1a04' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/12px no-repeat}
+.urgency{max-width:920px;margin:26px auto 0;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:760px){.urgency{grid-template-columns:1fr}}
+.urgency div{border-left:3px solid var(--acc);padding:4px 0 4px 16px;font-size:15px;color:var(--dim)}
+.urgency b{display:block;color:var(--txt);font-size:16px;margin-bottom:2px}
+
+/* open source */
+.oss{display:grid;grid-template-columns:1fr auto;gap:30px;align-items:center;border:1px solid var(--nightline);border-radius:20px;padding:36px;background:#16191c}
+@media(max-width:760px){.oss{grid-template-columns:1fr}}
+.oss h3{font:30px/1.15 var(--serif);margin-bottom:10px;color:#fff}
+.oss code{font:14px ui-monospace,Menlo,Consolas,monospace;background:#0c0e10;border:1px solid var(--nightline);border-radius:10px;padding:14px 16px;display:block;color:#e9e7e1;margin-top:16px;white-space:pre;overflow-x:auto}
+
+/* specs + faq */
+.specs{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media(max-width:900px){.specs{grid-template-columns:1fr 1fr}}
+.spec{border-top:2px solid var(--txt);padding-top:14px}
+.spec b{display:block;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:600;margin-bottom:6px}
+.spec span{font-size:16px}
+.faq{max-width:820px}
+.faq details{border-bottom:1px solid var(--line);padding:22px 0}
+.faq summary{cursor:pointer;font:600 18px/1.4 var(--sans);list-style:none;display:flex;justify-content:space-between;gap:20px}
+.faq summary::after{content:"+";font:400 26px/1 var(--sans);color:var(--acc-ink);transition:transform .2s}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq details p{color:var(--dim);margin:12px 0 0;font-size:16px}
+
+/* final */
+.final{padding:140px 0;text-align:center;overflow:hidden}
+.final h2{font:clamp(36px,6vw,80px)/1 var(--display);text-transform:uppercase;margin:18px 0 22px}
+.final p{font:clamp(18px,2vw,22px)/1.5 var(--serif);color:#a29e95;max-width:640px;margin:0 auto 36px}
+.final .cta-row{justify-content:center}
+footer{background:var(--night);color:#7d7970;font-size:13.5px;padding:40px 0 110px;border-top:1px solid var(--nightline)}
+footer .wrap{display:flex;flex-wrap:wrap;gap:18px 40px;justify-content:space-between}
+footer p{margin:0;max-width:640px}
+footer a{color:#a29e95}
+
+/* sticky mobile buy */
+.mbuy{position:fixed;left:12px;right:12px;bottom:12px;z-index:60;display:none;transform:translateY(120%);transition:transform .35s}
+.mbuy.show{transform:none}
+.mbuy .btn{width:100%;padding:17px}
+@media(max-width:760px){.mbuy{display:block}}
+@media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}.blackout{height:auto}.blackout .stage{position:relative;height:auto;padding:120px 0;background:var(--night);color:#e9e7e1}.blackout .line{position:relative;opacity:1;transform:none;margin:20px 0}.blackout .lines{height:auto}}
+</style>
+</head>
+<body>
+
+<nav class="top" id="nav">
+  <div class="wrap">
+    <a class="brand" href="#top"><img src="/assets/aftergrid-mark.svg" alt=""><span>AFTERGRID</span></a>
+    <div class="navlinks">
+      <a href="#ai">Offline AI</a>
+      <a href="#library">Wikipedia &amp; library</a>
+      <a href="#firstaid">First aid</a>
+      <a href="#features">Features</a>
+      <a href="#faq">FAQ</a>
+      <a class="btn btn-buy" data-buy href="#buy">Buy now · $19.99</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow reveal">Offline survival &amp; medical station</div>
+      <h1 class="reveal d1" style="margin-top:22px">When the grid goes down, <span class="amber">Aftergrid</span> boots&nbsp;up.</h1>
+      <p class="lede reveal d2">One USB stick turns any PC into a complete offline library: Wikipedia's medical encyclopedia, 30 illustrated first-aid cards, military field manuals, maps, and a private AI that answers from all of it. No internet. No cloud. No signal needed.</p>
+      <div class="cta-row reveal d3">
+        <a class="btn btn-buy" data-buy href="#buy">Get Aftergrid <span class="price">$19.99</span></a>
+        <a class="btn btn-ghost" href="#ai">Watch it answer ↓</a>
+      </div>
+      <div class="trust reveal d4">
+        <span><b>100%</b>&nbsp;offline</span>
+        <span><b>10</b>&nbsp;libraries + <b>7</b>&nbsp;field manuals</span>
+        <span>On-device <b>AI</b></span>
+        <span><b>6</b>&nbsp;languages</span>
+      </div>
+    </div>
+    <div class="hero-art reveal d2">
+      <div class="device"><img src="/assets/img/home-day.webp" alt="Aftergrid Field Mode home screen" width="1440" height="900"><div class="stick"><i></i></div></div>
+      <img class="phone" src="/assets/img/phone-home.webp" alt="Aftergrid on a phone" width="390" height="844">
+    </div>
+  </div>
+</header>
+
+<!-- CINEMATIC BLACKOUT -->
+<section class="blackout" id="blackout" aria-label="What happens when the grid goes down">
+  <div class="stage" id="stage">
+    <div class="glow" id="glow"></div>
+    <div class="lines">
+      <div class="line">The power goes out.<small>Storm. Earthquake. Wildfire. A grid failure nobody explains for days.</small></div>
+      <div class="line">A few hours later, the cell towers go quiet.<small>Backup batteries run down. No data. No search. No calls.</small></div>
+      <div class="line">Someone is hurt. The water isn't safe.<small>And every answer you'd normally look up is on a server you can't reach.</small></div>
+      <div class="line">Your laptop still has a battery.<small>That's all Aftergrid needs.</small></div>
+    </div>
+    <div class="bootmark" id="bootmark">
+      <div class="grid9"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <span>AFTERGRID</span>
+    </div>
+    <a class="skip" href="#ai">Skip ↓</a>
+  </div>
+</section>
+
+<!-- OFFLINE AI -->
+<section class="sec on-dark" id="ai">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">On-device AI · no internet</div>
+      <h2>Ask it anything. It answers from the books.</h2>
+      <p>Aftergrid runs a private AI model on the computer itself. It doesn't guess from the internet. It searches the library on the stick, reads the relevant pages, and answers in plain language, with numbered sources and the matching diagrams.</p>
+    </div>
+    <div class="ai-grid">
+      <div class="term reveal">
+        <div class="term-bar"><img src="/assets/aftergrid-mark.svg" alt="" width="16" height="16">Ask Aftergrid <span class="pill">OFFLINE</span></div>
+        <div class="term-body">
+          <div class="askbox"><div class="q" id="q"></div><b>Ask</b></div>
+          <div class="qchips" id="chips"></div>
+          <div class="answer" id="ans"></div>
+        </div>
+      </div>
+      <div class="ai-points">
+        <div class="pt reveal d1"><h3><i>①</i>Runs on the laptop, not the cloud</h3><p>A Qwen3 model runs on the computer's own processor. No account, no signal, nothing leaves the machine. PCs with 14 GB+ of memory can add a larger, sharper model.</p></div>
+        <div class="pt reveal d2"><h3><i>②</i>Every claim has a source</h3><p>Answers cite numbered sources from the library. Tap one and the original page opens with the exact passage highlighted.</p></div>
+        <div class="pt reveal d3"><h3><i>③</i>It checks its own numbers</h3><p>Doses, drops, minutes: if a figure in the answer isn't in the sources, Aftergrid flags it so you check before you act.</p></div>
+        <div class="pt reveal d4"><h3><i>④</i>Shows the diagram</h3><p>Medical answers come with the matching first-aid illustration, while the answer is still being written.</p></div>
+        <div class="shot-pair reveal">
+          <img src="/assets/img/ask-answer.webp" alt="A real Aftergrid answer on a phone, with sources" loading="lazy" width="630" height="1688">
+          <img src="/assets/img/source-highlight.webp" alt="Source page with the passage the AI used highlighted" loading="lazy" width="630" height="1200">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WIKIPEDIA + LIBRARY -->
+<section class="sec" id="library">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">Your backup of Wikipedia</div>
+      <h2>Wikipedia, backed up.<br>Plus the manuals soldiers carry.</h2>
+      <p>The medical side of Wikipedia comes on the stick, complete with images. The rest of English Wikipedia is a one-click add-on in setup, so it's saved before you ever need it.</p>
+    </div>
+    <div class="wiki">
+      <div class="wcard reveal d1"><div class="W">W</div><span class="tag in">On the stick</span><h3>WikiMed: Wikipedia's medical encyclopedia</h3><p>Every medical article on Wikipedia, with images: conditions, drugs, procedures, anatomy. Searchable, offline.</p><div class="big">2.3 GB</div><span class="dim" style="font-size:14px">of medical knowledge, included</span></div>
+      <div class="wcard reveal d2"><div class="W">W</div><span class="tag add">One click in setup</span><h3>All of English Wikipedia</h3><p>Every article, saved to your stick. Choose the 12 GB edition (each article's summary and key facts, fits a 32 GB stick) or the complete edition with images on a larger drive.</p><div class="big">12 GB</div><span class="dim" style="font-size:14px">or ~110 GB complete with images</span></div>
+      <div class="wcard reveal d3"><div class="W">Ω</div><span class="tag in">On the stick</span><h3>Ελληνική Βικιπαίδεια</h3><p>Greek Wikipedia, a summary of every article, built in. More languages and the full Greek edition are available in setup.</p><div class="big">6</div><span class="dim" style="font-size:14px">languages for the whole system</span></div>
+    </div>
+    <div class="shelf">
+      <div class="book reveal"><b>US Army FM 4-25.11</b><span>First Aid</span></div>
+      <div class="book reveal d1"><b>ST 31-91B</b><span>Special Forces Medical Handbook</span></div>
+      <div class="book reveal d2"><b>Emergency War Surgery</b><span>5th edition</span></div>
+      <div class="book reveal d3"><b>Nuclear War Survival Skills</b><span>Cresson Kearny</span></div>
+      <div class="book reveal"><b>US Army FM 21-76</b><span>Survival</span></div>
+      <div class="book reveal d1"><b>US Army ATP 3-50.21</b><span>Survival</span></div>
+      <div class="book reveal d2"><b>US Army FM 21-10</b><span>Field Hygiene &amp; Sanitation</span></div>
+      <div class="book reveal d3"><b>Appropedia</b><span>Appropriate tech, solar, water, building</span></div>
+      <div class="book reveal"><b>Post-disaster library</b><span>Recovery, shelter, sanitation</span></div>
+      <div class="book reveal d1"><b>Water</b><span>Finding, purifying, storing</span></div>
+      <div class="book reveal d2"><b>Food preparation</b><span>Preserving, cooking without power</span></div>
+      <div class="book reveal d3"><b>Knots &amp; medicine packs</b><span>Field reference collections</span></div>
+    </div>
+    <p class="dim reveal" style="margin-top:22px;font-size:15px">One search box covers everything at once. Add iFixit repair guides, Stack Exchange (outdoors, DIY, ham radio, gardening), Wikibooks, Wikivoyage and LibreTexts medicine from setup when you have a connection.</p>
+  </div>
+</section>
+
+<!-- FIRST AID -->
+<section class="sec" id="firstaid" style="background:var(--sunk)">
+  <div class="wrap fa-grid">
+    <div class="reveal">
+      <div class="eyebrow">30 cards · 14 diagrams</div>
+      <h2 class="display" style="font-size:clamp(32px,4.4vw,56px);margin:16px 0 18px">First aid you can follow with shaking hands.</h2>
+      <p class="serif dim" style="font-size:19px;margin:0">Short numbered steps. When to get help urgently. What not to do. A clear drawing. Each card names the guideline it's based on: Red Cross, WHO, CDC, European Resuscitation Council and others.</p>
+      <div class="cardlist">
+        <span>Severe bleeding</span><span>Tourniquet</span><span>CPR</span><span>Choking (adult &amp; infant)</span><span>Stroke</span><span>Burns</span><span>Broken bones</span><span>Hypothermia</span><span>Frostbite</span><span>Heat stroke</span><span>Snake bite</span><span>Animal bites</span><span>Carbon monoxide</span><span>Dehydration</span><span>Safe water</span><span>Poisoning</span><span>Emergency childbirth</span><span>+13 more</span>
+      </div>
+      <a class="dl" href="/downloads/aftergrid-first-aid-diagrams.zip" download><i>↓</i><span><b>Free download:</b> all 14 first-aid diagrams (PNG, 1 MB). Print them, laminate them, put them in the kit.</span></a>
+    </div>
+    <div class="diagrams">
+      <figure class="reveal"><img src="/assets/diagrams/bleeding-pressure.webp" alt="Direct pressure on a bleeding wound" loading="lazy"><figcaption>Stop bleeding</figcaption></figure>
+      <figure class="reveal d1"><img src="/assets/diagrams/tourniquet-placement.webp" alt="Tourniquet placement" loading="lazy"><figcaption>Tourniquet</figcaption></figure>
+      <figure class="reveal d2"><img src="/assets/diagrams/cpr-adult.webp" alt="Adult CPR" loading="lazy"><figcaption>CPR</figcaption></figure>
+      <figure class="reveal"><img src="/assets/diagrams/choking-adult.webp" alt="Choking adult" loading="lazy"><figcaption>Choking</figcaption></figure>
+      <figure class="reveal d1"><img src="/assets/diagrams/recovery-position.webp" alt="Recovery position" loading="lazy"><figcaption>Recovery position</figcaption></figure>
+      <figure class="reveal d2"><img src="/assets/diagrams/water-treatment.webp" alt="Water treatment" loading="lazy"><figcaption>Safe water</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="sec" id="features">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">Everything on one stick</div>
+      <h2>Built for the first 72 hours, and the weeks after.</h2>
+      <p>Aftergrid boots straight into Field Mode: one calm screen that puts every tool a click away.</p>
+    </div>
+    <div class="feat">
+      <div class="f reveal"><div class="ph"><img src="/assets/img/home-day.webp" alt="Field Mode home" loading="lazy"></div><div><h3>Field Mode</h3><p>Medical, Water, Food, Shelter, Repair, Power, Maps, Comms, Ask, Go-Bag. Big targets, plain words.</p></div></div>
+      <div class="f reveal d1"><div class="ph"><img src="/assets/img/search.webp" alt="Searching the whole library" loading="lazy"></div><div><h3>Search everything at once</h3><p>One box searches every book, manual and encyclopedia on the stick, in your language.</p></div></div>
+      <div class="f reveal d2"><div class="ph"><img src="/assets/img/comms.webp" alt="Radio frequencies" loading="lazy"></div><div><h3>Comms: who to listen to</h3><p>Emergency and calling frequencies for marine, aviation, CB, PMR446, FRS/GMRS, ham and NOAA weather, and what's legal to transmit.</p></div></div>
+      <div class="f reveal"><div class="ph"><img src="/assets/img/gobag.webp" alt="Emergency card" loading="lazy"></div><div><h3>Go-Bag emergency card</h3><p>Fill in a card for every family member: allergies, medications, contacts, meeting points, radio plan. Print it. It's saved on the encrypted stick only.</p></div></div>
+      <div class="f reveal d1"><div class="ph"><img src="/assets/img/home-night.webp" alt="Night mode" loading="lazy"></div><div><h3>Night mode &amp; low power</h3><p>Dark, low-glare screens for night use, and a low-power mode to stretch a laptop battery.</p></div></div>
+      <div class="f reveal d2"><div class="ph"><img src="/assets/img/wizard-desktop.webp" alt="Setup wizard on first boot" loading="lazy"></div><div><h3>Guided first boot</h3><p>Pick a language, lock your saves with a password, create your account, connect Wi-Fi if you have it, add extra libraries. Done.</p></div></div>
+    </div>
+    <div class="mini-feats">
+      <div class="mf reveal"><b>Encrypted saves</b><span>Your notes and files stay on the stick, locked with your password.</span></div>
+      <div class="mf reveal d1"><b>6 languages</b><span>English, Ελληνικά, Français, Deutsch, Português, Türkçe.</span></div>
+      <div class="mf reveal d2"><b>Phones too</b><span>Open the library from any phone on the same Wi-Fi network.</span></div>
+      <div class="mf reveal d3"><b>Claude built in</b><span>Claude and Claude Code are installed for when you do have a connection.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- MAPS -->
+<section class="sec on-dark" id="maps">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">Offline maps</div>
+      <h2>Maps that work when GPS apps don't.</h2>
+      <p>Street-level vector maps stored on the stick, with roads, rivers and towns. No tiles to download, no signal needed.</p>
+    </div>
+    <div class="maps-wrap reveal"><img src="/assets/img/maps.webp" alt="Offline map in Aftergrid" loading="lazy" width="1440" height="900"></div>
+    <div class="regions reveal">
+      <span>World overview</span><span>Greece</span><span>Crete (detailed)</span><span>Arkansas (detailed)</span><span class="add">+ All of Europe, street level, in setup</span><span class="add">+ All of the USA, in setup</span>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="sec" id="how">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">Ready in about 30 minutes</div>
+      <h2>Make it once. Keep it in the go-bag.</h2>
+      <p>You buy a download, not a gadget. Use any USB stick you own, and make as many copies for your family as you like.</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal"><h3>Buy &amp; download</h3><p>Instant download: the Aftergrid image (9.9 GB) and the Aftergrid USB Maker for Windows.</p></div>
+      <div class="step reveal d1"><h3>Plug in a USB stick</h3><p>16 GB minimum, 32 GB recommended so there's room for Wikipedia and your saves.</p></div>
+      <div class="step reveal d2"><h3>Run USB Maker</h3><p>Pick the stick, confirm, wait 10–25 minutes. It checks every byte when it's done.</p><img src="/assets/img/usbmaker.webp" alt="Aftergrid USB Maker for Windows" loading="lazy" width="450" height="365"></div>
+      <div class="step reveal d3"><h3>Boot any PC</h3><p>Plug in, power on, tap the boot-menu key (F12, F9 or Esc), choose the USB. Aftergrid starts. Nothing on the computer is changed.</p><img src="/assets/img/boot.webp" alt="Aftergrid boot menu" loading="lazy" width="1920" height="1080"></div>
+    </div>
+    <div class="specs reveal" style="margin-top:56px">
+      <div class="spec"><b>Computer</b><span>Most 64-bit Intel or AMD PCs and laptops from the last ~10 years</span></div>
+      <div class="spec"><b>Memory for AI</b><span>8 GB RAM. 14 GB+ can use the larger model</span></div>
+      <div class="spec"><b>USB stick</b><span>16 GB minimum · 32 GB recommended</span></div>
+      <div class="spec"><b>To make the stick</b><span>Windows 10/11. Mac &amp; Linux: one terminal command</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="sec" id="buy" style="background:var(--sunk)">
+  <div class="wrap">
+    <div class="sec-head reveal" style="text-align:center;margin-left:auto;margin-right:auto">
+      <div class="eyebrow">One price · yours to keep</div>
+      <h2>You can't download it once the network is down.</h2>
+      <p>Emergencies don't send a warning. The time to make an Aftergrid stick is while the internet still works.</p>
+    </div>
+    <div class="price-card reveal">
+      <div class="price-l">
+        <h3 class="serif" style="font-size:28px">Aftergrid for Windows</h3>
+        <p class="dim" style="margin:8px 0 0">The installer that writes the complete Aftergrid OS, library, maps and offline AI to your USB stick.</p>
+        <ul class="incl">
+          <li>Aftergrid USB Maker for Windows: flashes and verifies the stick</li>
+          <li>The full Aftergrid image: OS, Field Mode, offline AI</li>
+          <li>WikiMed medical encyclopedia + Greek Wikipedia, built in</li>
+          <li>English Wikipedia and more libraries, one click in setup</li>
+          <li>30 first-aid cards with 14 diagrams</li>
+          <li>7 field manuals + survival, water and food libraries</li>
+          <li>Offline maps</li>
+          <li>Make copies for everyone in your family</li>
+        </ul>
+      </div>
+      <div class="price-r on-dark">
+        <div class="amt"><sup>$</sup>19.99</div>
+        <div class="once">One-time payment. No subscription.</div>
+        <a class="btn btn-buy" data-buy href="#buy">Buy now: download instantly</a>
+        <small>Secure checkout · Instant download link by email</small>
+      </div>
+    </div>
+    <div class="urgency">
+      <div class="reveal"><b>Before the storm</b>Downloads take time. In a crisis, networks are the first thing to choke.</div>
+      <div class="reveal d1"><b>One per bag</b>A stick in the go-bag, one in the car, one at a parent's house.</div>
+      <div class="reveal d2"><b>Less than a first-aid kit</b>And it tells you how to use the first-aid kit.</div>
+    </div>
+  </div>
+</section>
+
+<!-- OPEN SOURCE -->
+<section class="sec on-dark" style="padding:90px 0">
+  <div class="wrap">
+    <div class="oss reveal">
+      <div>
+        <div class="eyebrow">Open build</div>
+        <h3 style="margin-top:14px">Prefer to build it yourself?</h3>
+        <p class="dim" style="margin:0">The Aftergrid source is on GitHub: OS configuration, Field Mode, the offline AI setup, first-aid cards and the USB Maker. Fork it, add your region's maps, your own manuals, your language.</p>
+        <code>git clone https://github.com/meetjames24/aftergrid
+cd aftergrid && ./fetch-content.sh
+sudo ./build-aftergrid.sh full</code>
+      </div>
+      <a class="btn btn-ghost" data-gh href="https://github.com/meetjames24/aftergrid" target="_blank" rel="noopener"><svg class="gh" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>View on GitHub</a>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="sec" id="faq">
+  <div class="wrap">
+    <div class="sec-head reveal"><div class="eyebrow">Questions</div><h2>Straight answers.</h2></div>
+    <div class="faq">
+      <details class="reveal"><summary>Does it really work with no internet at all?</summary><p>Yes. Everything (the library, maps, search and the AI) lives on the USB stick and runs on the computer. Internet is only used if you choose to download extra libraries in setup.</p></details>
+      <details class="reveal"><summary>Is all of Wikipedia included?</summary><p>Wikipedia's medical encyclopedia (WikiMed, with images) and a Greek Wikipedia summary edition are on the stick. All of English Wikipedia is a one-click download in setup: a 12 GB edition with every article's summary and key facts (fits a 32 GB stick), or the complete ~110 GB edition with images if you use a larger drive. Do it now, while you're online.</p></details>
+      <details class="reveal"><summary>Will it change or erase my computer?</summary><p>No. Aftergrid runs entirely from the USB stick. Take the stick out and the computer starts normally. Only the USB stick is erased when you make it.</p></details>
+      <details class="reveal"><summary>How good is the offline AI?</summary><p>It's a compact model that runs on a normal laptop processor, so it's slower and smaller than ChatGPT or Claude. But it answers from the library on the stick, shows its sources and flags numbers it can't find in them. Expect a few minutes for a full answer on an older laptop; the sources and diagrams appear first.</p></details>
+      <details class="reveal"><summary>Is this medical advice?</summary><p>No. Aftergrid is reference material for when help can't be reached. The first-aid cards follow published guidelines (Red Cross, WHO, CDC, ERC and others) and each lists its sources. Always get trained help when you can.</p></details>
+      <details class="reveal"><summary>Does it work on a Mac?</summary><p>Aftergrid boots Intel and AMD PCs. Apple Silicon Macs (M1 and later) can't boot it. You can still make the stick from a Mac or Linux with one terminal command, then use it on any PC.</p></details>
+      <details class="reveal"><summary>Can I make more than one stick?</summary><p>Yes. Make one for every bag, car and family member.</p></details>
+      <details class="reveal"><summary>Why pay if the source is on GitHub?</summary><p>Building it yourself means a Linux machine, about 20 GB of downloads and an hour of build time. $19.99 gets you the finished, tested image and the one-click Windows installer, and supports the project.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL -->
+<section class="final on-dark">
+  <div class="wrap">
+    <div class="eyebrow reveal">Be the one who's ready</div>
+    <h2 class="reveal d1">Make your stick<br>while the lights are on.</h2>
+    <p class="reveal d2">Twenty dollars and half an hour now, for the day nobody can look anything up.</p>
+    <div class="cta-row reveal d3">
+      <a class="btn btn-buy" data-buy href="#buy">Get Aftergrid <span class="price">$19.99</span></a>
+      <a class="btn btn-ghost" data-gh href="https://github.com/meetjames24/aftergrid" target="_blank" rel="noopener">Build it yourself</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <a class="brand" href="#top" style="color:#e9e7e1"><img src="/assets/aftergrid-mark.svg" alt=""><span>AFTERGRID</span></a>
+    <p>Aftergrid is reference material, not a substitute for trained medical help. Library content from Wikipedia, WikiMed, Appropedia and public-domain government manuals, used under their licenses. Fonts under the SIL Open Font License. © <span id="yr"></span> Aftergrid · getaftergrid.com</p>
+  </div>
+</footer>
+
+<div class="mbuy" id="mbuy"><a class="btn btn-buy" data-buy href="#buy">Get Aftergrid · $19.99</a></div>
+
+<script>
+// ===== CONFIG: set your checkout link here (Stripe Payment Link, Gumroad, Lemon Squeezy...) =====
+const CONFIG = {
+  buyUrl: "",                                     // e.g. "https://buy.stripe.com/xxxx". Empty = scroll to pricing.
+  githubUrl: "https://github.com/meetjames24/aftergrid"
+};
+// ==============================================================================================
+
+document.getElementById('yr').textContent = new Date().getFullYear();
+if (CONFIG.buyUrl) document.querySelectorAll('[data-buy]').forEach(a => { a.href = CONFIG.buyUrl; a.rel = 'noopener'; });
+document.querySelectorAll('[data-gh]').forEach(a => a.href = CONFIG.githubUrl);
+
+// nav + mobile buy bar
+const nav = document.getElementById('nav'), mbuy = document.getElementById('mbuy');
+function onScroll(){
+  const y = scrollY;
+  nav.classList.toggle('scrolled', y > 20);
+  mbuy.classList.toggle('show', y > innerHeight * .9 && (innerHeight + y) < document.body.scrollHeight - 300);
+  // dark nav over dark sections
+  let dark = false;
+  document.querySelectorAll('.on-dark, #stage.dark').forEach(s => { const r = s.getBoundingClientRect(); if (r.top < 40 && r.bottom > 40) dark = true; });
+  nav.classList.toggle('dark', dark);
+  blackout();
+}
+addEventListener('scroll', onScroll, {passive:true});
+
+// reveals
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} }), {threshold:.14, rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+// ===== cinematic blackout =====
+const bo = document.getElementById('blackout'), stage = document.getElementById('stage');
+const lines = [...stage.querySelectorAll('.line')], glow = document.getElementById('glow'), boot = document.getElementById('bootmark');
+const cells = [...boot.querySelectorAll('i')];
+let flickered = false, lastIdx = -2;
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function lerp(a,b,t){return a+(b-a)*t}
+function mix(c1,c2,t){return 'rgb('+c1.map((v,i)=>Math.round(lerp(v,c2[i],t))).join(',')+')'}
+function blackout(){
+  if (reduce) return;
+  const r = bo.getBoundingClientRect(), total = r.height - innerHeight;
+  const p = Math.min(1, Math.max(0, -r.top / total));
+  // background darkens over the first 30%
+  const dk = Math.min(1, p / .28);
+  stage.style.background = mix([250,249,245],[13,15,17], dk);
+  stage.style.color = mix([31,30,28],[233,231,225], dk);
+  stage.classList.toggle('dark', dk > .5);
+  if (dk > .15 && !flickered){ flickered = true; stage.classList.add('flicker'); setTimeout(()=>stage.classList.remove('flicker'), 900); }
+  if (p < .05) flickered = false;
+  // lines
+  const idx = p < .06 ? -1 : Math.min(lines.length - 1, Math.floor((p - .06) / .19));
+  const showLines = p < .86;
+  if (idx !== lastIdx){ lines.forEach((l,i) => l.classList.toggle('on', i === idx && showLines)); lastIdx = idx; }
+  if (!showLines) lines.forEach(l => l.classList.remove('on'));
+  // boot sequence at the end
+  const bp = Math.max(0, (p - .8) / .18);
+  boot.style.opacity = Math.min(1, bp * 2);
+  const lit = Math.floor(bp * 10);
+  cells.forEach((c,i) => { c.classList.toggle('lit', i < lit && i !== 2); c.classList.toggle('amb', i === 2 && lit >= 3); });
+  glow.style.opacity = Math.min(1, bp * 1.4) * .9;
+}
+onScroll();
+
+// ===== Ask demo (answers taken from Aftergrid's own first-aid cards) =====
+const DEMO = [
+  { q: "how do I make water safe to drink with bleach?",
+    a: `Use <strong>plain, unscented household bleach</strong> (6% or 8.25%). Add <strong>2 drops per litre</strong>, and double it if the water is cloudy or very cold.<sup>1</sup> Stir and let it stand <strong>30 minutes</strong>. It should smell slightly of chlorine; if not, repeat the dose and wait 15 more minutes.<sup>1</sup><br><br>If you can, boiling is best: a rolling boil for <strong>1 minute</strong> (3 minutes above 2,000 m).<sup>1</sup> Don't use scented or "splash-less" bleach.`,
+    src: [["1","Making water safe to drink · First-aid card (US EPA)"],["2","Water: purification · Survival library"]],
+    figs: ["water-treatment"] },
+  { q: "my friend is bleeding badly from his leg",
+    a: `This is an emergency. <strong>Press hard, directly on the wound</strong> with a clean cloth or gauze and keep pressing; don't lift to check.<sup>1</sup><br><br>If blood is spurting, pooling or soaking through, <strong>put a tourniquet on right away</strong>, 5 to 7 cm (2 to 3 inches) above the wound, not on a joint. Tighten it until the bleeding stops (it will hurt) and <strong>write down the time</strong>.<sup>1</sup><sup>2</sup> Keep him lying down and warm.`,
+    src: [["1","Severe bleeding · First-aid card"],["2","FM 4-25.11 First Aid · US Army"]],
+    figs: ["bleeding-pressure","tourniquet-placement"] },
+  { q: "someone collapsed in the heat and is confused",
+    a: `Confusion after heat or hard work means <strong>heat stroke, an emergency</strong>. <strong>Cool them immediately</strong>, before anything else.<sup>1</sup><br><br>Best: put them in cold water up to the neck. Otherwise soak them with water and fan hard, with ice or cold packs on the <strong>neck, armpits and groin</strong>. Keep cooling until they're thinking clearly.<sup>1</sup> Don't give drinks to someone who is confused. If they stop breathing, start CPR.<sup>1</sup>`,
+    src: [["1","Heat stroke and heat exhaustion · First-aid card"],["2","Heat stroke · WikiMed"]],
+    figs: ["heat-stroke"] }
+];
+const qEl = document.getElementById('q'), ansEl = document.getElementById('ans'), chips = document.getElementById('chips');
+let run = 0, cur = 0, started = false;
+DEMO.forEach((d,i) => { const b = document.createElement('button'); b.textContent = d.q; b.onclick = () => play(i, true); chips.appendChild(b); });
+const wait = ms => new Promise(r => setTimeout(r, ms));
+async function typeText(el, text, id, speed){ el.textContent = ''; for (const ch of text){ if (id !== run) return false; el.textContent += ch; await wait(speed + Math.random()*speed); } return true; }
+async function play(i, manual){
+  const id = ++run; cur = i;
+  [...chips.children].forEach((b,k) => b.classList.toggle('on', k === i));
+  const d = DEMO[i];
+  ansEl.innerHTML = '';
+  if (!await typeText(qEl, d.q, id, 32)) return;
+  await wait(350); if (id !== run) return;
+  ansEl.innerHTML = `<div class="who"><img src="/assets/aftergrid-mark.svg" width="16" height="16" alt="">Aftergrid <em>OFFLINE</em></div><div class="think">Searching 10 libraries on this stick…</div>`;
+  await wait(1100); if (id !== run) return;
+  const think = ansEl.querySelector('.think'); think.textContent = 'Reading 3 sources · diagrams found';
+  const figs = document.createElement('div'); figs.className = 'figs';
+  d.figs.forEach(f => { const im = new Image(); im.src = `/assets/diagrams/${f}.webp`; im.alt = f.replace(/-/g,' '); figs.appendChild(im); });
+  await wait(500); if (id !== run) return;
+  // stream answer by words, keeping tags intact
+  const body = document.createElement('div'); ansEl.appendChild(body);
+  const tokens = d.a.match(/<[^>]+>|[^<\s]+\s*|\s+/g);
+  let html = '';
+  for (const t of tokens){ if (id !== run) return; html += t; body.innerHTML = html; if (!t.startsWith('<')) await wait(22 + Math.random()*30); }
+  think.remove();
+  const s = document.createElement('div'); s.className = 'srcs';
+  s.innerHTML = d.src.map(([n,t]) => `<a href="#ai" onclick="return false"><b>${n}</b>${t}</a>`).join('');
+  ansEl.appendChild(s); ansEl.appendChild(figs);
+  requestAnimationFrame(() => [...figs.children].forEach((im,k) => setTimeout(() => im.classList.add('in'), 120*k)));
+  if (!manual){ await wait(6500); if (id === run) play((i+1) % DEMO.length); }
+}
+const aiIO = new IntersectionObserver(es => { if (es[0].isIntersecting && !started){ started = true; play(0); } }, {threshold:.3});
+aiIO.observe(document.querySelector('.term'));
+</script>
+</body>
+</html>

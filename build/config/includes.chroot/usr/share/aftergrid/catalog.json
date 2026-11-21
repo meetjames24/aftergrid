@@ -191,6 +191,16 @@
     }
    ]
   },
+  "wikipedia-lite": {
+   "label": "English Wikipedia, every article: lead section and infobox, no images (~12 GB, fits a 32 GB stick)",
+   "items": [
+    {
+     "type": "kiwix",
+     "dir": "wikipedia",
+     "prefix": "wikipedia_en_all_mini"
+    }
+   ]
+  },
   "wikipedia": {
    "label": "All of English Wikipedia with images + full Greek Wikipedia with images (~125 GB)",
    "items": [
