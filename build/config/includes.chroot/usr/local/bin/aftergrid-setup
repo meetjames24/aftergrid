@@ -1,0 +1,246 @@
+#!/usr/bin/env python3
+"""Aftergrid first-time setup: a short, skippable walk-through on first login.
+
+  1. Language
+  2. Encrypted saves on the stick (live stick only; takes effect after a restart)
+  3. Your own account (once saves are active; an installed system already has one)
+  4. Wi-Fi (optional)
+  5. Downloads (optional: more library, maps, a bigger offline AI)
+  6. Finish: open Field Mode, switch to your account
+
+Runs automatically until finished (flag: /var/lib/aftergrid/setup-done, kept by the encrypted saves).
+Run again any time: Aftergrid Control -> Run first-time setup again, or `aftergrid-setup --again`.
+"""
+import json, os, re, shutil, subprocess, sys, time
+
+DONE = "/var/lib/aftergrid/setup-done"                              # system-wide (kept by the encrypted saves)
+USER_DONE = os.path.expanduser("~/.config/aftergrid-setup-done")   # per user (installed systems, where sudo needs a password)
+CATALOG = "/usr/share/aftergrid/catalog.json"
+LIVE = os.path.isdir("/run/live/medium")
+LIVE_USER = "aftergrid"
+GROUPS = "audio,cdrom,dip,video,plugdev,netdev,bluetooth,kvm,sudo,dialout,users"
+LANGS = [("en", "English", "en_US.UTF-8", "us,gr"), ("el", "Ελληνικά", "el_GR.UTF-8", "gr,us"), ("fr", "Français", "fr_FR.UTF-8", "fr,us"),
+         ("de", "Deutsch", "de_DE.UTF-8", "de,us"), ("pt", "Português", "pt_BR.UTF-8", "br,us"), ("tr", "Türkçe", "tr_TR.UTF-8", "tr,us")]
+
+# ---------------------------------------------------------------- text, in six languages
+T = {
+ "title": {"en": "Aftergrid setup", "el": "Ρύθμιση Aftergrid", "fr": "Configuration d'Aftergrid", "de": "Aftergrid einrichten", "pt": "Configuração do Aftergrid", "tr": "Aftergrid kurulumu"},
+ "lang_q": {"en": "Choose your language:", "el": "Διάλεξε γλώσσα:", "fr": "Choisis ta langue :", "de": "Wähle deine Sprache:", "pt": "Escolha seu idioma:", "tr": "Dilini seç:"},
+ "welcome": {
+   "en": "Welcome to Aftergrid.\n\nEverything here works without internet: a medical and survival library, maps, and an offline AI.\n\nThis short setup takes about 3 minutes:\n  1. Keep your files and logins on this stick (encrypted)\n  2. Create your own account\n  3. Wi-Fi and extra downloads (optional)\n\nYou can skip any step.",
+   "el": "Καλώς ήρθες στο Aftergrid.\n\nΌλα εδώ λειτουργούν χωρίς ίντερνετ: ιατρική βιβλιοθήκη και βιβλιοθήκη επιβίωσης, χάρτες και τοπική ΤΝ.\n\nΗ σύντομη ρύθμιση διαρκεί περίπου 3 λεπτά:\n  1. Αποθήκευση αρχείων και λογαριασμών στο stick (κρυπτογραφημένα)\n  2. Δημιουργία του δικού σου λογαριασμού\n  3. Wi-Fi και επιπλέον λήψεις (προαιρετικά)\n\nΜπορείς να παραλείψεις οποιοδήποτε βήμα.",
+   "fr": "Bienvenue dans Aftergrid.\n\nTout fonctionne sans internet : une bibliothèque médicale et de survie, des cartes et une IA hors ligne.\n\nCette configuration prend environ 3 minutes :\n  1. Garder tes fichiers et connexions sur cette clé (chiffrés)\n  2. Créer ton propre compte\n  3. Wi-Fi et téléchargements en plus (facultatif)\n\nTu peux passer chaque étape.",
+   "de": "Willkommen bei Aftergrid.\n\nAlles funktioniert ohne Internet: eine Medizin- und Überlebensbibliothek, Karten und eine Offline-KI.\n\nDie Einrichtung dauert etwa 3 Minuten:\n  1. Dateien und Anmeldungen auf diesem Stick behalten (verschlüsselt)\n  2. Ein eigenes Konto anlegen\n  3. WLAN und zusätzliche Downloads (optional)\n\nJeder Schritt lässt sich überspringen.",
+   "pt": "Bem-vindo ao Aftergrid.\n\nTudo aqui funciona sem internet: uma biblioteca médica e de sobrevivência, mapas e uma IA offline.\n\nEsta configuração leva cerca de 3 minutos:\n  1. Guardar seus arquivos e logins neste pendrive (criptografados)\n  2. Criar sua própria conta\n  3. Wi-Fi e downloads extras (opcional)\n\nVocê pode pular qualquer etapa.",
+   "tr": "Aftergrid'e hoş geldin.\n\nBuradaki her şey internetsiz çalışır: tıbbi ve hayatta kalma kütüphanesi, haritalar ve çevrimdışı yapay zekâ.\n\nBu kısa kurulum yaklaşık 3 dakika sürer:\n  1. Dosyalarını ve oturumlarını bu bellekte sakla (şifreli)\n  2. Kendi hesabını oluştur\n  3. Wi-Fi ve ek indirmeler (isteğe bağlı)\n\nHer adımı atlayabilirsin."},
+ "start": {"en": "Start setup", "el": "Έναρξη", "fr": "Commencer", "de": "Los geht's", "pt": "Começar", "tr": "Başla"},
+ "skip_all": {"en": "Just use Aftergrid now (nothing is saved)", "el": "Χρήση τώρα (δεν αποθηκεύεται τίποτα)", "fr": "Utiliser Aftergrid maintenant (rien n'est enregistré)", "de": "Aftergrid jetzt nutzen (nichts wird gespeichert)", "pt": "Usar o Aftergrid agora (nada é salvo)", "tr": "Aftergrid'i şimdi kullan (hiçbir şey kaydedilmez)"},
+ "saves_q": {
+   "en": "Keep your files, settings and logins on this stick?\n\nAftergrid adds an encrypted area to the free space on the stick, plus a VAULT for downloads you can also open on Windows. Nothing else on the stick is touched.\n\nRecommended. Without it, everything is forgotten when you shut down.",
+   "el": "Να κρατά το stick τα αρχεία, τις ρυθμίσεις και τους λογαριασμούς σου;\n\nΤο Aftergrid προσθέτει έναν κρυπτογραφημένο χώρο στον ελεύθερο χώρο του stick, και ένα VAULT για λήψεις που ανοίγει και στα Windows. Τίποτα άλλο δεν αλλάζει.\n\nΣυνιστάται. Χωρίς αυτό, όλα ξεχνιούνται στο κλείσιμο.",
+   "fr": "Garder tes fichiers, réglages et connexions sur cette clé ?\n\nAftergrid ajoute une zone chiffrée dans l'espace libre de la clé, plus un VAULT pour les téléchargements, lisible aussi sous Windows. Rien d'autre n'est modifié.\n\nRecommandé. Sans cela, tout est oublié à l'arrêt.",
+   "de": "Dateien, Einstellungen und Anmeldungen auf diesem Stick behalten?\n\nAftergrid legt im freien Platz des Sticks einen verschlüsselten Bereich an, dazu einen VAULT für Downloads, der auch unter Windows lesbar ist. Sonst wird nichts verändert.\n\nEmpfohlen. Ohne ihn ist beim Ausschalten alles vergessen.",
+   "pt": "Guardar seus arquivos, configurações e logins neste pendrive?\n\nO Aftergrid cria uma área criptografada no espaço livre do pendrive, mais um VAULT para downloads que também abre no Windows. Nada mais é alterado.\n\nRecomendado. Sem isso, tudo é esquecido ao desligar.",
+   "tr": "Dosyaların, ayarların ve oturumların bu bellekte saklansın mı?\n\nAftergrid belleğin boş alanına şifreli bir bölüm ve Windows'ta da açılabilen indirmeler için bir VAULT ekler. Başka hiçbir şeye dokunulmaz.\n\nÖnerilir. Bu olmadan kapatınca her şey unutulur."},
+ "yes_save": {"en": "Yes, keep them (encrypted)", "el": "Ναι, κράτησέ τα (κρυπτογραφημένα)", "fr": "Oui, les garder (chiffré)", "de": "Ja, behalten (verschlüsselt)", "pt": "Sim, guardar (criptografado)", "tr": "Evet, sakla (şifreli)"},
+ "not_now": {"en": "Not now", "el": "Όχι τώρα", "fr": "Pas maintenant", "de": "Jetzt nicht", "pt": "Agora não", "tr": "Şimdi değil"},
+ "pass1": {"en": "Choose a passphrase for the encrypted area (8+ characters).\nYou'll type it every time Aftergrid starts. It cannot be recovered if lost.", "el": "Διάλεξε φράση πρόσβασης για τον κρυπτογραφημένο χώρο (8+ χαρακτήρες).\nΘα την πληκτρολογείς σε κάθε εκκίνηση. Αν χαθεί, δεν ανακτάται.", "fr": "Choisis une phrase de passe pour la zone chiffrée (8 caractères ou plus).\nTu la taperas à chaque démarrage. Impossible de la récupérer si tu l'oublies.", "de": "Wähle eine Passphrase für den verschlüsselten Bereich (8+ Zeichen).\nDu gibst sie bei jedem Start ein. Geht sie verloren, lässt sie sich nicht wiederherstellen.", "pt": "Escolha uma frase-senha para a área criptografada (8+ caracteres).\nVocê vai digitá-la a cada inicialização. Se perder, não há como recuperar.", "tr": "Şifreli alan için bir parola belirle (8+ karakter).\nHer açılışta yazacaksın. Unutulursa kurtarılamaz."},
+ "pass2": {"en": "Type the passphrase again:", "el": "Πληκτρολόγησέ την ξανά:", "fr": "Retape la phrase de passe :", "de": "Passphrase wiederholen:", "pt": "Digite a frase-senha de novo:", "tr": "Parolayı tekrar yaz:"},
+ "pass_short": {"en": "Use at least 8 characters.", "el": "Χρησιμοποίησε τουλάχιστον 8 χαρακτήρες.", "fr": "Utilise au moins 8 caractères.", "de": "Mindestens 8 Zeichen.", "pt": "Use pelo menos 8 caracteres.", "tr": "En az 8 karakter kullan."},
+ "pass_mismatch": {"en": "The two didn't match. Try again.", "el": "Δεν ταιριάζουν. Δοκίμασε ξανά.", "fr": "Les deux ne correspondent pas. Réessaie.", "de": "Die Eingaben stimmen nicht überein. Noch einmal.", "pt": "Não conferem. Tente de novo.", "tr": "İkisi eşleşmedi. Tekrar dene."},
+ "saves_working": {"en": "Setting up the encrypted area and VAULT… (about a minute)", "el": "Ρύθμιση κρυπτογραφημένου χώρου και VAULT… (περίπου ένα λεπτό)", "fr": "Création de la zone chiffrée et du VAULT… (environ une minute)", "de": "Verschlüsselter Bereich und VAULT werden eingerichtet… (etwa eine Minute)", "pt": "Criando a área criptografada e o VAULT… (cerca de um minuto)", "tr": "Şifreli alan ve VAULT kuruluyor… (yaklaşık bir dakika)"},
+ "saves_done": {"en": "Done. Restart Aftergrid and choose \"Encrypted persistence\" in the boot menu (it's the default). Setup continues after the restart: you'll create your account then.\n\nRestart now?", "el": "Έτοιμο. Κάνε επανεκκίνηση και διάλεξε «Encrypted persistence» στο μενού (είναι η προεπιλογή). Η ρύθμιση συνεχίζει μετά: τότε θα φτιάξεις τον λογαριασμό σου.\n\nΕπανεκκίνηση τώρα;", "fr": "Terminé. Redémarre Aftergrid et choisis « Encrypted persistence » dans le menu de démarrage (c'est le choix par défaut). La configuration reprend après : tu créeras alors ton compte.\n\nRedémarrer maintenant ?", "de": "Fertig. Starte Aftergrid neu und wähle im Startmenü „Encrypted persistence“ (Standard). Danach geht die Einrichtung weiter: dann legst du dein Konto an.\n\nJetzt neu starten?", "pt": "Pronto. Reinicie o Aftergrid e escolha \"Encrypted persistence\" no menu de inicialização (é o padrão). A configuração continua depois: aí você cria sua conta.\n\nReiniciar agora?", "tr": "Tamam. Aftergrid'i yeniden başlat ve açılış menüsünde \"Encrypted persistence\"i seç (varsayılan). Kurulum yeniden başlatmadan sonra devam eder: hesabını o zaman oluşturacaksın.\n\nŞimdi yeniden başlatılsın mı?"},
+ "saves_failed": {"en": "Setting up the encrypted area didn't work:\n\n{0}\n\nYou can try again later: Aftergrid Control → Set up this stick.", "el": "Η ρύθμιση του κρυπτογραφημένου χώρου απέτυχε:\n\n{0}\n\nΔοκίμασε αργότερα: Έλεγχος Aftergrid → Ρύθμιση του stick.", "fr": "La création de la zone chiffrée a échoué :\n\n{0}\n\nTu peux réessayer plus tard : Contrôle Aftergrid → Configurer cette clé.", "de": "Der verschlüsselte Bereich konnte nicht eingerichtet werden:\n\n{0}\n\nSpäter erneut: Aftergrid-Steuerung → Diesen Stick einrichten.", "pt": "Não foi possível criar a área criptografada:\n\n{0}\n\nTente mais tarde: Controle Aftergrid → Configurar este pendrive.", "tr": "Şifreli alan kurulamadı:\n\n{0}\n\nDaha sonra tekrar dene: Aftergrid Kontrol → Bu USB belleği kur."},
+ "saves_exist": {"en": "This stick already has encrypted saves, but Aftergrid was started without them.\n\nRestart and choose \"Encrypted persistence\" in the boot menu to use them. Restart now?", "el": "Αυτό το stick έχει ήδη κρυπτογραφημένη αποθήκευση, αλλά το Aftergrid ξεκίνησε χωρίς αυτήν.\n\nΚάνε επανεκκίνηση και διάλεξε «Encrypted persistence». Επανεκκίνηση τώρα;", "fr": "Cette clé a déjà une zone chiffrée, mais Aftergrid a démarré sans elle.\n\nRedémarre et choisis « Encrypted persistence ». Redémarrer maintenant ?", "de": "Dieser Stick hat bereits einen verschlüsselten Bereich, aber Aftergrid wurde ohne ihn gestartet.\n\nNeu starten und „Encrypted persistence“ wählen. Jetzt neu starten?", "pt": "Este pendrive já tem uma área criptografada, mas o Aftergrid iniciou sem ela.\n\nReinicie e escolha \"Encrypted persistence\". Reiniciar agora?", "tr": "Bu bellekte zaten şifreli bir alan var ama Aftergrid onsuz başlatıldı.\n\nYeniden başlat ve \"Encrypted persistence\"i seç. Şimdi yeniden başlatılsın mı?"},
+ "acct_intro": {"en": "Create your own account. Your files and logins will live in it, protected by your password.", "el": "Δημιούργησε τον δικό σου λογαριασμό. Τα αρχεία και οι λογαριασμοί σου θα μένουν εκεί, με τον κωδικό σου.", "fr": "Crée ton propre compte. Tes fichiers et connexions y seront, protégés par ton mot de passe.", "de": "Lege dein eigenes Konto an. Deine Dateien und Anmeldungen liegen darin, geschützt durch dein Passwort.", "pt": "Crie sua própria conta. Seus arquivos e logins ficam nela, protegidos pela sua senha.", "tr": "Kendi hesabını oluştur. Dosyaların ve oturumların burada, parolanla korunur."},
+ "full_name": {"en": "Your name:", "el": "Το όνομά σου:", "fr": "Ton nom :", "de": "Dein Name:", "pt": "Seu nome:", "tr": "Adın:"},
+ "user_name": {"en": "Username (lowercase letters and numbers):", "el": "Όνομα χρήστη (πεζά λατινικά και αριθμοί):", "fr": "Nom d'utilisateur (minuscules et chiffres) :", "de": "Benutzername (Kleinbuchstaben und Ziffern):", "pt": "Nome de usuário (letras minúsculas e números):", "tr": "Kullanıcı adı (küçük harf ve rakam):"},
+ "user_bad": {"en": "Use 2 to 30 lowercase letters, numbers, - or _, starting with a letter, and not a name already in use.", "el": "Χρησιμοποίησε 2 έως 30 πεζά λατινικά, αριθμούς, - ή _, να ξεκινά με γράμμα και να μην υπάρχει ήδη.", "fr": "Utilise 2 à 30 minuscules, chiffres, - ou _, en commençant par une lettre, et un nom pas encore pris.", "de": "2 bis 30 Kleinbuchstaben, Ziffern, - oder _, beginnend mit einem Buchstaben, und noch nicht vergeben.", "pt": "Use de 2 a 30 letras minúsculas, números, - ou _, começando com letra, e um nome ainda não usado.", "tr": "Harfle başlayan, 2-30 küçük harf, rakam, - veya _ kullan; ad daha önce alınmamış olmalı."},
+ "user_pass": {"en": "Password for your account:", "el": "Κωδικός για τον λογαριασμό σου:", "fr": "Mot de passe de ton compte :", "de": "Passwort für dein Konto:", "pt": "Senha da sua conta:", "tr": "Hesabının parolası:"},
+ "autologin_q": {"en": "Sign in automatically when Aftergrid starts?\n\n(The stick is already locked by its encryption passphrase.)", "el": "Αυτόματη σύνδεση στην εκκίνηση;\n\n(Το stick ήδη προστατεύεται από τη φράση κρυπτογράφησης.)", "fr": "Se connecter automatiquement au démarrage ?\n\n(La clé est déjà protégée par sa phrase de passe de chiffrement.)", "de": "Beim Start automatisch anmelden?\n\n(Der Stick ist bereits durch die Verschlüsselungs-Passphrase geschützt.)", "pt": "Entrar automaticamente ao iniciar?\n\n(O pendrive já é protegido pela frase-senha de criptografia.)", "tr": "Aftergrid açılınca otomatik giriş yapılsın mı?\n\n(Bellek zaten şifreleme parolasıyla korunuyor.)"},
+ "acct_done": {"en": "Account \"{0}\" is ready.", "el": "Ο λογαριασμός «{0}» είναι έτοιμος.", "fr": "Le compte « {0} » est prêt.", "de": "Konto „{0}“ ist bereit.", "pt": "A conta \"{0}\" está pronta.", "tr": "\"{0}\" hesabı hazır."},
+ "acct_failed": {"en": "Creating the account didn't work:\n\n{0}", "el": "Η δημιουργία λογαριασμού απέτυχε:\n\n{0}", "fr": "La création du compte a échoué :\n\n{0}", "de": "Das Konto konnte nicht angelegt werden:\n\n{0}", "pt": "Não foi possível criar a conta:\n\n{0}", "tr": "Hesap oluşturulamadı:\n\n{0}"},
+ "wifi_q": {"en": "Connect to Wi-Fi now?\n\nOptional. Aftergrid works fully offline; internet is only for downloading more maps, books or a bigger AI, and for app updates.", "el": "Σύνδεση σε Wi-Fi τώρα;\n\nΠροαιρετικό. Το Aftergrid δουλεύει πλήρως χωρίς ίντερνετ· χρειάζεται μόνο για επιπλέον χάρτες, βιβλία, μεγαλύτερη ΤΝ και ενημερώσεις.", "fr": "Se connecter au Wi-Fi maintenant ?\n\nFacultatif. Aftergrid fonctionne entièrement hors ligne ; internet sert seulement à télécharger plus de cartes, de livres, une IA plus grande et les mises à jour.", "de": "Jetzt mit WLAN verbinden?\n\nOptional. Aftergrid funktioniert komplett offline; Internet braucht es nur für zusätzliche Karten, Bücher, eine größere KI und Updates.", "pt": "Conectar ao Wi-Fi agora?\n\nOpcional. O Aftergrid funciona totalmente offline; a internet serve só para baixar mais mapas, livros, uma IA maior e atualizações.", "tr": "Şimdi Wi-Fi'ye bağlanılsın mı?\n\nİsteğe bağlı. Aftergrid tamamen çevrimdışı çalışır; internet yalnızca ek harita, kitap, daha büyük yapay zekâ indirmek ve güncellemeler için gerekir."},
+ "wifi_pick": {"en": "Choose a Wi-Fi network:", "el": "Διάλεξε δίκτυο Wi-Fi:", "fr": "Choisis un réseau Wi-Fi :", "de": "WLAN auswählen:", "pt": "Escolha uma rede Wi-Fi:", "tr": "Bir Wi-Fi ağı seç:"},
+ "wifi_none": {"en": "No Wi-Fi networks found. Check that Wi-Fi is switched on, or plug in a network cable.", "el": "Δεν βρέθηκαν δίκτυα Wi-Fi. Έλεγξε ότι το Wi-Fi είναι ανοιχτό ή σύνδεσε καλώδιο.", "fr": "Aucun réseau Wi-Fi trouvé. Vérifie que le Wi-Fi est activé, ou branche un câble réseau.", "de": "Keine WLANs gefunden. Ist WLAN eingeschaltet? Oder ein Netzwerkkabel anschließen.", "pt": "Nenhuma rede Wi-Fi encontrada. Verifique se o Wi-Fi está ligado ou conecte um cabo de rede.", "tr": "Wi-Fi ağı bulunamadı. Wi-Fi'nin açık olduğundan emin ol ya da ağ kablosu tak."},
+ "wifi_pass": {"en": "Password for \"{0}\":", "el": "Κωδικός για «{0}»:", "fr": "Mot de passe de « {0} » :", "de": "Passwort für „{0}“:", "pt": "Senha de \"{0}\":", "tr": "\"{0}\" için parola:"},
+ "wifi_ok": {"en": "Connected to \"{0}\".", "el": "Συνδέθηκες στο «{0}».", "fr": "Connecté à « {0} ».", "de": "Verbunden mit „{0}“.", "pt": "Conectado a \"{0}\".", "tr": "\"{0}\" ağına bağlanıldı."},
+ "wifi_fail": {"en": "Couldn't connect to \"{0}\". Try again?", "el": "Δεν έγινε σύνδεση στο «{0}». Ξανά;", "fr": "Impossible de se connecter à « {0} ». Réessayer ?", "de": "Verbindung mit „{0}“ fehlgeschlagen. Noch einmal?", "pt": "Não foi possível conectar a \"{0}\". Tentar de novo?", "tr": "\"{0}\" ağına bağlanılamadı. Tekrar denensin mi?"},
+ "online": {"en": "You're online.", "el": "Είσαι συνδεδεμένος.", "fr": "Tu es en ligne.", "de": "Du bist online.", "pt": "Você está online.", "tr": "Çevrimiçisin."},
+ "dl_q": {"en": "Download more for offline use? Pick what you want (it keeps downloading in a window while you use Aftergrid):", "el": "Λήψη περισσότερων για χρήση εκτός σύνδεσης; Διάλεξε (η λήψη συνεχίζει σε παράθυρο ενώ χρησιμοποιείς το Aftergrid):", "fr": "Télécharger plus pour l'usage hors ligne ? Choisis (le téléchargement continue dans une fenêtre pendant que tu utilises Aftergrid) :", "de": "Mehr für die Offline-Nutzung laden? Auswählen (der Download läuft in einem Fenster weiter, während du Aftergrid nutzt):", "pt": "Baixar mais para uso offline? Escolha (o download continua numa janela enquanto você usa o Aftergrid):", "tr": "Çevrimdışı kullanım için daha fazlası indirilsin mi? Seç (Aftergrid'i kullanırken indirme bir pencerede sürer):"},
+ "dl_novault": {"en": "Downloads go to the VAULT, which is created with the encrypted saves. Set up saves first, then download from Aftergrid Control → Download.", "el": "Οι λήψεις πάνε στο VAULT, που δημιουργείται μαζί με την κρυπτογραφημένη αποθήκευση. Ρύθμισέ την πρώτα και μετά: Έλεγχος Aftergrid → Λήψη.", "fr": "Les téléchargements vont dans le VAULT, créé avec la zone chiffrée. Configure-la d'abord, puis : Contrôle Aftergrid → Télécharger.", "de": "Downloads landen im VAULT, der zusammen mit dem verschlüsselten Bereich entsteht. Erst diesen einrichten, dann: Aftergrid-Steuerung → Herunterladen.", "pt": "Os downloads vão para o VAULT, criado junto com a área criptografada. Configure-a primeiro e depois: Controle Aftergrid → Baixar.", "tr": "İndirmeler, şifreli alanla birlikte oluşturulan VAULT'a gider. Önce onu kur, sonra: Aftergrid Kontrol → İndir."},
+ "dl_offline": {"en": "You're offline, so no downloads now. Any time you're online: Aftergrid Control → Download.", "el": "Είσαι εκτός σύνδεσης, οπότε όχι λήψεις τώρα. Όταν έχεις ίντερνετ: Έλεγχος Aftergrid → Λήψη.", "fr": "Tu es hors ligne, donc pas de téléchargement maintenant. Dès que tu es en ligne : Contrôle Aftergrid → Télécharger.", "de": "Du bist offline, also jetzt keine Downloads. Sobald du online bist: Aftergrid-Steuerung → Herunterladen.", "pt": "Você está offline, então sem downloads agora. Quando estiver online: Controle Aftergrid → Baixar.", "tr": "Çevrimdışısın, bu yüzden şimdi indirme yok. Çevrimiçi olduğunda: Aftergrid Kontrol → İndir."},
+ "finish": {"en": "Setup is complete.\n\nOpen Field Mode now? (Library, maps, first aid, Ask Aftergrid.)", "el": "Η ρύθμιση ολοκληρώθηκε.\n\nΆνοιγμα της Λειτουργίας Πεδίου τώρα; (Βιβλιοθήκη, χάρτες, πρώτες βοήθειες, Ρώτα το Aftergrid.)", "fr": "La configuration est terminée.\n\nOuvrir le Mode Terrain maintenant ? (Bibliothèque, cartes, premiers secours, Demander à Aftergrid.)", "de": "Die Einrichtung ist abgeschlossen.\n\nFeldmodus jetzt öffnen? (Bibliothek, Karten, Erste Hilfe, Aftergrid fragen.)", "pt": "A configuração terminou.\n\nAbrir o Modo Campo agora? (Biblioteca, mapas, primeiros socorros, Pergunte ao Aftergrid.)", "tr": "Kurulum tamamlandı.\n\nSaha Modu şimdi açılsın mı? (Kütüphane, haritalar, ilk yardım, Aftergrid'e sor.)"},
+ "switch_q": {"en": "Sign out and sign in to your account \"{0}\" now?", "el": "Αποσύνδεση και είσοδος στον λογαριασμό «{0}» τώρα;", "fr": "Se déconnecter et ouvrir ton compte « {0} » maintenant ?", "de": "Jetzt abmelden und mit deinem Konto „{0}“ anmelden?", "pt": "Sair e entrar na sua conta \"{0}\" agora?", "tr": "Şimdi oturumu kapatıp \"{0}\" hesabına giriş yapılsın mı?"},
+}
+LANG = "en"
+def t(k, *a): return T[k].get(LANG, T[k]["en"]).format(*a)
+
+# ---------------------------------------------------------------- helpers
+def kd(*args, check=False):
+    """Run kdialog. Returns (ok, stdout)."""
+    r = subprocess.run(["kdialog", "--title", t("title"), *args], capture_output=True, text=True)
+    return r.returncode == 0, r.stdout.strip()
+def msg(text): kd("--msgbox", text)
+def yesno(text, yes=None, no=None):
+    a = ["--yesno", text] + (["--yes-label", yes] if yes else []) + (["--no-label", no] if no else [])
+    return kd(*a)[0]
+def sudo(cmd, stdin=None):
+    r = subprocess.run(["sudo", "-n", *cmd], input=stdin, capture_output=True, text=True)
+    return r.returncode == 0, (r.stderr or r.stdout).strip()[-600:]
+def sh(cmd): return subprocess.run(cmd, capture_output=True, text=True).stdout
+def persistence_active():
+    return any("/run/live/persistence" in l for l in open("/proc/mounts"))
+def boot_disk():
+    for l in open("/proc/mounts"):
+        if " /run/live/medium " in l:
+            dev = l.split()[0]
+            return "/dev/" + sh(["lsblk", "-no", "PKNAME", dev]).strip().splitlines()[0] if dev.startswith("/dev/") else None
+def saves_exist(disk):
+    out = sh(["lsblk", "-rno", "FSTYPE,LABEL", disk]) if disk else ""
+    return "crypto_LUKS" in out or re.search(r"\bpersistence\b", out) is not None
+def vault():
+    out = sh(["lsblk", "-rno", "LABEL,MOUNTPOINT"])
+    return any(l.split(" ")[0] == "VAULT" for l in out.splitlines())
+def online(): return sh(["nmcli", "-t", "-f", "STATE", "general"]).strip().startswith("connected")
+def human_users():
+    return [l.split(":")[0] for l in open("/etc/passwd") if 1000 <= int(l.split(":")[2]) < 60000 and l.split(":")[0] != LIVE_USER]
+
+# ---------------------------------------------------------------- steps
+def step_language():
+    global LANG
+    args = []
+    for code, name, *_ in LANGS: args += [code, name]
+    cur = (os.environ.get("LANG", "en")[:2])
+    ok, pick = kd("--default", dict((c, n) for c, n, *_ in LANGS).get(cur, "English"), "--menu", "Aftergrid: " + T["lang_q"]["en"] + " / " + T["lang_q"]["el"], *args)
+    if not ok: return
+    LANG = pick
+    code, name, loc, kb = next(x for x in LANGS if x[0] == pick)
+    # Desktop language and keyboard follow at the next sign-in; Field Mode follows the browser language.
+    subprocess.run(["kwriteconfig6", "--file", "plasma-localerc", "--group", "Formats", "--key", "LANG", loc])
+    subprocess.run(["kwriteconfig6", "--file", "plasma-localerc", "--group", "Translations", "--key", "LANGUAGE", loc.split(".")[0]])
+    subprocess.run(["kwriteconfig6", "--file", "kxkbrc", "--group", "Layout", "--key", "LayoutList", kb])
+    subprocess.run(["kwriteconfig6", "--file", "kxkbrc", "--group", "Layout", "--key", "Use", "true"])
+    sudo(["localectl", "set-locale", f"LANG={loc}"])
+
+def step_saves():
+    """Live stick without saves: create them (needs a restart). Returns 'restart', 'skip' or 'ok'."""
+    if not LIVE or persistence_active(): return "ok"
+    disk = boot_disk()
+    if saves_exist(disk):
+        if yesno(t("saves_exist")): subprocess.run(["systemctl", "reboot"]); return "restart"
+        return "skip"
+    if not yesno(t("saves_q"), t("yes_save"), t("not_now")): return "skip"
+    while True:
+        ok, p1 = kd("--password", t("pass1"))
+        if not ok: return "skip"
+        if len(p1) < 8: msg(t("pass_short")); continue
+        ok, p2 = kd("--password", t("pass2"))
+        if not ok: return "skip"
+        if p1 != p2: msg(t("pass_mismatch")); continue
+        break
+    bar = subprocess.Popen(["kdialog", "--title", t("title"), "--passivepopup", t("saves_working"), "90"])
+    ok, out = sudo(["/usr/local/sbin/aftergrid-setup-stick", "--yes", "--pass-stdin"], stdin=p1 + "\n")
+    bar.terminate()
+    if not ok: msg(t("saves_failed", out)); return "skip"
+    if yesno(t("saves_done")): subprocess.run(["systemctl", "reboot"])
+    return "restart"
+
+def step_account():
+    """Returns the new username, or None."""
+    if not LIVE or not persistence_active() or human_users(): return None
+    msg(t("acct_intro"))
+    ok, full = kd("--inputbox", t("full_name"), "")
+    if not ok: return None
+    sugg = re.sub(r"[^a-z0-9]", "", full.lower().split(" ")[0]) or "me"
+    while True:
+        ok, user = kd("--inputbox", t("user_name"), sugg)
+        if not ok: return None
+        exists = subprocess.run(["id", user], capture_output=True).returncode == 0
+        if re.fullmatch(r"[a-z][a-z0-9_-]{1,29}", user) and not exists and user not in ("root", "aftergrid", "admin"): break
+        msg(t("user_bad"))
+    while True:
+        ok, p1 = kd("--password", t("user_pass"))
+        if not ok: return None
+        if len(p1) < 8: msg(t("pass_short")); continue
+        ok, p2 = kd("--password", t("pass2"))
+        if not ok: return None
+        if p1 != p2: msg(t("pass_mismatch")); continue
+        break
+    ok, out = sudo(["useradd", "-m", "-c", full.replace(":", " "), "-s", "/bin/bash", "-G", GROUPS, user])
+    if ok: ok, out = sudo(["chpasswd"], stdin=f"{user}:{p1}\n")
+    if not ok: msg(t("acct_failed", out)); return None
+    auto = yesno(t("autologin_q"))
+    conf = f"[Autologin]\nUser={user}\nSession=plasma\n" if auto else "[Autologin]\nUser=\n"
+    sudo(["sh", "-c", f"mkdir -p /etc/sddm.conf.d && printf '%s' '{conf}' > /etc/sddm.conf.d/zz-aftergrid-user.conf"])
+    # The new account starts in the language chosen here.
+    loc = next(x for x in LANGS if x[0] == LANG)
+    sudo(["sh", "-c", f"mkdir -p /home/{user}/.config && printf '[Formats]\\nLANG={loc[2]}\\n[Translations]\\nLANGUAGE={loc[2].split('.')[0]}\\n' > /home/{user}/.config/plasma-localerc && printf '[Layout]\\nLayoutList={loc[3]}\\nUse=true\\n' > /home/{user}/.config/kxkbrc && chown -R {user}: /home/{user}/.config"])
+    msg(t("acct_done", user))
+    return user
+
+def step_wifi():
+    if online(): return True
+    if not yesno(t("wifi_q")): return False
+    while True:
+        rows = sh(["nmcli", "-t", "-f", "SSID,SIGNAL,SECURITY", "dev", "wifi", "list", "--rescan", "yes"]).splitlines()
+        nets = {}
+        for r in rows:
+            parts = re.split(r"(?<!\\):", r)
+            if len(parts) < 3 or not parts[0]: continue
+            ssid = parts[0].replace("\\:", ":")
+            sig = int(parts[1] or 0)
+            if ssid not in nets or nets[ssid][0] < sig: nets[ssid] = (sig, parts[2])
+        if not nets: msg(t("wifi_none")); return False
+        items = []
+        for ssid, (sig, sec) in sorted(nets.items(), key=lambda x: -x[1][0])[:20]:
+            items += [ssid, f"{ssid}   {'▂▄▆█'[:max(1, min(4, sig // 25))]}{'  🔒' if sec and sec != '--' else ''}"]
+        ok, ssid = kd("--menu", t("wifi_pick"), *items)
+        if not ok: return False
+        if ssid not in nets: continue
+        cmd = ["nmcli", "dev", "wifi", "connect", ssid]
+        if nets[ssid][1] and nets[ssid][1] != "--":
+            ok, pw = kd("--password", t("wifi_pass", ssid))
+            if not ok: continue
+            cmd += ["password", pw]
+        r = subprocess.run(cmd, capture_output=True, text=True)
+        if r.returncode == 0 and online(): msg(t("wifi_ok", ssid)); return True
+        if not yesno(t("wifi_fail", ssid)): return False
+
+def step_downloads():
+    if not online(): msg(t("dl_offline")); return
+    if LIVE and not vault(): msg(t("dl_novault")); return
+    tiers = json.load(open(CATALOG))["tiers"]
+    args = []
+    for k, v in tiers.items(): args += [k, v["label"], "off"]
+    ok, picked = kd("--geometry", "760x560", "--checklist", t("dl_q"), *args)
+    picked = picked.replace('"', "").split()
+    if ok and picked:
+        subprocess.Popen(["konsole", "--hold", "-e", "aftergrid-vault-sync", *picked], start_new_session=True)
+
+def finish(user):
+    sudo(["sh", "-c", f"mkdir -p {os.path.dirname(DONE)} && date -Is > {DONE}"])
+    os.makedirs(os.path.dirname(USER_DONE), exist_ok=True); open(USER_DONE, "w").write(time.strftime("%F %T\n"))
+    if yesno(t("finish")): subprocess.Popen(["xdg-open", "http://localhost/"], start_new_session=True)
+    if user and yesno(t("switch_q", user)):
+        subprocess.run(["qdbus", "org.kde.Shutdown", "/Shutdown", "logout"])
+
+def main():
+    if (os.path.exists(DONE) or os.path.exists(USER_DONE)) and "--again" not in sys.argv: return
+    if "--again" not in sys.argv: time.sleep(6)   # let the desktop settle
+    step_language()
+    ok, pick = kd("--menu", t("welcome"), "go", t("start"), "skip", t("skip_all"))
+    if not ok or pick == "skip": return            # asked again next time, unless saves make it stick
+    if step_saves() == "restart": return           # setup continues after the restart
+    user = None
+    for step in (step_account, step_wifi, step_downloads):
+        try:
+            r = step()
+            if step is step_account: user = r
+        except Exception as e:                      # a broken step must not end the whole setup
+            print("aftergrid-setup:", step.__name__, e, file=sys.stderr)
+    finish(user)
+
+if __name__ == "__main__":
+    if shutil.which("kdialog") is None: sys.exit("kdialog is not installed")
+    main()

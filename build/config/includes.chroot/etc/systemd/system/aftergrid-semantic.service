@@ -1,0 +1,12 @@
+[Unit]
+Description=Aftergrid: meaning-based search over first-aid cards and field manuals
+After=aftergrid-embed.service aftergrid-refresh.service
+Wants=aftergrid-embed.service
+[Service]
+ExecStart=/usr/bin/python3 /usr/local/bin/aftergrid-semantic
+Restart=on-failure
+RestartSec=5
+DynamicUser=yes
+Nice=10
+[Install]
+WantedBy=multi-user.target

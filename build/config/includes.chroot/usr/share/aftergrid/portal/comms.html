@@ -1,0 +1,36 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aftergrid Comms</title><link rel="stylesheet" href="/aftergrid.css"></head><body>
+<main>
+<h2 data-t>Listen first</h2>
+<p class="note">Anyone may <b>listen</b> on any of these. <b>Transmitting</b> on amateur (ham) bands needs a licence except in a genuine life-threatening emergency where no other means exist; licence-free radios (PMR446, FRS, CB) can be used by anyone. Rules differ by country: check yours. Print this page (Ctrl+P) and keep it with your radios.</p>
+
+<h2 data-t>Emergency & calling frequencies</h2>
+<table>
+<tr><th data-t>Service</th><th data-t>Frequency</th><th data-t>Notes</th></tr>
+<tr><td>Marine VHF Ch 16</td><td>156.800 MHz</td><td>International distress, safety and calling (boats, coast guard).</td></tr>
+<tr><td>Aviation emergency</td><td>121.500 MHz</td><td>International air distress (AM).</td></tr>
+<tr><td>CB Ch 9</td><td>27.065 MHz</td><td>Emergency channel in the US and many other countries (AM).</td></tr>
+<tr><td>CB Ch 19</td><td>27.185 MHz</td><td>US highway/trucker channel: road conditions, help.</td></tr>
+<tr><td>PMR446 (Europe, licence-free)</td><td>446.00625–446.19375 MHz</td><td>Ch 1 = 446.00625. Walkie-talkies sold in EU shops.</td></tr>
+<tr><td>FRS/GMRS (US)</td><td>462.5625 MHz (Ch 1)</td><td>Common family-radio meeting channel; GMRS needs a US licence.</td></tr>
+<tr><td>2 m ham calling (Europe, IARU R1)</td><td>145.500 MHz FM</td><td>Simplex calling frequency.</td></tr>
+<tr><td>2 m ham calling (Americas)</td><td>146.520 MHz FM</td><td>National simplex calling frequency.</td></tr>
+<tr><td>70 cm ham calling (Europe)</td><td>433.500 MHz FM</td><td>Simplex calling frequency.</td></tr>
+<tr><td>70 cm ham calling (US)</td><td>446.000 MHz FM</td><td>Simplex calling frequency.</td></tr>
+<tr><td>HF emergency centres of activity</td><td>3.760 · 7.110 · 14.300 · 18.160 · 21.360 MHz</td><td>IARU emergency centres of activity (SSB). Long-distance.</td></tr>
+<tr><td>NOAA Weather Radio (US)</td><td>162.400–162.550 MHz</td><td>Continuous weather broadcasts; receive with an SDR.</td></tr>
+</table>
+
+<h2 data-t>Tools on this Aftergrid</h2>
+<div class="list">
+<div class="item"><span class="k">Program</span><span><b>CHIRP</b>: read and program Baofeng and most handheld radios over a USB cable.</span></div>
+<div class="item"><span class="k">Mesh</span><span><b>Mesh Messenger (NomadNet / Reticulum)</b>: encrypted text messages and pages between Aftergrid machines over Wi-Fi, LoRa or radio, with no internet.</span></div>
+<div class="item"><span class="k">Mesh</span><span><b>Meshtastic</b> (terminal: <code>meshtastic</code>): configure and message through Meshtastic LoRa radios.</span></div>
+<div class="item"><span class="k">HF</span><span><b>JS8Call</b> and <b>fldigi</b>: keyboard messaging over HF radio, works at very weak signals.</span></div>
+<div class="item"><span class="k">Email</span><span><b>Pat (Winlink)</b>: send and receive email over radio. Needs a ham licence and callsign.</span></div>
+<div class="item"><span class="k">Packet</span><span><b>Direwolf</b>: software TNC for APRS and packet radio.</span></div>
+<div class="item"><span class="k">SDR</span><span><b>Gqrx</b>: listen to any frequency with a cheap USB RTL-SDR dongle. <b>rtl_433</b>: decode weather stations and sensors. <b>Gpredict</b>: track weather and amateur satellites.</span></div>
+</div>
+</main>
+<script src="/aftergrid-i18n.js"></script><script src="/aftergrid.js"></script><script>Aftergrid.load().then(() => Aftergrid.header('Comms'));</script>
+</body></html>

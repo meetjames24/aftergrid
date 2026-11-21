@@ -1,0 +1,218 @@
+[
+ {
+  "q": "How do I stop heavy bleeding from a leg wound?",
+  "must": [
+   "/pressure/i",
+   "/tourniquet/i"
+  ],
+  "mustNot": [
+   "/elastic (bandage|band)[^.]*tourniquet|tourniquet[^.]*elastic(?! )/i"
+  ],
+  "answer": "To stop heavy bleeding from a leg wound:\n\n1. Make sure you are safe, then send someone for help.  \n2. Apply firm pressure directly on the wound using a clean cloth, gauze, or your gloved hand. Do not lift the pressure to check if bleeding has stopped.  \n3. For a deep wound in the leg: pack cloth or gauze tightly into the wound and keep pressing.  \n4. If bleeding is life-threatening (spurting, pooling, soaking through), apply a tourniquet immediately, 5 to 7 cm (2 to 3 inches) above the wound, not on a joint.  \n5. Tighten the tourniquet until bleeding stops. Use a strip of strong, non-stretchy cloth at least 4 cm (1.5 inches) wide, tied around the limb, with a stick through the knot twisted until bleeding stops, then tied in place.  \n6. Keep the person lying down and warm.  \n7. Do not remove the tourniquet once it is on.  \n\nSevere bleeding from a leg requires hospital treatment even after it stops [1].  \n\nNote: If the wound is deep, or if there are signs of infection (spreading redness, warmth, swelling, pus, fever), get help urgently [2].",
+  "sources": [
+   "1\nSevere bleeding\n· Aftergrid First Aid Cards",
+   "2\nCleaning a wound and spotting infection\n· Aftergrid First Aid Cards",
+   "3\nArmy First Aid (FM 4-25.11), p. 17: bleeding from an open wound, stop the evaluation and begin first aid\n· Field Manuals (searchable)"
+  ],
+  "cites": 2,
+  "warn": "",
+  "missing": [],
+  "bad": [],
+  "pass": true,
+  "secs": 136
+ },
+ {
+  "q": "my kid swallowed something and can't breathe",
+  "must": [
+   "/back blow|abdominal thrust|chest thrust|heimlich/i"
+  ],
+  "mustNot": [],
+  "answer": "Your child swallowed something and cannot breathe. This is a medical emergency requiring immediate action.\n\nIf the child is under 1 year old:\n- Lay the baby face down along your forearm, head lower than the body, supporting the jaw with your hand.\n- Give up to 5 firm back blows between the shoulder blades with the heel of your hand.\n- Do not use abdominal thrusts [1].\n\nIf the child is over 1 year old:\n- Ask: \"Are you choking?\" If they can cough or speak, encourage them to keep coughing.\n- If they cannot cough, speak, or breathe:\n  - Stand behind them, lean them forward.\n  - Give up to 5 firm back blows between the shoulder blades.\n  - If still choking, give up to 5 abdominal thrusts (fist above navel, pull sharply in and up) [3].\n\nGet help urgently: Anyone who needed abdominal thrusts should be checked by a clinician; the thrusts can cause internal injury [3]. Also, always get a baby checked after a choking episode that needed back blows or thrusts [1].\n\nDo not make them vomit [2].\n\nSeek care urgently if:\n- There is any drowsiness, breathing trouble, seizures, or if corrosives, button batteries, or medicines meant for someone else were swallowed [2].\n\nNote: The library does not specify the type of object swallowed or the exact time or quantity. You must determine what was swallowed and when. Keep the container, plant, or photo if available [2].\n\nSafety first: This is a life-threatening situation. Call emergency services immediately. Do not delay.",
+  "sources": [
+   "1\nChoking (baby under 1 year)\n· Aftergrid First Aid Cards",
+   "2\nPoisoning (swallowed), including wild mushrooms\n· Aftergrid First Aid Cards",
+   "3\nChoking (adult or child over 1 year)\n· Aftergrid First Aid Cards"
+  ],
+  "cites": 7,
+  "warn": "",
+  "missing": [],
+  "bad": [],
+  "pass": true,
+  "secs": 131
+ },
+ {
+  "q": "someone collapsed and isn't breathing",
+  "must": [
+   "/compression|cpr/i",
+   "/100|120|5 cm|2 inch/i"
+  ],
+  "mustNot": [],
+  "answer": "If someone has collapsed and isn't breathing:\n\n1. Tap the person’s shoulders and shout to check for response.  \n2. If there is no response and no breathing (or only gasping), shout for help and send someone for an AED (defibrillator) if available.  \n3. Kneel beside the person.  \n4. If trained and willing, after every 30 compressions, give 2 rescue breaths: tilt the head back, lift the chin, pinch the nose, and breathe in until the chest rises.  \n5. If not trained, continue chest compressions only.  \n6. Do not stop compressions for more than about 10 seconds.  \n7. Keep going until the person starts breathing normally, trained help takes over, or you are too exhausted to continue.  \n8. Swap with another person every 2 minutes if possible.  \n\nThis follows the American Heart Association and European Resuscitation Council guidelines for lay rescuers [2].  \n\nNote: Cardiac arrest is a medical emergency. Immediate action is required. If the person does not start breathing or show signs of life, call emergency services immediately. A trained clinician should manage the situation. [1]",
+  "sources": [
+   "1\nCardiac arrest\n· MDWiki Medical Encyclopedia",
+   "2\nCPR for adults (not breathing)\n· Aftergrid First Aid Cards",
+   "3\nRespiratory failure\n· MDWiki Medical Encyclopedia"
+  ],
+  "cites": 2,
+  "warn": "",
+  "missing": [
+   "/100|120|5 cm|2 inch/i"
+  ],
+  "bad": [],
+  "pass": false,
+  "secs": 138
+ },
+ {
+  "q": "bee sting, face swelling up, can't breathe",
+  "must": [
+   "/epinephrine|adrenaline|epipen|auto-?injector/i"
+  ],
+  "mustNot": [],
+  "answer": "Bee sting, face swelling, and inability to breathe are signs of a severe allergic reaction (anaphylaxis) [1]. \n\nImmediate action:  \n- Give epinephrine (adrenaline) right away if an auto-injector (e.g., EpiPen) is available: administer into the outer thigh, through clothing if needed [1].  \n- Lay the person flat with legs raised to help maintain blood pressure [1].  \n- Send for emergency help immediately — always, even if symptoms improve, because symptoms can return hours later [1].  \n\nDo not rely on antihistamines or an inhaler instead of epinephrine [1].  \n\nThis is a TRUE MEDICAL EMERGENCY [2]. Evacuation or transport to a medical facility is required.  \n\nReference: [1] (Resuscitation Council UK and World Allergy Organization guidance) and [2] (Army First Aid FM 4-25.11).",
+  "sources": [
+   "1\nSevere allergic reaction (anaphylaxis)\n· Aftergrid First Aid Cards",
+   "2\nArmy First Aid (FM 4-25.11), p. 140: Insect bites/stings may cause anaphylactic shock (a\n· Field Manuals (searchable)",
+   "3\nAnaphylaxis\n· MDWiki Medical Encyclopedia"
+  ],
+  "cites": 8,
+  "warn": "",
+  "missing": [],
+  "bad": [],
+  "pass": true,
+  "secs": 116
+ },
+ {
+  "q": "how to treat a burn from boiling water",
+  "must": [
+   "/cool/i",
+   "/20 minutes|running water/i"
+  ],
+  "mustNot": [],
+  "answer": "To treat a burn from boiling water:\n\n1. Stop the burning: Remove the person from the heat source [1].  \n2. Cool the burn under cool running water (not ice-cold) for 20 minutes [1]. Start as soon as possible; cooling helps up to 3 hours after the burn [1].  \n3. Remove rings, watches, or clothing near the burn unless stuck to the skin [1].  \n4. Cover the burn loosely with cling film or a clean, non-fluffy cloth [1].  \n5. Keep the rest of the person warm, as large burns can cause dangerous cooling [1].  \n\nDo not use ice, butter, oil, toothpaste, or creams [1].  \n\nGet help urgently if:  \n- The burn is larger than the person's palm,  \n- It is on the face, hands, feet, genitals, or across joints,  \n- It is a deep burn (white, leathery, or charred),  \n- It is in a baby, child, or older adult, or  \n- There is trouble breathing after smoke exposure [1].  \n\nNote: Boiling water causes a scald, which is typically a first- or second-degree burn; third-degree burns can result from prolonged contact [3].",
+  "sources": [
+   "1\nBurns and scalds\n· Aftergrid First Aid Cards",
+   "2\nMaking water safe to drink\n· Aftergrid First Aid Cards",
+   "3\nThermal burn\n· MDWiki Medical Encyclopedia"
+  ],
+  "cites": 9,
+  "warn": "",
+  "missing": [],
+  "bad": [],
+  "pass": true,
+  "secs": 130
+ },
+ {
+  "q": "what are the warning signs of heat stroke",
+  "must": [
+   "/confus/i",
+   "/cool/i"
+  ],
+  "mustNot": [],
+  "answer": "The warning signs of heat stroke include:\n\n- Very hot skin (dry or sweaty)  \n- Confusion or strange behaviour  \n- Collapse or seizures after heat or hard exercise  \n- Disorientation  \n- Lack of sweating (in classic heat stroke), though excessive sweating may occur in exertional heat stroke  \n- Red, flushed skin  \n- High body temperature greater than 40.6 °C (105.1 °F)  \n- Signs of heat exhaustion prior to heat stroke, such as dizziness, mental confusion, headaches, and weakness  \n\nThese signs are based on the American College of Sports Medicine and Wilderness Medical Society guidelines and the Occupational Safety and Health Administration (OSHA) QuickCard [1], [2].  \n\nNote: Heat stroke is an emergency. If someone shows any signs of confusion or disorientation, seek help immediately [1].",
+  "sources": [
+   "1\nHeat stroke and heat exhaustion\n· Aftergrid First Aid Cards",
+   "2\nHeat stroke\n· MDWiki Medical Encyclopedia",
+   "3\nArmy First Aid (FM 4-25.11), p. 114: Signs and symptoms. A service member suffering\n· Field Manuals (searchable)"
+  ],
+  "cites": 3,
+  "warn": "",
+  "missing": [
+   "/cool/i"
+  ],
+  "bad": [],
+  "pass": false,
+  "secs": 94
+ },
+ {
+  "q": "how do I make oral rehydration solution",
+  "must": [
+   "/6 (level )?teaspoons|six (level )?teaspoons/i",
+   "/half|1\\/2|½/i"
+  ],
+  "mustNot": [],
+  "answer": "",
+  "sources": [
+   "1\nDehydration, diarrhoea and oral rehydration solution\n· Aftergrid First Aid Cards",
+   "2\nReduced concentration oral rehydration solution\n· Appropedia",
+   "3\nReduced concentration oral rehydration solution/es\n· Appropedia"
+  ],
+  "cites": 0,
+  "warn": "",
+  "missing": [
+   "/6 (level )?teaspoons|six (level )?teaspoons/i",
+   "/half|1\\/2|½/i"
+  ],
+  "bad": [],
+  "pass": false,
+  "secs": 1
+ },
+ {
+  "q": "running a generator indoors and everyone has a headache",
+  "must": [
+   "/carbon monoxide/i",
+   "/fresh air|outside|outdoors/i"
+  ],
+  "mustNot": [],
+  "answer": "Local AI is off. Here are the most relevant articles:",
+  "sources": [
+   "1\nHeadache\n· MDWiki Medical Encyclopedia",
+   "2\nGreen Campus Bicycle Generator\n· Appropedia",
+   "3\nWaterpod/Bicycle Energy Generator\n· Appropedia"
+  ],
+  "cites": 0,
+  "warn": "",
+  "missing": [
+   "/carbon monoxide/i",
+   "/fresh air|outside|outdoors/i"
+  ],
+  "bad": [],
+  "pass": false,
+  "secs": 0
+ },
+ {
+  "q": "how much bleach to purify drinking water",
+  "must": [
+   "/(2|two) drops/i",
+   "/30 minutes/i"
+  ],
+  "mustNot": [],
+  "answer": "Local AI is off. Here are the most relevant articles:",
+  "sources": [
+   "1\nMaking water safe to drink\n· Aftergrid First Aid Cards",
+   "2\nArmy Survival (ATP 3-50.21), p. 67: purify water through the filtration of extremely fine particulates\n· Field Manuals (searchable)",
+   "3\nDrinking water\n· MDWiki Medical Encyclopedia"
+  ],
+  "cites": 0,
+  "warn": "",
+  "missing": [
+   "/(2|two) drops/i",
+   "/30 minutes/i"
+  ],
+  "bad": [],
+  "pass": false,
+  "secs": 0
+ },
+ {
+  "q": "nosebleed that won't stop",
+  "must": [
+   "/lean(ing)? forward/i",
+   "/pinch/i"
+  ],
+  "mustNot": [],
+  "answer": "Local AI is off. Here are the most relevant articles:",
+  "sources": [
+   "1\nNosebleed\n· Aftergrid First Aid Cards",
+   "2\n24 Hours in A&E\n· MDWiki Medical Encyclopedia",
+   "3\nMules\n· Appropedia"
+  ],
+  "cites": 0,
+  "warn": "",
+  "missing": [
+   "/lean(ing)? forward/i",
+   "/pinch/i"
+  ],
+  "bad": [],
+  "pass": false,
+  "secs": 0
+ }
+]

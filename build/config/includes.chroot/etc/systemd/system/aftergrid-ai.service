@@ -1,0 +1,13 @@
+[Unit]
+Description=Aftergrid: local AI (llama.cpp)
+After=aftergrid-refresh.service
+[Service]
+ExecCondition=/usr/local/bin/aftergrid-ai-serve --check
+ExecStart=/usr/local/bin/aftergrid-ai-serve
+ExecStartPost=/bin/sh -c 'sleep 20; /usr/local/bin/aftergrid-portal-refresh'
+ExecStopPost=/usr/local/bin/aftergrid-portal-refresh
+Restart=on-failure
+DynamicUser=yes
+Nice=5
+[Install]
+WantedBy=multi-user.target

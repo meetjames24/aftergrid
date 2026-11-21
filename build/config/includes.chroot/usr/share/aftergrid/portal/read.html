@@ -1,0 +1,68 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Source · Aftergrid</title><link rel="stylesheet" href="/aftergrid.css">
+<style>
+  .readbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:12px 0}
+  .readbar .note{margin:0;flex:1}
+  #doc{width:100%;height:calc(100vh - 210px);min-height:420px;border:1px solid var(--line);border-radius:12px;background:#fff}
+</style></head><body>
+<main>
+  <div class="readbar">
+    <a href="javascript:history.back()" class="primary" style="padding:8px 14px;border-radius:999px;text-decoration:none" data-t>← Back to the answer</a>
+    <div id="msg" class="note" data-t>Opening the source…</div>
+  </div>
+  <iframe id="doc" title="Source"></iframe>
+</main>
+<script src="/aftergrid-i18n.js"></script><script src="/aftergrid.js"></script>
+<script>
+// Opens a library article and highlights the passage the offline AI used.
+// read.html?u=/kiwix/content/<book>/<article>&hl=<passage text>
+Aftergrid.load().then(() => {
+  Aftergrid.header('Source');
+  const p = new URLSearchParams(location.search), u = p.get('u') || '', hl = (p.get('hl') || '').trim();
+  const msg = document.getElementById('msg'), fr = document.getElementById('doc');
+  if (!u.startsWith('/kiwix/content/')) { msg.textContent = Aftergrid.T('This link does not point to the library.'); return; }
+  fr.src = u;
+  fr.onload = () => {
+    const d = fr.contentDocument; if (!d || !hl) { msg.textContent = Aftergrid.T('Source opened.'); return; }
+    const style = d.createElement('style');
+    style.textContent = 'mark.ag{background:#ffe08a;color:inherit;padding:1px 0;border-radius:3px;box-shadow:0 0 0 2px #ffe08a}';
+    d.head.append(style);
+    if (highlight(d, hl)) msg.textContent = Aftergrid.T('Highlighted: the passage the AI used.');
+    else msg.textContent = Aftergrid.T('Source opened. The exact passage could not be found on this page.');
+  };
+});
+
+// Find hl in the page text (ignoring spacing and case) and wrap it in <mark>, across element boundaries.
+function highlight(d, hl) {
+  const norm = s => s.toLowerCase().replace(/\s+/g, ' ');
+  const walker = d.createTreeWalker(d.body, NodeFilter.SHOW_TEXT, {acceptNode: n => /^(script|style)$/i.test(n.parentNode.nodeName) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT});
+  const nodes = []; let text = '';
+  for (let n; (n = walker.nextNode());) {
+    const t = norm(n.nodeValue);
+    nodes.push({n, start: text.length, len: t.length, raw: n.nodeValue}); text += t;
+  }
+  const target = norm(hl).replace(/^\W+|\W+$/g, '');
+  // Try the whole passage, then shorter openings of it (the page may split it with footnote marks).
+  let at = -1, len = 0;
+  for (const cut of [target.length, 160, 100, 60, 35]) {
+    const s = target.slice(0, cut).trim(); if (s.length < 12) break;
+    at = text.indexOf(s); if (at >= 0) { len = Math.max(s.length, Math.min(target.length, 400)); break; }
+  }
+  if (at < 0) return false;
+  const end = at + len; let first = null;
+  for (const x of nodes) {
+    const a = Math.max(at, x.start), b = Math.min(end, x.start + x.len);
+    if (a >= b) continue;
+    // map normalised offsets back onto the raw text of this node (whitespace runs were collapsed)
+    const map = []; let k = 0;
+    for (let i = 0; i < x.raw.length; i++) { const isWs = /\s/.test(x.raw[i]); if (isWs && i > 0 && /\s/.test(x.raw[i - 1])) continue; map[k++] = i; }
+    map[k] = x.raw.length;
+    const ra = map[a - x.start] ?? 0, rb = map[b - x.start] ?? x.raw.length;
+    const r = d.createRange(); r.setStart(x.n, ra); r.setEnd(x.n, rb);
+    const m = d.createElement('mark'); m.className = 'ag';
+    try { r.surroundContents(m); if (!first) first = m; } catch (e) {}
+  }
+  if (first) { const w = d.defaultView; w.scrollTo(0, first.getBoundingClientRect().top + w.scrollY - w.innerHeight / 3); }   // scroll the article only, not the page
+  return !!first;
+}
+</script></body></html>

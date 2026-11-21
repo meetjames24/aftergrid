@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "offline-library": {
+      "command": "/usr/local/bin/openzim-mcp",
+      "args": ["/vault/zim"]
+    }
+  }
+}

@@ -1,0 +1,302 @@
+[
+ {
+  "id": 1,
+  "cat": "medical",
+  "q": "How do I stop heavy bleeding from a leg wound?",
+  "expect": "bleed|hemorrhag|haemorrhag|tourniquet"
+ },
+ {
+  "id": 2,
+  "cat": "medical",
+  "q": "my kid swallowed something and can't breathe",
+  "expect": "chok|airway obstruction|abdominal thrust|foreign body"
+ },
+ {
+  "id": 3,
+  "cat": "medical",
+  "q": "someone collapsed and isn't breathing",
+  "expect": "cardiopulmonary|\\bcpr\\b|cardiac arrest|resuscitat"
+ },
+ {
+  "id": 4,
+  "cat": "medical",
+  "q": "bee sting, face swelling up, can't breathe",
+  "expect": "anaphyla"
+ },
+ {
+  "id": 5,
+  "cat": "medical",
+  "q": "how to treat a burn from boiling water",
+  "expect": "burn|scald"
+ },
+ {
+  "id": 6,
+  "cat": "medical",
+  "q": "signs of hypothermia and how to warm someone up",
+  "expect": "hypotherm|cold"
+ },
+ {
+  "id": 7,
+  "cat": "medical",
+  "q": "what are the warning signs of heat stroke",
+  "expect": "heat stroke|heat illness|heat exhaustion|heat injur"
+ },
+ {
+  "id": 8,
+  "cat": "medical",
+  "q": "how do I make oral rehydration solution",
+  "expect": "rehydrat|dehydrat"
+ },
+ {
+  "id": 9,
+  "cat": "medical",
+  "q": "how do I splint a broken arm",
+  "expect": "splint|fracture"
+ },
+ {
+  "id": 10,
+  "cat": "medical",
+  "q": "what to do for a snake bite",
+  "expect": "snake"
+ },
+ {
+  "id": 11,
+  "cat": "medical",
+  "q": "how can I tell if someone is having a stroke",
+  "expect": "^(?!.*heat).*(stroke|fast \\(stroke)"
+ },
+ {
+  "id": 12,
+  "cat": "medical",
+  "q": "chest pain spreading to the left arm",
+  "expect": "myocardial|heart attack|coronary|chest pain|angina"
+ },
+ {
+  "id": 13,
+  "cat": "medical",
+  "q": "how to clean and close a deep cut",
+  "expect": "wound|laceration|sutur|cut"
+ },
+ {
+  "id": 14,
+  "cat": "medical",
+  "q": "how do I know if a wound is infected",
+  "expect": "wound|cellulitis|abscess|infected"
+ },
+ {
+  "id": 15,
+  "cat": "medical",
+  "q": "baby has diarrhea and won't drink",
+  "expect": "diarrh|dehydrat|rehydrat"
+ },
+ {
+  "id": 16,
+  "cat": "medical",
+  "q": "someone is having a seizure, what do I do",
+  "expect": "seizure|epilep|convuls"
+ },
+ {
+  "id": 17,
+  "cat": "medical",
+  "q": "diabetic is shaky and confused, low blood sugar",
+  "expect": "hypoglyc|blood sugar|diabet"
+ },
+ {
+  "id": 18,
+  "cat": "medical",
+  "q": "how to treat shock after a bad injury",
+  "expect": "shock"
+ },
+ {
+  "id": 19,
+  "cat": "medical",
+  "q": "frostbite on fingers",
+  "expect": "frostbite|cold injur"
+ },
+ {
+  "id": 20,
+  "cat": "medical",
+  "q": "running a generator indoors and everyone has a headache",
+  "expect": "carbon monoxide"
+ },
+ {
+  "id": 21,
+  "cat": "medical",
+  "q": "bitten by a stray dog, rabies risk",
+  "expect": "rabies|dog bite|animal bite"
+ },
+ {
+  "id": 22,
+  "cat": "medical",
+  "q": "nosebleed that won't stop",
+  "expect": "epistaxis|nosebleed|nose bleed"
+ },
+ {
+  "id": 23,
+  "cat": "medical",
+  "q": "chemical splashed in the eye",
+  "expect": "eye|ocular|chemical burn"
+ },
+ {
+  "id": 24,
+  "cat": "medical",
+  "q": "dislocated shoulder",
+  "expect": "dislocat"
+ },
+ {
+  "id": 25,
+  "cat": "medical",
+  "q": "how to deliver a baby in an emergency",
+  "expect": "childbirth|delivery|labou?r|birth"
+ },
+ {
+  "id": 26,
+  "cat": "medical",
+  "q": "pulled someone out of the water and they're not breathing",
+  "expect": "drown|cpr|resuscitat|cardiopulmonary"
+ },
+ {
+  "id": 27,
+  "cat": "medical",
+  "q": "hit his head, now vomiting and confused",
+  "expect": "head injur|concussion|traumatic brain|head trauma"
+ },
+ {
+  "id": 28,
+  "cat": "medical",
+  "q": "spider bite getting red and painful",
+  "expect": "spider"
+ },
+ {
+  "id": 29,
+  "cat": "medical",
+  "q": "ate wild mushrooms and now vomiting",
+  "expect": "mushroom|poison"
+ },
+ {
+  "id": 30,
+  "cat": "medical",
+  "q": "tooth knocked out",
+  "expect": "dental trauma|avuls|tooth (injur|loss|knock)|knocked"
+ },
+ {
+  "id": 31,
+  "cat": "griddown",
+  "q": "how much bleach to purify drinking water",
+  "expect": "making water safe|water (purification|disinfection|treatment)|bleach|chlorin|hypochlorite"
+ },
+ {
+  "id": 32,
+  "cat": "griddown",
+  "q": "how long do I boil water to make it safe",
+  "expect": "making water safe|boil|water purification|water treatment"
+ },
+ {
+  "id": 33,
+  "cat": "griddown",
+  "q": "build a simple water filter",
+  "expect": "filter|making water safe"
+ },
+ {
+  "id": 34,
+  "cat": "griddown",
+  "q": "how to store food without a fridge",
+  "expect": "food (preservation|storage)|preserv|canning|drying|storage"
+ },
+ {
+  "id": 35,
+  "cat": "griddown",
+  "q": "how to can vegetables safely",
+  "expect": "canning|botulism|preserv"
+ },
+ {
+  "id": 36,
+  "cat": "griddown",
+  "q": "how do I build a fallout shelter",
+  "expect": "fallout|nuclear|radiation"
+ },
+ {
+  "id": 37,
+  "cat": "griddown",
+  "q": "what to do after a nuclear explosion",
+  "expect": "nuclear|fallout|radiation"
+ },
+ {
+  "id": 38,
+  "cat": "griddown",
+  "q": "how to start a fire without matches",
+  "expect": "fire.?start|friction fire|fire without|fire (making|lighting)|tinder|convex lens|hand drill|bow drill"
+ },
+ {
+  "id": 39,
+  "cat": "griddown",
+  "q": "a strong knot to tie a rope to a tree",
+  "expect": "knot|hitch|bowline"
+ },
+ {
+  "id": 40,
+  "cat": "griddown",
+  "q": "how to wire a solar panel to a battery",
+  "expect": "charge controller|batter|wiring|photovoltaic system|off-grid|stand-alone"
+ },
+ {
+  "id": 41,
+  "cat": "griddown",
+  "q": "how to dig a latrine",
+  "expect": "latrine|toilet|sanitation"
+ },
+ {
+  "id": 42,
+  "cat": "griddown",
+  "q": "which wild plants are safe to eat",
+  "expect": "edible|wild|plant|forag"
+ },
+ {
+  "id": 43,
+  "cat": "griddown",
+  "q": "how to purify water with sunlight",
+  "expect": "making water safe|solar water disinfection|sodis|solar disinfection|uv"
+ },
+ {
+  "id": 44,
+  "cat": "griddown",
+  "q": "how to stay warm when the power is out in winter",
+  "expect": "cold|winter|hypotherm|stove|warm|heating"
+ },
+ {
+  "id": 45,
+  "cat": "griddown",
+  "q": "how to make soap",
+  "expect": "soap"
+ },
+ {
+  "id": 46,
+  "cat": "griddown",
+  "q": "how to signal for rescue",
+  "expect": "signal|rescue"
+ },
+ {
+  "id": 47,
+  "cat": "griddown",
+  "q": "what should be in an emergency supply kit",
+  "expect": "kit|disaster suppl|are you ready|emergency suppl|preparedness"
+ },
+ {
+  "id": 48,
+  "cat": "griddown",
+  "q": "how to preserve meat by drying it",
+  "expect": "jerky|dry|dried|dehydrat|preserv"
+ },
+ {
+  "id": 49,
+  "cat": "griddown",
+  "q": "grow vegetables in a small space",
+  "expect": "garden|grow|vegetable"
+ },
+ {
+  "id": 50,
+  "cat": "griddown",
+  "q": "how to treat drinking water with iodine",
+  "expect": "making water safe|iodine|water purification|water treatment"
+ }
+]

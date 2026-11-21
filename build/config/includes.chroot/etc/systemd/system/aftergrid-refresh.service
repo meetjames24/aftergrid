@@ -1,0 +1,8 @@
+[Unit]
+Description=Aftergrid: rebuild library index
+After=local-fs.target vault.mount
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/aftergrid-portal-refresh
+[Install]
+WantedBy=multi-user.target

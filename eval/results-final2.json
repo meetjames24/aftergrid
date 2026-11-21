@@ -1,0 +1,1302 @@
+[
+ {
+  "id": 1,
+  "cat": "medical",
+  "q": "How do I stop heavy bleeding from a leg wound?",
+  "expect": "bleed|hemorrhag|haemorrhag|tourniquet",
+  "sq": "heavy bleeding leg wound first aid",
+  "hits": [
+   {
+    "title": "Severe bleeding",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/severe-bleeding"
+   },
+   {
+    "title": "Cleaning a wound and spotting infection",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/wound-care"
+   },
+   {
+    "title": "Army First Aid (FM 4-25.11), p. 17: bleeding from an open wound, stop the evaluation and begin first aid",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/fm4-25-11/p017"
+   }
+  ],
+  "pos": 0,
+  "ms": 11865
+ },
+ {
+  "id": 2,
+  "cat": "medical",
+  "q": "my kid swallowed something and can't breathe",
+  "expect": "chok|airway obstruction|abdominal thrust|foreign body",
+  "sq": "swallowed  can t breathe  emergency  first aid  choking",
+  "hits": [
+   {
+    "title": "Choking (baby under 1 year)",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/choking-infant"
+   },
+   {
+    "title": "Poisoning (swallowed), including wild mushrooms",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/poisoning-mushrooms"
+   },
+   {
+    "title": "Choking (adult or child over 1 year)",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/choking-adult-child"
+   }
+  ],
+  "pos": 0,
+  "ms": 12058
+ },
+ {
+  "id": 3,
+  "cat": "medical",
+  "q": "someone collapsed and isn't breathing",
+  "expect": "cardiopulmonary|\\bcpr\\b|cardiac arrest|resuscitat",
+  "sq": "collapse  not breathing  emergency  first aid",
+  "hits": [
+   {
+    "title": "Cardiac arrest",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Cardiac_arrest"
+   },
+   {
+    "title": "CPR for adults (not breathing)",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/cpr-adult"
+   },
+   {
+    "title": "Respiratory failure",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Respiratory_failure"
+   }
+  ],
+  "pos": 0,
+  "ms": 10006
+ },
+ {
+  "id": 4,
+  "cat": "medical",
+  "q": "bee sting, face swelling up, can't breathe",
+  "expect": "anaphyla",
+  "sq": "bee sting  face swelling up  can t breathe",
+  "hits": [
+   {
+    "title": "Severe allergic reaction (anaphylaxis)",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/anaphylaxis"
+   },
+   {
+    "title": "Army First Aid (FM 4-25.11), p. 140: Insect bites/stings may cause anaphylactic shock (a",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/fm4-25-11/p140"
+   },
+   {
+    "title": "Anaphylaxis",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Anaphylaxis"
+   }
+  ],
+  "pos": 0,
+  "ms": 13890
+ },
+ {
+  "id": 5,
+  "cat": "medical",
+  "q": "how to treat a burn from boiling water",
+  "expect": "burn|scald",
+  "sq": "burn  boiling water  treatment",
+  "hits": [
+   {
+    "title": "Burns and scalds",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/burns"
+   },
+   {
+    "title": "Making water safe to drink",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/water-treatment"
+   },
+   {
+    "title": "Thermal burn",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Thermal_burn"
+   }
+  ],
+  "pos": 0,
+  "ms": 11146
+ },
+ {
+  "id": 6,
+  "cat": "medical",
+  "q": "signs of hypothermia and how to warm someone up",
+  "expect": "hypotherm|cold",
+  "sq": "signs of hypothermia  how to warm someone up",
+  "hits": [
+   {
+    "title": "Hypothermia (too cold)",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/hypothermia"
+   },
+   {
+    "title": "Army First Aid (FM 4-25.11), p. 114: Signs and symptoms. A service member suffering",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/fm4-25-11/p114"
+   },
+   {
+    "title": "Hypothermia",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Hypothermia"
+   }
+  ],
+  "pos": 0,
+  "ms": 13246
+ },
+ {
+  "id": 7,
+  "cat": "medical",
+  "q": "what are the warning signs of heat stroke",
+  "expect": "heat stroke|heat illness|heat exhaustion|heat injur",
+  "sq": "warning signs of heat stroke",
+  "hits": [
+   {
+    "title": "Heat stroke and heat exhaustion",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/heat-stroke"
+   },
+   {
+    "title": "Heat stroke",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Heat_stroke"
+   },
+   {
+    "title": "Army First Aid (FM 4-25.11), p. 114: Signs and symptoms. A service member suffering",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/fm4-25-11/p114"
+   }
+  ],
+  "pos": 0,
+  "ms": 11775
+ },
+ {
+  "id": 8,
+  "cat": "medical",
+  "q": "how do I make oral rehydration solution",
+  "expect": "rehydrat|dehydrat",
+  "sq": "oral rehydration solution",
+  "hits": [
+   {
+    "title": "Dehydration, diarrhoea and oral rehydration solution",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/oral-rehydration"
+   },
+   {
+    "title": "Oral rehydration therapy",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Oral_rehydration_therapy"
+   },
+   {
+    "title": "Oral rehydration therapy",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Oral_rehydration_therapy"
+   }
+  ],
+  "pos": 0,
+  "ms": 13089
+ },
+ {
+  "id": 9,
+  "cat": "medical",
+  "q": "how do I splint a broken arm",
+  "expect": "splint|fracture",
+  "sq": "splint broken arm",
+  "hits": [
+   {
+    "title": "Broken bones and splinting",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/fracture-splint"
+   },
+   {
+    "title": "Bone fracture",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Bone_fracture"
+   },
+   {
+    "title": "Emergency War Surgery (5th ed.), p. 350: Extremity Fractures",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/ews5/p350"
+   }
+  ],
+  "pos": 0,
+  "ms": 10950
+ },
+ {
+  "id": 10,
+  "cat": "medical",
+  "q": "what to do for a snake bite",
+  "expect": "snake",
+  "sq": "snake bite first aid treatment",
+  "hits": [
+   {
+    "title": "Snake bite",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/snakebite"
+   },
+   {
+    "title": "Army First Aid (FM 4-25.11), p. 141: Table 6-1. First Aid Measures for Bites and Stings",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/fm4-25-11/p141"
+   },
+   {
+    "title": "Army First Aid (FM 4-25.11), p. 129: FIRST AID FOR BITES AND STINGS",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/fm4-25-11/p129"
+   }
+  ],
+  "pos": 0,
+  "ms": 11746
+ },
+ {
+  "id": 11,
+  "cat": "medical",
+  "q": "how can I tell if someone is having a stroke",
+  "expect": "^(?!.*heat).*(stroke|fast \\(stroke)",
+  "sq": "stroke symptoms  recognize stroke  FAST",
+  "hits": [
+   {
+    "title": "Stroke",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/stroke"
+   },
+   {
+    "title": "Heat stroke and heat exhaustion",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/heat-stroke"
+   },
+   {
+    "title": "Stroke",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Stroke"
+   }
+  ],
+  "pos": 0,
+  "ms": 10239
+ },
+ {
+  "id": 12,
+  "cat": "medical",
+  "q": "chest pain spreading to the left arm",
+  "expect": "myocardial|heart attack|coronary|chest pain|angina",
+  "sq": "chest pain spreading to the left arm",
+  "hits": [
+   {
+    "title": "Heart attack (chest pain)",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/heart-attack"
+   },
+   {
+    "title": "Myocardial infarction",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Myocardial_infarction"
+   },
+   {
+    "title": "Angina",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Angina"
+   }
+  ],
+  "pos": 0,
+  "ms": 11113
+ },
+ {
+  "id": 13,
+  "cat": "medical",
+  "q": "how to clean and close a deep cut",
+  "expect": "wound|laceration|sutur|cut",
+  "sq": "clean deep cut close wound",
+  "hits": [
+   {
+    "title": "Cleaning a wound and spotting infection",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/wound-care"
+   },
+   {
+    "title": "Quiz: When to Perform Wound Cleaning and Dressing - ECSACONM",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Quiz%3A_When_to_Perform_Wound_Cleaning_and_Dressing_-_ECSACONM"
+   },
+   {
+    "title": "Quiz: Contraindications for Wound Cleaning and Dressing - ECSACONM",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Quiz%3A_Contraindications_for_Wound_Cleaning_and_Dressing_-_ECSACONM"
+   }
+  ],
+  "pos": 0,
+  "ms": 11799
+ },
+ {
+  "id": 14,
+  "cat": "medical",
+  "q": "how do I know if a wound is infected",
+  "expect": "wound|cellulitis|abscess|infected",
+  "sq": "wound infection symptoms signs",
+  "hits": [
+   {
+    "title": "Cleaning a wound and spotting infection",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/wound-care"
+   },
+   {
+    "title": "Wound",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Wound"
+   },
+   {
+    "title": "Emergency War Surgery (5th ed.), p. 130: All wounds incurred on the battlefield are grossly",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/ews5/p130"
+   }
+  ],
+  "pos": 0,
+  "ms": 14053
+ },
+ {
+  "id": 15,
+  "cat": "medical",
+  "q": "baby has diarrhea and won't drink",
+  "expect": "diarrh|dehydrat|rehydrat",
+  "sq": "diarrhea  baby  not drinking  dehydration  medical advice",
+  "hits": [
+   {
+    "title": "Dehydration, diarrhoea and oral rehydration solution",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/oral-rehydration"
+   },
+   {
+    "title": "Making water safe to drink",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/water-treatment"
+   },
+   {
+    "title": "Diarrhea",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Diarrhea"
+   }
+  ],
+  "pos": 0,
+  "ms": 14947
+ },
+ {
+  "id": 16,
+  "cat": "medical",
+  "q": "someone is having a seizure, what do I do",
+  "expect": "seizure|epilep|convuls",
+  "sq": "seizure first aid  emergency response  neurological disorder",
+  "hits": [
+   {
+    "title": "Seizure (fit)",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/seizure"
+   },
+   {
+    "title": "Epilepsy",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Epilepsy"
+   },
+   {
+    "title": "Army First Aid (FM 4-25.11), p. 57: if a casualty is suspected of having suffered a concussion, he should ",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/fm4-25-11/p057"
+   }
+  ],
+  "pos": 0,
+  "ms": 12227
+ },
+ {
+  "id": 17,
+  "cat": "medical",
+  "q": "diabetic is shaky and confused, low blood sugar",
+  "expect": "hypoglyc|blood sugar|diabet",
+  "sq": "diabetic  shaky  confused  low blood sugar",
+  "hits": [
+   {
+    "title": "Low blood sugar (hypoglycaemia)",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/low-blood-sugar"
+   },
+   {
+    "title": "Hypoglycemia",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Hypoglycemia"
+   },
+   {
+    "title": "Diabetes",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Diabetes"
+   }
+  ],
+  "pos": 0,
+  "ms": 12983
+ },
+ {
+  "id": 18,
+  "cat": "medical",
+  "q": "how to treat shock after a bad injury",
+  "expect": "shock",
+  "sq": "treat shock after bad injury",
+  "hits": [
+   {
+    "title": "Shock",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/shock"
+   },
+   {
+    "title": "Head injury",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/head-injury"
+   },
+   {
+    "title": "Hypovolemic shock",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Hypovolemic_shock"
+   }
+  ],
+  "pos": 0,
+  "ms": 10378
+ },
+ {
+  "id": 19,
+  "cat": "medical",
+  "q": "frostbite on fingers",
+  "expect": "frostbite|cold injur",
+  "sq": "frostbite on fingers",
+  "hits": [
+   {
+    "title": "Frostbite",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/frostbite"
+   },
+   {
+    "title": "Frostbite",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Frostbite"
+   },
+   {
+    "title": "Army First Aid (FM 4-25.11), p. 118: (1) Many service members suffer cold injury without",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/fm4-25-11/p118"
+   }
+  ],
+  "pos": 0,
+  "ms": 9686
+ },
+ {
+  "id": 20,
+  "cat": "medical",
+  "q": "running a generator indoors and everyone has a headache",
+  "expect": "carbon monoxide",
+  "sq": "generator indoors headache",
+  "hits": [
+   {
+    "title": "Carbon monoxide poisoning",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/carbon-monoxide"
+   },
+   {
+    "title": "Carbon monoxide poisoning",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Carbon_monoxide_poisoning"
+   },
+   {
+    "title": "Indoor air quality",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Indoor_air_quality"
+   }
+  ],
+  "pos": 0,
+  "ms": 11275
+ },
+ {
+  "id": 21,
+  "cat": "medical",
+  "q": "bitten by a stray dog, rabies risk",
+  "expect": "rabies|dog bite|animal bite",
+  "sq": "rabies risk  bitten by a stray dog  English nouns",
+  "hits": [
+   {
+    "title": "Animal bites and rabies",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/animal-bite-rabies"
+   },
+   {
+    "title": "Post-exposure prophylaxis",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Post-exposure_prophylaxis"
+   },
+   {
+    "title": "Rabies",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Rabies"
+   }
+  ],
+  "pos": 0,
+  "ms": 13117
+ },
+ {
+  "id": 22,
+  "cat": "medical",
+  "q": "nosebleed that won't stop",
+  "expect": "epistaxis|nosebleed|nose bleed",
+  "sq": "nosebleed  persistent  medical treatment",
+  "hits": [
+   {
+    "title": "Nosebleed",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/nosebleed"
+   },
+   {
+    "title": "Special Forces Medical Handbook (ST 31-91B), p. 34: persistent desire to empty the bladder with involuntary ineffectual",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/st31-91b/p034"
+   },
+   {
+    "title": "Emergency Medical Treatment and Active Labor Act",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Emergency_Medical_Treatment_and_Active_Labor_Act"
+   }
+  ],
+  "pos": 0,
+  "ms": 14132
+ },
+ {
+  "id": 23,
+  "cat": "medical",
+  "q": "chemical splashed in the eye",
+  "expect": "eye|ocular|chemical burn",
+  "sq": "chemical splashed in the eye",
+  "hits": [
+   {
+    "title": "Chemical in the eye",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/eye-chemical"
+   },
+   {
+    "title": "Army First Aid (FM 4-25.11), p. 77: (a) Chemical burns. Injuries from chemical burns",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/fm4-25-11/p077"
+   },
+   {
+    "title": "Emergency War Surgery (5th ed.), p. 232: Ocular Injuries",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/ews5/p232"
+   }
+  ],
+  "pos": 0,
+  "ms": 10328
+ },
+ {
+  "id": 24,
+  "cat": "medical",
+  "q": "dislocated shoulder",
+  "expect": "dislocat",
+  "sq": "dislocated shoulder",
+  "hits": [
+   {
+    "title": "Dislocated joint (shoulder, finger, kneecap)",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/dislocation"
+   },
+   {
+    "title": "Joint dislocation",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Joint_dislocation"
+   },
+   {
+    "title": "Dislocated shoulder",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Dislocated_shoulder"
+   }
+  ],
+  "pos": 0,
+  "ms": 12853
+ },
+ {
+  "id": 25,
+  "cat": "medical",
+  "q": "how to deliver a baby in an emergency",
+  "expect": "childbirth|delivery|labou?r|birth",
+  "sq": "deliver baby emergency",
+  "hits": [
+   {
+    "title": "Emergency childbirth",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/emergency-childbirth"
+   },
+   {
+    "title": "Caesarean section",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Caesarean_section"
+   },
+   {
+    "title": "Emergency War Surgery (5th ed.), p. 318: Gynecological Trauma and Emergencies",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/ews5/p318"
+   }
+  ],
+  "pos": 0,
+  "ms": 12072
+ },
+ {
+  "id": 26,
+  "cat": "medical",
+  "q": "pulled someone out of the water and they're not breathing",
+  "expect": "drown|cpr|resuscitat|cardiopulmonary",
+  "sq": "rescue  breathing  water  emergency  first aid",
+  "hits": [
+   {
+    "title": "Drowning",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/drowning"
+   },
+   {
+    "title": "CPR for adults (not breathing)",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/cpr-adult"
+   },
+   {
+    "title": "Cardiopulmonary resuscitation",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Cardiopulmonary_resuscitation"
+   }
+  ],
+  "pos": 0,
+  "ms": 12865
+ },
+ {
+  "id": 27,
+  "cat": "medical",
+  "q": "hit his head, now vomiting and confused",
+  "expect": "head injur|concussion|traumatic brain|head trauma",
+  "sq": "head injury  vomiting  confusion  concussion  traumatic brain injury",
+  "hits": [
+   {
+    "title": "Head injury",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/head-injury"
+   },
+   {
+    "title": "Traumatic brain injury",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Traumatic_brain_injury"
+   },
+   {
+    "title": "Concussion",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Concussion"
+   }
+  ],
+  "pos": 0,
+  "ms": 11054
+ },
+ {
+  "id": 28,
+  "cat": "medical",
+  "q": "spider bite getting red and painful",
+  "expect": "spider",
+  "sq": "spider bite  red  painful",
+  "hits": [
+   {
+    "title": "Animal bites and rabies",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/animal-bite-rabies"
+   },
+   {
+    "title": "Army First Aid (FM 4-25.11), p. 140: Insect bites/stings may cause anaphylactic shock (a",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/fm4-25-11/p140"
+   },
+   {
+    "title": "Spider bite",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Spider_bite"
+   }
+  ],
+  "pos": 2,
+  "ms": 12658
+ },
+ {
+  "id": 29,
+  "cat": "medical",
+  "q": "ate wild mushrooms and now vomiting",
+  "expect": "mushroom|poison",
+  "sq": "vomiting wild mushrooms",
+  "hits": [
+   {
+    "title": "Poisoning (swallowed), including wild mushrooms",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/poisoning-mushrooms"
+   },
+   {
+    "title": "Mushroom poisoning",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Mushroom_poisoning"
+   },
+   {
+    "title": "Mushroom",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Mushroom"
+   }
+  ],
+  "pos": 0,
+  "ms": 11419
+ },
+ {
+  "id": 30,
+  "cat": "medical",
+  "q": "tooth knocked out",
+  "expect": "dental trauma|avuls|tooth (injur|loss|knock)|knocked",
+  "sq": "tooth knocked out",
+  "hits": [
+   {
+    "title": "Tooth knocked out",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/tooth-knocked-out"
+   },
+   {
+    "title": "Dental trauma",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Dental_trauma"
+   },
+   {
+    "title": "Dental avulsion",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Dental_avulsion"
+   }
+  ],
+  "pos": 0,
+  "ms": 11760
+ },
+ {
+  "id": 31,
+  "cat": "griddown",
+  "q": "how much bleach to purify drinking water",
+  "expect": "making water safe|water (purification|disinfection|treatment)|bleach|chlorin|hypochlorite",
+  "sq": "bleach purify drinking water",
+  "hits": [
+   {
+    "title": "Making water safe to drink",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/water-treatment"
+   },
+   {
+    "title": "Drinking water",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Drinking_water"
+   },
+   {
+    "title": "Chlorine",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Chlorine"
+   }
+  ],
+  "pos": 0,
+  "ms": 11244
+ },
+ {
+  "id": 32,
+  "cat": "griddown",
+  "q": "how long do I boil water to make it safe",
+  "expect": "making water safe|boil|water purification|water treatment",
+  "sq": "boil water safety",
+  "hits": [
+   {
+    "title": "Making water safe to drink",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/water-treatment"
+   },
+   {
+    "title": "Special Forces Medical Handbook (ST 31-91B), p. 206: i — = (1) Start timing after water comes to boil",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/st31-91b/p206"
+   },
+   {
+    "title": "Drinking water",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Drinking_water"
+   }
+  ],
+  "pos": 0,
+  "ms": 10381
+ },
+ {
+  "id": 33,
+  "cat": "griddown",
+  "q": "build a simple water filter",
+  "expect": "filter|making water safe",
+  "sq": "simple water filter  important nouns",
+  "hits": [
+   {
+    "title": "Making water safe to drink",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/water-treatment"
+   },
+   {
+    "title": "Water filter",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Water_filter"
+   },
+   {
+    "title": "Army Survival (ATP 3-50.21), p. 68: Figure 3-12. Water filtering systems",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/atp3-50-21/p068"
+   }
+  ],
+  "pos": 0,
+  "ms": 14023
+ },
+ {
+  "id": 34,
+  "cat": "griddown",
+  "q": "how to store food without a fridge",
+  "expect": "food (preservation|storage)|preserv|canning|drying|storage",
+  "sq": "store food without fridge",
+  "hits": [
+   {
+    "title": "Field Hygiene and Sanitation (FM 21-10), p. 113: For hot foods, the container should be preheated by",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/fm21-10/p113"
+   },
+   {
+    "title": "Miscellaneous food preservation techniques",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Miscellaneous_food_preservation_techniques"
+   },
+   {
+    "title": "Home based food business",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Home_based_food_business"
+   }
+  ],
+  "pos": 1,
+  "ms": 10695
+ },
+ {
+  "id": 35,
+  "cat": "griddown",
+  "q": "how to can vegetables safely",
+  "expect": "canning|botulism|preserv",
+  "sq": "safe canning vegetables",
+  "hits": [
+   {
+    "title": "Canning",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Canning"
+   },
+   {
+    "title": "Botulism",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Botulism"
+   },
+   {
+    "title": "Nuclear War Survival Skills (Kearny), p. 82: yellow corn, carrots, and green, leafy vegetables",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/nwss/p082"
+   }
+  ],
+  "pos": 0,
+  "ms": 12963
+ },
+ {
+  "id": 36,
+  "cat": "griddown",
+  "q": "how do I build a fallout shelter",
+  "expect": "fallout|nuclear|radiation",
+  "sq": "fallout shelter construction  radiation protection  emergency preparedness",
+  "hits": [
+   {
+    "title": "Radiation protection",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Radiation_protection"
+   },
+   {
+    "title": "Nuclear War Survival Skills (Kearny), p. 124: Instructions for Six Expedient Fallout Shelters",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/nwss/p124"
+   },
+   {
+    "title": "Nuclear War Survival Skills (Kearny), p. 32: where he is, should try to build a shelter that gives",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/nwss/p032"
+   }
+  ],
+  "pos": 0,
+  "ms": 12452
+ },
+ {
+  "id": 37,
+  "cat": "griddown",
+  "q": "what to do after a nuclear explosion",
+  "expect": "nuclear|fallout|radiation",
+  "sq": "nuclear explosion aftermath response",
+  "hits": [
+   {
+    "title": "Nuclear War Survival Skills (Kearny), p. 105: explosions were to be carried across the Pacific by the",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/nwss/p105"
+   },
+   {
+    "title": "Nuclear War Survival Skills (Kearny), p. 28: If no blast or sound reaches you in two minutes,",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/nwss/p028"
+   },
+   {
+    "title": "Nuclear War Survival Skills (Kearny), p. 24: horrible sights. It permits them to think clearly and",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/nwss/p024"
+   }
+  ],
+  "pos": 0,
+  "ms": 12634
+ },
+ {
+  "id": 38,
+  "cat": "griddown",
+  "q": "how to start a fire without matches",
+  "expect": "fire.?start|friction fire|fire without|fire (making|lighting)|tinder|convex lens|hand drill|bow drill",
+  "sq": "start fire without matches",
+  "hits": [
+   {
+    "title": "Army Survival (ATP 3-50.21), p. 128: Figure 5-7. Using a convex lens as a fire-starter",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/atp3-50-21/p128"
+   },
+   {
+    "title": "Army Survival (ATP 3-50.21), p. 132: Figure 5-11. Hand drill fire-starter",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/atp3-50-21/p132"
+   },
+   {
+    "title": "Army Survival (ATP 3-50.21), p. 126: anywhere matches are the most adaptable",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/atp3-50-21/p126"
+   }
+  ],
+  "pos": 0,
+  "ms": 12759
+ },
+ {
+  "id": 39,
+  "cat": "griddown",
+  "q": "a strong knot to tie a rope to a tree",
+  "expect": "knot|hitch|bowline",
+  "sq": "strong knot rope tree",
+  "hits": [
+   {
+    "title": "Army Survival (ATP 3-50.21), p. 219: Survival Knots and Rope",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/atp3-50-21/p219"
+   },
+   {
+    "title": "Army Survival (ATP 3-50.21), p. 203: Survival Knots and Rope",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/atp3-50-21/p203"
+   },
+   {
+    "title": "Army Survival (ATP 3-50.21), p. 207: Survival Knots and Rope",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/atp3-50-21/p207"
+   }
+  ],
+  "pos": 0,
+  "ms": 8563
+ },
+ {
+  "id": 40,
+  "cat": "griddown",
+  "q": "how to wire a solar panel to a battery",
+  "expect": "charge controller|batter|wiring|photovoltaic system|off-grid|stand-alone",
+  "sq": "wire solar panel to battery",
+  "hits": [
+   {
+    "title": "Creation of Modular Recyclable Solar Panels - Literature Review",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Creation_of_Modular_Recyclable_Solar_Panels_-_Literature_Review"
+   },
+   {
+    "title": "Ground mount fixed tilt PV racking literature review/Aerodynamics of Ground-Mounted Solar Panels: Test Model Scale Effects",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Ground_mount_fixed_tilt_PV_racking_literature_review/Aerodynamics_of_Ground-Mounted_Solar_Panels%3A_Test_Model_Scale_Effects"
+   },
+   {
+    "title": "Ground mount fixed tilt PV racking literature review/Aerodynamics of Ground-Mounted Solar Panels: Test Model Scale Effects/es",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Ground_mount_fixed_tilt_PV_racking_literature_review/Aerodynamics_of_Ground-Mounted_Solar_Panels%3A_Test_Model_Scale_Effects/es"
+   }
+  ],
+  "pos": -1,
+  "ms": 13068
+ },
+ {
+  "id": 41,
+  "cat": "griddown",
+  "q": "how to dig a latrine",
+  "expect": "latrine|toilet|sanitation",
+  "sq": "dig a latrine",
+  "hits": [
+   {
+    "title": "Field Hygiene and Sanitation (FM 21-10), p. 28: seat or inside latrine box",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/fm21-10/p028"
+   },
+   {
+    "title": "Field Hygiene and Sanitation (FM 21-10), p. 138: STEP 4: Inspect daily to make sure that the following is done:",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/fm21-10/p138"
+   },
+   {
+    "title": "Sanitation",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Sanitation"
+   }
+  ],
+  "pos": 0,
+  "ms": 10700
+ },
+ {
+  "id": 42,
+  "cat": "griddown",
+  "q": "which wild plants are safe to eat",
+  "expect": "edible|wild|plant|forag",
+  "sq": "safe wild plants to eat",
+  "hits": [
+   {
+    "title": "GEN Solution Library/Foraging wild edible plants",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/GEN_Solution_Library/Foraging_wild_edible_plants"
+   },
+   {
+    "title": "Army Survival (ATP 3-50.21), p. 78",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/atp3-50-21/p078"
+   },
+   {
+    "title": "Army Survival (FM 21-76), p. 110: US ARMY SURVIVAL MANUAL",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/fm21-76/p110"
+   }
+  ],
+  "pos": 0,
+  "ms": 13920
+ },
+ {
+  "id": 43,
+  "cat": "griddown",
+  "q": "how to purify water with sunlight",
+  "expect": "making water safe|solar water disinfection|sodis|solar disinfection|uv",
+  "sq": "purify water sunlight",
+  "hits": [
+   {
+    "title": "Solar water disinfection",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Solar_water_disinfection"
+   },
+   {
+    "title": "Making water safe to drink",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/water-treatment"
+   },
+   {
+    "title": "Army Survival (ATP 3-50.21), p. 67: purify water through the filtration of extremely fine particulates",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/atp3-50-21/p067"
+   }
+  ],
+  "pos": 0,
+  "ms": 10026
+ },
+ {
+  "id": 44,
+  "cat": "griddown",
+  "q": "how to stay warm when the power is out in winter",
+  "expect": "cold|winter|hypotherm|stove|warm|heating",
+  "sq": "stay warm power out winter",
+  "hits": [
+   {
+    "title": "Nuclear War Survival Skills (Kearny), p. 119: KEEPING WARM WITHOUT FIRE",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/nwss/p119"
+   },
+   {
+    "title": "Field Hygiene and Sanitation (FM 21-10), p. 19: Warm hands under clothing if they become numb",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/fm21-10/p019"
+   },
+   {
+    "title": "Army Survival (ATP 3-50.21), p. 136",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/atp3-50-21/p136"
+   }
+  ],
+  "pos": 0,
+  "ms": 10269
+ },
+ {
+  "id": 45,
+  "cat": "griddown",
+  "q": "how to make soap",
+  "expect": "soap",
+  "sq": "make soap",
+  "hits": [
+   {
+    "title": "Making water safe to drink",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/water-treatment"
+   },
+   {
+    "title": "Soap making",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Soap_making"
+   },
+   {
+    "title": "Soap",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Soap"
+   }
+  ],
+  "pos": 1,
+  "ms": 8500
+ },
+ {
+  "id": 46,
+  "cat": "griddown",
+  "q": "how to signal for rescue",
+  "expect": "signal|rescue",
+  "sq": "signal for rescue",
+  "hits": [
+   {
+    "title": "Search and rescue",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Search_and_rescue"
+   },
+   {
+    "title": "Army Survival (FM 21-76), p. 200: US ARMY SURVIVAL MANUAL",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/fm21-76/p200"
+   },
+   {
+    "title": "Army Survival (FM 21-76), p. 166: US ARMY SURVIVAL MANUAL",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/fm21-76/p166"
+   }
+  ],
+  "pos": 0,
+  "ms": 8325
+ },
+ {
+  "id": 47,
+  "cat": "griddown",
+  "q": "what should be in an emergency supply kit",
+  "expect": "kit|disaster suppl|are you ready|emergency suppl|preparedness",
+  "sq": "emergency supply kit",
+  "hits": [
+   {
+    "title": "Disaster preparedness",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Disaster_preparedness"
+   },
+   {
+    "title": "Disaster response",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Disaster_response"
+   },
+   {
+    "title": "Emergency War Surgery (5th ed.), p. 527: Emergency War Surgery",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/ews5/p527"
+   }
+  ],
+  "pos": 0,
+  "ms": 11298
+ },
+ {
+  "id": 48,
+  "cat": "griddown",
+  "q": "how to preserve meat by drying it",
+  "expect": "jerky|dry|dried|dehydrat|preserv",
+  "sq": "preserve meat drying",
+  "hits": [
+   {
+    "title": "Special Forces Medical Handbook (ST 31-91B), p. 174: Ca) Trim the fat from the meat",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/st31-91b/p174"
+   },
+   {
+    "title": "Nuclear War Survival Skills (Kearny), p. 88: effective drying agent again. Silica gel is inexpensive",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/nwss/p088"
+   },
+   {
+    "title": "Solar and Energy Conserving Food Technologies/Nutrition and solar drying",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Solar_and_Energy_Conserving_Food_Technologies/Nutrition_and_solar_drying"
+   }
+  ],
+  "pos": 1,
+  "ms": 9241
+ },
+ {
+  "id": 49,
+  "cat": "griddown",
+  "q": "grow vegetables in a small space",
+  "expect": "garden|grow|vegetable",
+  "sq": "grow vegetables small space",
+  "hits": [
+   {
+    "title": "Container gardening",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Container_gardening"
+   },
+   {
+    "title": "Nuclear War Survival Skills (Kearny), p. 82: yellow corn, carrots, and green, leafy vegetables",
+    "book": "Field Manuals (searchable)",
+    "href": "/kiwix/content/aftergrid-manuals_en_2026-11/nwss/p082"
+   },
+   {
+    "title": "Deidre's vertical vegetable garden",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Deidre's_vertical_vegetable_garden"
+   }
+  ],
+  "pos": 0,
+  "ms": 8875
+ },
+ {
+  "id": 50,
+  "cat": "griddown",
+  "q": "how to treat drinking water with iodine",
+  "expect": "making water safe|iodine|water purification|water treatment",
+  "sq": "treat drinking water with iodine",
+  "hits": [
+   {
+    "title": "Making water safe to drink",
+    "book": "Aftergrid First Aid Cards",
+    "href": "/kiwix/content/aftergrid-firstaid_en_2026-11/water-treatment"
+   },
+   {
+    "title": "Iodine",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Iodine"
+   },
+   {
+    "title": "Drinking water",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Drinking_water"
+   }
+  ],
+  "pos": 0,
+  "ms": 12365
+ }
+]

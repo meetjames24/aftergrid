@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=Aftergrid
+Description=Aftergrid boot splash
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/aftergrid
+ScriptFile=/usr/share/plymouth/themes/aftergrid/aftergrid.script

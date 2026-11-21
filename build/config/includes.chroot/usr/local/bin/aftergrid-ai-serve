@@ -1,0 +1,49 @@
+#!/bin/bash
+# Start the local AI (llama.cpp) on 127.0.0.1:8081 with the biggest model this PC can run well.
+#   aftergrid-ai-serve --check   exit 0 only if a model exists and (RAM >= 12 GB or /run/aftergrid/ai-force exists)
+#   aftergrid-ai-serve --which   print the model it would use, and why
+# Override: put a model path in /etc/aftergrid/ai-model.
+RAM=$(awk '/MemTotal/{print int($2/1048576)}' /proc/meminfo)
+GPU=0; vulkaninfo --summary 2>/dev/null | grep -q "PHYSICAL_DEVICE_TYPE_DISCRETE_GPU" && GPU=1
+
+# Rank the installed chat models (the embedding model is listed separately and never used here).
+# Each: <parameters in billions> <minimum RAM in GB> <needs a GPU to be usable: 0/1>
+spec() {
+  case "${1,,}" in
+    *bonsai-27b*|*27b*) echo "27 16 1";;
+    *qwen3-8b*|*8b*)    echo "8 14 0";;
+    *qwen3-4b*|*4b*)    echo "4 7 0";;
+    *)                  echo "1 6 0";;
+  esac
+}
+pick() {
+  local best="" bestp=0 why="no model fits"
+  while read -r m; do
+    [ -f "$m" ] || continue; case "$m" in */embed/*) continue;; esac
+    read -r p need gpu <<<"$(spec "$(basename "$m")")"
+    [ "$RAM" -ge "$need" ] || continue
+    [ "$gpu" = 1 ] && [ "$GPU" = 0 ] && continue
+    [ "$p" -gt "$bestp" ] && { best="$m"; bestp=$p; why="${p}B fits ${RAM} GB RAM$([ $GPU = 1 ] && echo ' with a GPU')"; }
+  done < /run/aftergrid/models.list
+  # Nothing fits the RAM rule: fall back to the smallest model rather than nothing.
+  [ -n "$best" ] || { best=$(grep -iv /embed/ /run/aftergrid/models.list 2>/dev/null | grep -i 4b | head -1); why="smallest model (only ${RAM} GB RAM)"; }
+  echo "$best|$why"
+}
+
+MODEL=$(cat /etc/aftergrid/ai-model 2>/dev/null); WHY="set in /etc/aftergrid/ai-model"
+[ -f "$MODEL" ] || IFS='|' read -r MODEL WHY <<<"$(pick)"
+
+case "$1" in
+  --which) echo "${MODEL:-none}  ($WHY)"; exit 0;;
+  --check) [ -f "$MODEL" ] || exit 1; [ "$RAM" -ge 12 ] || [ -e /run/aftergrid/ai-force ] || exit 1; exit 0;;
+esac
+[ -f "$MODEL" ] || { echo "No AI model found. Aftergrid Control -> Download -> ai"; exit 1; }
+NGL=0; [ "$GPU" = 1 ] && NGL=99
+EXTRA=()
+# Qwen3 8B can "think" before answering; turn that off so answers start at once.
+case "${MODEL,,}" in *qwen3-8b*) EXTRA+=(--reasoning-budget 0);; esac
+echo "Aftergrid AI: $(basename "$MODEL") ($WHY)"
+# Memory: under 12 GB RAM, one conversation at a time with a compressed (8-bit) context, so the
+# desktop, browser and library keep room; with more RAM, two people (e.g. on the hotspot) at once.
+if [ "$RAM" -lt 12 ]; then SLOTS=(-c 4096 -np 1); else SLOTS=(-c 8192 -np 2); fi
+exec /opt/llama/bin/llama-server -m "$MODEL" --host 127.0.0.1 --port 8081 "${SLOTS[@]}" -fa on -ctk q8_0 -ctv q8_0 -ngl $NGL --jinja --no-webui "${EXTRA[@]}"

@@ -1,0 +1,17 @@
+[Desktop Entry]
+Name=Aftergrid Field Mode
+Name[el]=Λειτουργία Πεδίου Aftergrid
+Name[fr]=Aftergrid Mode Terrain
+Name[de]=Aftergrid Feldmodus
+Name[pt]=Aftergrid Modo Campo
+Name[tr]=Aftergrid Saha Modu
+Comment=Offline library, maps, medical, comms
+Comment[el]=Βιβλιοθήκη, χάρτες, ιατρικά, επικοινωνίες χωρίς ίντερνετ
+Comment[fr]=Bibliothèque, cartes, médical, communications hors ligne
+Comment[de]=Offline-Bibliothek, Karten, Medizin, Funk
+Comment[pt]=Biblioteca, mapas, médico e comunicação offline
+Comment[tr]=Çevrimdışı kütüphane, haritalar, tıbbi, iletişim
+Exec=xdg-open http://localhost/
+Icon=aftergrid-os
+Type=Application
+Categories=Education;

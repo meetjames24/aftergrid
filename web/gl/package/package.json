@@ -1,0 +1,49 @@
+{
+  "name": "smp-noto-glyphs",
+  "version": "2.0.0",
+  "description": "Pre-built Noto Sans SDF glyph PBFs (80+ scripts) for MapLibre-compatible map servers",
+  "type": "module",
+  "main": "./lib/noto.js",
+  "types": "./dist/noto.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/noto.d.ts",
+      "default": "./lib/noto.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "dist",
+    "fixtures"
+  ],
+  "scripts": {
+    "test": "vitest run",
+    "prepack": "npm run build",
+    "build": "tsc -p tsconfig.build.json",
+    "types": "tsc"
+  },
+  "devDependencies": {
+    "@types/node": "^22.18.12",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.11"
+  },
+  "keywords": [
+    "maplibre",
+    "glyphs",
+    "noto-sans",
+    "sdf",
+    "pbf",
+    "fonts",
+    "fallback"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/digidem/styled-map-package.git",
+    "directory": "packages/glyphs"
+  }
+}

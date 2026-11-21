@@ -1,0 +1,23 @@
+#!/bin/bash
+# aftergrid-hotspot on [SSID] [PASSWORD] | off | status
+# Turns this machine's Wi-Fi into an access point serving the Aftergrid library to phones.
+# Phones join the network, then open http://10.42.0.1 (most will pop it up automatically).
+set -e
+CON=Aftergrid-Hotspot
+case "${1:-status}" in
+  on)
+    SSID="${2:-Aftergrid-Library}"; PASS="${3:-aftergrid}"
+    [ ${#PASS} -ge 8 ] || { echo "Password must be at least 8 characters."; exit 1; }
+    DEV=$(nmcli -t -f DEVICE,TYPE device | awk -F: '$2=="wifi"{print $1; exit}')
+    [ -n "$DEV" ] || { echo "No Wi-Fi adapter found. Plug in a USB Wi-Fi adapter that supports AP mode."; exit 1; }
+    nmcli connection delete "$CON" >/dev/null 2>&1 || true
+    nmcli device wifi hotspot ifname "$DEV" con-name "$CON" ssid "$SSID" password "$PASS"
+    nmcli connection modify "$CON" connection.autoconnect no
+    /usr/local/bin/aftergrid-portal-refresh 2>/dev/null || true
+    echo; echo "Hotspot ON.  Wi-Fi: $SSID   Password: $PASS"
+    echo "Phones: join that network, then open  http://10.42.0.1"
+    echo "(While the hotspot is on, this machine is not connected to other Wi-Fi.)";;
+  off) nmcli connection down "$CON" 2>/dev/null || true; /usr/local/bin/aftergrid-portal-refresh 2>/dev/null || true; echo "Hotspot OFF.";;
+  status) nmcli -t -f NAME con show --active | grep -qx "$CON" && echo "Hotspot is ON ($(nmcli -g 802-11-wireless.ssid con show $CON))" || echo "Hotspot is OFF";;
+  *) sed -n '2,4p' "$0";;
+esac

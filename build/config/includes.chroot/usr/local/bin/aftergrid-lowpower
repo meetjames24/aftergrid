@@ -1,0 +1,12 @@
+#!/bin/bash
+# aftergrid-lowpower on|off: stretch battery when off-grid.
+case "$1" in
+  on)  sudo sh -c 'mkdir -p /run/aftergrid && touch /run/aftergrid/lowpower'; powerprofilesctl set power-saver 2>/dev/null; brightnessctl -q set 35% 2>/dev/null
+       rfkill block bluetooth 2>/dev/null; sudo powertop --auto-tune >/dev/null 2>&1
+       echo "Low power ON: power-saver profile, dim screen, Bluetooth off, device power-saving enabled.";;
+  off) sudo rm -f /run/aftergrid/lowpower; powerprofilesctl set balanced 2>/dev/null; brightnessctl -q set 80% 2>/dev/null
+       rfkill unblock bluetooth 2>/dev/null; echo "Low power OFF (device tweaks reset at reboot).";;
+  *) echo "usage: aftergrid-lowpower on|off"; exit 1;;
+esac
+# Field Mode switches to Night mode in low power (dark pages use less power on OLED screens).
+sudo /usr/local/bin/aftergrid-portal-refresh >/dev/null 2>&1 || true

@@ -1,0 +1,1302 @@
+[
+ {
+  "id": 1,
+  "cat": "medical",
+  "q": "How do I stop heavy bleeding from a leg wound?",
+  "expect": "bleed|hemorrhag|haemorrhag|tourniquet",
+  "sq": "bleeding wound pressure dressing",
+  "hits": [
+   {
+    "title": "Bleeding",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Bleeding"
+   },
+   {
+    "title": "Wound",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Wound"
+   },
+   {
+    "title": "Negative-pressure wound therapy",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Negative-pressure_wound_therapy"
+   }
+  ],
+  "pos": 0,
+  "ms": 3995
+ },
+ {
+  "id": 2,
+  "cat": "medical",
+  "q": "my kid swallowed something and can't breathe",
+  "expect": "chok|airway obstruction|abdominal thrust|foreign body",
+  "sq": "swallowed breathing obstruction emergency",
+  "hits": [
+   {
+    "title": "Airway obstruction",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Airway_obstruction"
+   },
+   {
+    "title": "Exercise-induced laryngeal obstruction",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Exercise-induced_laryngeal_obstruction"
+   },
+   {
+    "title": "Sleep and breathing",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Sleep_and_breathing"
+   }
+  ],
+  "pos": 0,
+  "ms": 3767
+ },
+ {
+  "id": 3,
+  "cat": "medical",
+  "q": "someone collapsed and isn't breathing",
+  "expect": "cardiopulmonary|\\bcpr\\b|cardiac arrest|resuscitat",
+  "sq": "rescue breathing CPR oxygen circulation",
+  "hits": [
+   {
+    "title": "Self-contained self-rescue device",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Self-contained_self-rescue_device"
+   },
+   {
+    "title": "Fetal circulation",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Fetal_circulation"
+   },
+   {
+    "title": "Persistent fetal circulation",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Persistent_fetal_circulation"
+   }
+  ],
+  "pos": -1,
+  "ms": 3702
+ },
+ {
+  "id": 4,
+  "cat": "medical",
+  "q": "bee sting, face swelling up, can't breathe",
+  "expect": "anaphyla",
+  "sq": "bee sting  swelling  breathing",
+  "hits": [
+   {
+    "title": "Scorpion sting",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Scorpion_sting"
+   },
+   {
+    "title": "Bee sting",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Bee_sting"
+   },
+   {
+    "title": "Schmidt sting pain index",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Schmidt_sting_pain_index"
+   }
+  ],
+  "pos": -1,
+  "ms": 3296
+ },
+ {
+  "id": 5,
+  "cat": "medical",
+  "q": "how to treat a burn from boiling water",
+  "expect": "burn|scald",
+  "sq": "burn treatment cooling water",
+  "hits": [
+   {
+    "title": "Burn",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Burn"
+   },
+   {
+    "title": "Deep water source cooling",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Deep_water_source_cooling"
+   },
+   {
+    "title": "Water heat recycling",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Water_heat_recycling"
+   }
+  ],
+  "pos": 0,
+  "ms": 2077
+ },
+ {
+  "id": 6,
+  "cat": "medical",
+  "q": "signs of hypothermia and how to warm someone up",
+  "expect": "hypotherm|cold",
+  "sq": "hypothermia  warming  shivering  cold  exposure",
+  "hits": [
+   {
+    "title": "Hypothermia",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Hypothermia"
+   },
+   {
+    "title": "Shivering",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Shivering"
+   },
+   {
+    "title": "Are You Ready?/Winter Storms and Extreme Cold",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Are_You_Ready%3F/Winter_Storms_and_Extreme_Cold"
+   }
+  ],
+  "pos": 0,
+  "ms": 5976
+ },
+ {
+  "id": 7,
+  "cat": "medical",
+  "q": "what are the warning signs of heat stroke",
+  "expect": "heat stroke|heat illness|heat exhaustion|heat injur",
+  "sq": "heat stroke warning signs  high body temperature  confusion  altered mental state  nausea  vomiting  headache  flushed skin",
+  "hits": [
+   {
+    "title": "Heat stroke",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Heat_stroke"
+   },
+   {
+    "title": "Pediatric early warning signs",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Pediatric_early_warning_signs"
+   },
+   {
+    "title": "Warning signs of suicide",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Warning_signs_of_suicide"
+   }
+  ],
+  "pos": 0,
+  "ms": 6230
+ },
+ {
+  "id": 8,
+  "cat": "medical",
+  "q": "how do I make oral rehydration solution",
+  "expect": "rehydrat|dehydrat",
+  "sq": "water salt sugar glucose",
+  "hits": [
+   {
+    "title": "Sugar",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Sugar"
+   },
+   {
+    "title": "Glucose",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Glucose"
+   },
+   {
+    "title": "Oral rehydration therapy",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Oral_rehydration_therapy"
+   }
+  ],
+  "pos": 2,
+  "ms": 2999
+ },
+ {
+  "id": 9,
+  "cat": "medical",
+  "q": "how do I splint a broken arm",
+  "expect": "splint|fracture",
+  "sq": "arm splint casting",
+  "hits": [
+   {
+    "title": "Splint (medicine)",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Splint_(medicine)"
+   },
+   {
+    "title": "NREMT Skillset/Long Bone Splinting",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/NREMT_Skillset/Long_Bone_Splinting"
+   },
+   {
+    "title": "NREMT Skillset/Long Bone Splinting/Quiz",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/NREMT_Skillset/Long_Bone_Splinting/Quiz"
+   }
+  ],
+  "pos": 0,
+  "ms": 2377
+ },
+ {
+  "id": 10,
+  "cat": "medical",
+  "q": "what to do for a snake bite",
+  "expect": "snake",
+  "sq": "snake bite first aid immobilization wound care antivenom",
+  "hits": [
+   {
+    "title": "Snake antivenom",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Snake_antivenom"
+   },
+   {
+    "title": "Antivenom",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Antivenom"
+   },
+   {
+    "title": "Snakebite",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Snakebite"
+   }
+  ],
+  "pos": 0,
+  "ms": 5678
+ },
+ {
+  "id": 11,
+  "cat": "medical",
+  "q": "how can I tell if someone is having a stroke",
+  "expect": "^(?!.*heat).*(stroke|fast \\(stroke)",
+  "sq": "stroke symptoms time medical help",
+  "hits": [
+   {
+    "title": "Stroke",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Stroke"
+   },
+   {
+    "title": "Watershed stroke",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Watershed_stroke"
+   },
+   {
+    "title": "FAST (stroke)",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/FAST_(stroke)"
+   }
+  ],
+  "pos": 0,
+  "ms": 2160
+ },
+ {
+  "id": 12,
+  "cat": "medical",
+  "q": "chest pain spreading to the left arm",
+  "expect": "myocardial|heart attack|coronary|chest pain|angina",
+  "sq": "chest pain left arm radiation",
+  "hits": [
+   {
+    "title": "Chest pain",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Chest_pain"
+   },
+   {
+    "title": "Chest pain in children",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Chest_pain_in_children"
+   },
+   {
+    "title": "NREMT Skillset/Medical Patient Assessment for Chest Pain (OPQRST)/th",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/NREMT_Skillset/Medical_Patient_Assessment_for_Chest_Pain_(OPQRST)/th"
+   }
+  ],
+  "pos": 0,
+  "ms": 4277
+ },
+ {
+  "id": 13,
+  "cat": "medical",
+  "q": "how to clean and close a deep cut",
+  "expect": "wound|laceration|sutur|cut",
+  "sq": "clean wound closing",
+  "hits": [
+   {
+    "title": "Wound",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Wound"
+   },
+   {
+    "title": "Quiz: When to Perform Wound Cleaning and Dressing - ECSACONM",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Quiz%3A_When_to_Perform_Wound_Cleaning_and_Dressing_-_ECSACONM"
+   },
+   {
+    "title": "Quiz: Contraindications for Wound Cleaning and Dressing - ECSACONM",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Quiz%3A_Contraindications_for_Wound_Cleaning_and_Dressing_-_ECSACONM"
+   }
+  ],
+  "pos": 0,
+  "ms": 1775
+ },
+ {
+  "id": 14,
+  "cat": "medical",
+  "q": "how do I know if a wound is infected",
+  "expect": "wound|cellulitis|abscess|infected",
+  "sq": "infection redness swelling pain fever",
+  "hits": [
+   {
+    "title": "Mouth infection",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Mouth_infection"
+   },
+   {
+    "title": "Scarlet fever",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Scarlet_fever"
+   },
+   {
+    "title": "Oropouche fever",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Oropouche_fever"
+   }
+  ],
+  "pos": -1,
+  "ms": 5026
+ },
+ {
+  "id": 15,
+  "cat": "medical",
+  "q": "baby has diarrhea and won't drink",
+  "expect": "diarrh|dehydrat|rehydrat",
+  "sq": "diarrhea drinking baby",
+  "hits": [
+   {
+    "title": "Diarrhea",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Diarrhea"
+   },
+   {
+    "title": "Travelers' diarrhea",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Travelers'_diarrhea"
+   },
+   {
+    "title": "Wilderness-acquired diarrhea",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Wilderness-acquired_diarrhea"
+   }
+  ],
+  "pos": 0,
+  "ms": 2175
+ },
+ {
+  "id": 16,
+  "cat": "medical",
+  "q": "someone is having a seizure, what do I do",
+  "expect": "seizure|epilep|convuls",
+  "sq": "seizure safety emergency response consciousness",
+  "hits": [
+   {
+    "title": "Consciousness",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Consciousness"
+   },
+   {
+    "title": "Safety of emergency medical services flights",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Safety_of_emergency_medical_services_flights"
+   },
+   {
+    "title": "Emergency service response codes",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Emergency_service_response_codes"
+   }
+  ],
+  "pos": -1,
+  "ms": 3917
+ },
+ {
+  "id": 17,
+  "cat": "medical",
+  "q": "diabetic is shaky and confused, low blood sugar",
+  "expect": "hypoglyc|blood sugar|diabet",
+  "sq": "blood sugar low glucose shock",
+  "hits": [
+   {
+    "title": "Glucose",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Glucose"
+   },
+   {
+    "title": "Blood sugar level",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Blood_sugar_level"
+   },
+   {
+    "title": "Blood sugar regulation",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Blood_sugar_regulation"
+   }
+  ],
+  "pos": 1,
+  "ms": 1991
+ },
+ {
+  "id": 18,
+  "cat": "medical",
+  "q": "how to treat shock after a bad injury",
+  "expect": "shock",
+  "sq": "shock treatment injury response blood pressure",
+  "hits": [
+   {
+    "title": "NREMT Skillset/Shock Treatment",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/NREMT_Skillset/Shock_Treatment"
+   },
+   {
+    "title": "Hypovolemic shock",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Hypovolemic_shock"
+   },
+   {
+    "title": "Distributive shock",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Distributive_shock"
+   }
+  ],
+  "pos": 0,
+  "ms": 3350
+ },
+ {
+  "id": 19,
+  "cat": "medical",
+  "q": "frostbite on fingers",
+  "expect": "frostbite|cold injur",
+  "sq": "frostbite finger cold injury treatment",
+  "hits": [
+   {
+    "title": "Frostbite",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Frostbite"
+   },
+   {
+    "title": "Finger",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Finger"
+   },
+   {
+    "title": "List of ICD-9 codes 800\u2013999: injury and poisoning",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/List_of_ICD-9_codes_800%E2%80%93999%3A_injury_and_poisoning"
+   }
+  ],
+  "pos": 0,
+  "ms": 1921
+ },
+ {
+  "id": 20,
+  "cat": "medical",
+  "q": "running a generator indoors and everyone has a headache",
+  "expect": "carbon monoxide",
+  "sq": "generator indoors headache",
+  "hits": [
+   {
+    "title": "Household air pollution",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Household_air_pollution"
+   },
+   {
+    "title": "Nitrogen dioxide poisoning",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Nitrogen_dioxide_poisoning"
+   },
+   {
+    "title": "Volatile organic compound",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Volatile_organic_compound"
+   }
+  ],
+  "pos": -1,
+  "ms": 1853
+ },
+ {
+  "id": 21,
+  "cat": "medical",
+  "q": "bitten by a stray dog, rabies risk",
+  "expect": "rabies|dog bite|animal bite",
+  "sq": "rabies dog bite exposure",
+  "hits": [
+   {
+    "title": "Rabies",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Rabies"
+   },
+   {
+    "title": "Rabies in animals",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Rabies_in_animals"
+   },
+   {
+    "title": "Rabies in Haiti",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Rabies_in_Haiti"
+   }
+  ],
+  "pos": 0,
+  "ms": 2120
+ },
+ {
+  "id": 22,
+  "cat": "medical",
+  "q": "nosebleed that won't stop",
+  "expect": "epistaxis|nosebleed|nose bleed",
+  "sq": "nosebleed bleeding stop",
+  "hits": [
+   {
+    "title": "Nosebleed",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Nosebleed"
+   },
+   {
+    "title": "Emergency bleeding control",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Emergency_bleeding_control"
+   },
+   {
+    "title": "Internal bleeding",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Internal_bleeding"
+   }
+  ],
+  "pos": 0,
+  "ms": 2136
+ },
+ {
+  "id": 23,
+  "cat": "medical",
+  "q": "chemical splashed in the eye",
+  "expect": "eye|ocular|chemical burn",
+  "sq": "chemical eye injury eye wash emergency treatment",
+  "hits": [
+   {
+    "title": "Chemical eye injury",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Chemical_eye_injury"
+   },
+   {
+    "title": "Eye injury",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Eye_injury"
+   },
+   {
+    "title": "List of ICD-9 codes 800\u2013999: injury and poisoning",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/List_of_ICD-9_codes_800%E2%80%93999%3A_injury_and_poisoning"
+   }
+  ],
+  "pos": 0,
+  "ms": 2140
+ },
+ {
+  "id": 24,
+  "cat": "medical",
+  "q": "dislocated shoulder",
+  "expect": "dislocat",
+  "sq": "shoulder dislocation treatment rehabilitation",
+  "hits": [
+   {
+    "title": "Dislocated shoulder",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Dislocated_shoulder"
+   },
+   {
+    "title": "Dislocated shoulder/Ru",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Dislocated_shoulder/Ru"
+   },
+   {
+    "title": "Patellar dislocation",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Patellar_dislocation"
+   }
+  ],
+  "pos": 0,
+  "ms": 2463
+ },
+ {
+  "id": 25,
+  "cat": "medical",
+  "q": "how to deliver a baby in an emergency",
+  "expect": "childbirth|delivery|labou?r|birth",
+  "sq": "delivery emergency childbirth newborn",
+  "hits": [
+   {
+    "title": "Emergency childbirth",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Emergency_childbirth"
+   },
+   {
+    "title": "Emergency childbirth",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Emergency_childbirth"
+   },
+   {
+    "title": "Childbirth",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Childbirth"
+   }
+  ],
+  "pos": 0,
+  "ms": 1534
+ },
+ {
+  "id": 26,
+  "cat": "medical",
+  "q": "pulled someone out of the water and they're not breathing",
+  "expect": "drown|cpr|resuscitat|cardiopulmonary",
+  "sq": "rescue breathing CPR water",
+  "hits": [
+   {
+    "title": "Self-contained self-rescue device",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Self-contained_self-rescue_device"
+   },
+   {
+    "title": "Basic life support",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Basic_life_support"
+   },
+   {
+    "title": "Mouth-to-mouth resuscitation",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Mouth-to-mouth_resuscitation"
+   }
+  ],
+  "pos": 2,
+  "ms": 1877
+ },
+ {
+  "id": 27,
+  "cat": "medical",
+  "q": "hit his head, now vomiting and confused",
+  "expect": "head injur|concussion|traumatic brain|head trauma",
+  "sq": "head injury vomiting confusion",
+  "hits": [
+   {
+    "title": "Head injury",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Head_injury"
+   },
+   {
+    "title": "Closed-head injury",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Closed-head_injury"
+   },
+   {
+    "title": "Penetrating head injury",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Penetrating_head_injury"
+   }
+  ],
+  "pos": 0,
+  "ms": 2090
+ },
+ {
+  "id": 28,
+  "cat": "medical",
+  "q": "spider bite getting red and painful",
+  "expect": "spider",
+  "sq": "spider bite inflammation pain redness",
+  "hits": [
+   {
+    "title": "Spider bite",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Spider_bite"
+   },
+   {
+    "title": "List of medically significant spider bites",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/List_of_medically_significant_spider_bites"
+   },
+   {
+    "title": "Pathophysiology of spider bites",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Pathophysiology_of_spider_bites"
+   }
+  ],
+  "pos": 0,
+  "ms": 2717
+ },
+ {
+  "id": 29,
+  "cat": "medical",
+  "q": "ate wild mushrooms and now vomiting",
+  "expect": "mushroom|poison",
+  "sq": "mushrooms vomiting toxicity",
+  "hits": [
+   {
+    "title": "Digoxin toxicity",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Digoxin_toxicity"
+   },
+   {
+    "title": "Calcium channel blocker toxicity",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Calcium_channel_blocker_toxicity"
+   },
+   {
+    "title": "Jamaican vomiting sickness",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Jamaican_vomiting_sickness"
+   }
+  ],
+  "pos": -1,
+  "ms": 1861
+ },
+ {
+  "id": 30,
+  "cat": "medical",
+  "q": "tooth knocked out",
+  "expect": "dental trauma|avuls|tooth (injur|loss|knock)|knocked",
+  "sq": "tooth injury extraction",
+  "hits": [
+   {
+    "title": "Dental extraction",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Dental_extraction"
+   },
+   {
+    "title": "Tooth ankylosis",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Tooth_ankylosis"
+   },
+   {
+    "title": "Tooth loss",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Tooth_loss"
+   }
+  ],
+  "pos": 2,
+  "ms": 2182
+ },
+ {
+  "id": 31,
+  "cat": "griddown",
+  "q": "how much bleach to purify drinking water",
+  "expect": "water (purification|disinfection|treatment)|bleach|chlorin|hypochlorite",
+  "sq": "bleach purification water",
+  "hits": [
+   {
+    "title": "Portable water purification",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Portable_water_purification"
+   },
+   {
+    "title": "Water supply and purification for emergencies",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Water_supply_and_purification_for_emergencies"
+   },
+   {
+    "title": "Solar water purification system with solar heating/ar",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Solar_water_purification_system_with_solar_heating/ar"
+   }
+  ],
+  "pos": 0,
+  "ms": 1277
+ },
+ {
+  "id": 32,
+  "cat": "griddown",
+  "q": "how long do I boil water to make it safe",
+  "expect": "boil|water purification|water treatment",
+  "sq": "boiling water safety",
+  "hits": [
+   {
+    "title": "Testing potability of rainwater after boiling at Isla Urbana and Ajusco Labs",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Testing_potability_of_rainwater_after_boiling_at_Isla_Urbana_and_Ajusco_Labs"
+   },
+   {
+    "title": "Boil-water advisory",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Boil-water_advisory"
+   },
+   {
+    "title": "Portable water purification",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Portable_water_purification"
+   }
+  ],
+  "pos": 0,
+  "ms": 1492
+ },
+ {
+  "id": 33,
+  "cat": "griddown",
+  "q": "build a simple water filter",
+  "expect": "filter",
+  "sq": "filter cotton sand gravel",
+  "hits": [
+   {
+    "title": "Water filter",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Water_filter"
+   },
+   {
+    "title": "Literature Review: Open Source Water Filter",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Literature_Review%3A_Open_Source_Water_Filter"
+   },
+   {
+    "title": "Practical Action/Slow sand filtration water treatment plants",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Practical_Action/Slow_sand_filtration_water_treatment_plants"
+   }
+  ],
+  "pos": 0,
+  "ms": 1458
+ },
+ {
+  "id": 34,
+  "cat": "griddown",
+  "q": "how to store food without a fridge",
+  "expect": "food (preservation|storage)|preserv|canning|drying|storage",
+  "sq": "food preservation cooling drying freezing",
+  "hits": [
+   {
+    "title": "Food preservation and storage",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Food_preservation_and_storage"
+   },
+   {
+    "title": "Preserving Food by Drying",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Preserving_Food_by_Drying"
+   },
+   {
+    "title": "Preserving Food by Drying/ru",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Preserving_Food_by_Drying/ru"
+   }
+  ],
+  "pos": 0,
+  "ms": 1759
+ },
+ {
+  "id": 35,
+  "cat": "griddown",
+  "q": "how to can vegetables safely",
+  "expect": "canning|botulism|preserv",
+  "sq": "canning vegetables safety pressure temperature",
+  "hits": [
+   {
+    "title": "Canning",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Canning"
+   },
+   {
+    "title": "Practical Action/Canning of foods",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Practical_Action/Canning_of_foods"
+   },
+   {
+    "title": "Structural supports for vegetables",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Structural_supports_for_vegetables"
+   }
+  ],
+  "pos": 0,
+  "ms": 2894
+ },
+ {
+  "id": 36,
+  "cat": "griddown",
+  "q": "how do I build a fallout shelter",
+  "expect": "fallout|nuclear|radiation",
+  "sq": "shelter construction bunker reinforcement fallout protection",
+  "hits": [
+   {
+    "title": "Eind1009 0 0 Lass\u00e9 Shelter Design by group 3V",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Eind1009_0_0_Lass%C3%A9_Shelter_Design_by_group_3V"
+   },
+   {
+    "title": "World Shelters Simple Square",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/World_Shelters_Simple_Square"
+   },
+   {
+    "title": "World Shelters - Bags of Shelter",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/World_Shelters_-_Bags_of_Shelter"
+   }
+  ],
+  "pos": -1,
+  "ms": 2586
+ },
+ {
+  "id": 37,
+  "cat": "griddown",
+  "q": "what to do after a nuclear explosion",
+  "expect": "nuclear|fallout|radiation",
+  "sq": "nuclear explosion radiation shelter survival",
+  "hits": [
+   {
+    "title": "Effects of nuclear explosions on human health",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Effects_of_nuclear_explosions_on_human_health"
+   },
+   {
+    "title": "Acute radiation syndrome",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Acute_radiation_syndrome"
+   },
+   {
+    "title": "Effects of ionizing radiation in spaceflight",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Effects_of_ionizing_radiation_in_spaceflight"
+   }
+  ],
+  "pos": 0,
+  "ms": 1910
+ },
+ {
+  "id": 38,
+  "cat": "griddown",
+  "q": "how to start a fire without matches",
+  "expect": "fire (start|making|lighting)|friction fire|fire without|firestarter|fire starter|starting a fire|tinder",
+  "sq": "fire kindling flint glass sun",
+  "hits": [
+   {
+    "title": "Momentum Fire Starter",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Momentum_Fire_Starter"
+   },
+   {
+    "title": "Kindling model of epilepsy",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Kindling_model_of_epilepsy"
+   },
+   {
+    "title": "Ben 2 and Ben 3 Firewood Stoves",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Ben_2_and_Ben_3_Firewood_Stoves"
+   }
+  ],
+  "pos": 0,
+  "ms": 2408
+ },
+ {
+  "id": 39,
+  "cat": "griddown",
+  "q": "a strong knot to tie a rope to a tree",
+  "expect": "knot|hitch|bowline",
+  "sq": "knot rope tree",
+  "hits": [
+   {
+    "title": "Knots",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Knots"
+   },
+   {
+    "title": "Bar Soap Rope",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Bar_Soap_Rope"
+   },
+   {
+    "title": "Rope pumps",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Rope_pumps"
+   }
+  ],
+  "pos": 0,
+  "ms": 1542
+ },
+ {
+  "id": 40,
+  "cat": "griddown",
+  "q": "how to wire a solar panel to a battery",
+  "expect": "charge controller|batter|wiring|photovoltaic system|off-grid|stand-alone",
+  "sq": "solar panel battery wire diode charge controller",
+  "hits": [
+   {
+    "title": "Creation of Modular Recyclable Solar Panels - Literature Review",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Creation_of_Modular_Recyclable_Solar_Panels_-_Literature_Review"
+   },
+   {
+    "title": "Optimizing reflector orientation for a solar panel at various latitudes/External reflectors for large solar collector arrays, simulation model and experimental results",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Optimizing_reflector_orientation_for_a_solar_panel_at_various_latitudes/External_reflectors_for_large_solar_collector_arrays%2C_simulation_model_and_experimental_results"
+   },
+   {
+    "title": "Ground mount fixed tilt PV racking literature review/Aerodynamics of Ground-Mounted Solar Panels: Test Model Scale Effects",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Ground_mount_fixed_tilt_PV_racking_literature_review/Aerodynamics_of_Ground-Mounted_Solar_Panels%3A_Test_Model_Scale_Effects"
+   }
+  ],
+  "pos": -1,
+  "ms": 2296
+ },
+ {
+  "id": 41,
+  "cat": "griddown",
+  "q": "how to dig a latrine",
+  "expect": "latrine|toilet|sanitation",
+  "sq": "latrine digging trench compost pit enclosure",
+  "hits": [
+   {
+    "title": "Latrine",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Latrine"
+   },
+   {
+    "title": "Practical Action/Ventilated Improved Pit Latrine",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Practical_Action/Ventilated_Improved_Pit_Latrine"
+   },
+   {
+    "title": "Single pit latrine",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Single_pit_latrine"
+   }
+  ],
+  "pos": 0,
+  "ms": 2475
+ },
+ {
+  "id": 42,
+  "cat": "griddown",
+  "q": "which wild plants are safe to eat",
+  "expect": "edible|wild|plant|forag",
+  "sq": "edible wild plants safety",
+  "hits": [
+   {
+    "title": "GEN Solution Library/Foraging wild edible plants",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/GEN_Solution_Library/Foraging_wild_edible_plants"
+   },
+   {
+    "title": "GEN Solution Library/Use the wild plants",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/GEN_Solution_Library/Use_the_wild_plants"
+   },
+   {
+    "title": "Zane Middle School/Edible landscape",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Zane_Middle_School/Edible_landscape"
+   }
+  ],
+  "pos": 0,
+  "ms": 1863
+ },
+ {
+  "id": 43,
+  "cat": "griddown",
+  "q": "how to purify water with sunlight",
+  "expect": "solar water disinfection|sodis|solar disinfection|uv",
+  "sq": "solar distillation UV radiation boiling filtration",
+  "hits": [
+   {
+    "title": "Solar distillation",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Solar_distillation"
+   },
+   {
+    "title": "Decreasing turbidity to optimize solar water disinfection lit review",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Decreasing_turbidity_to_optimize_solar_water_disinfection_lit_review"
+   },
+   {
+    "title": "Decreasing turbidity to optimize solar water disinfection lit review/Support for technology",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Decreasing_turbidity_to_optimize_solar_water_disinfection_lit_review/Support_for_technology"
+   }
+  ],
+  "pos": 1,
+  "ms": 2872
+ },
+ {
+  "id": 44,
+  "cat": "griddown",
+  "q": "how to stay warm when the power is out in winter",
+  "expect": "cold|winter|hypotherm|stove|warm|heating",
+  "sq": "blanket  jacket  thermal  insulation",
+  "hits": [
+   {
+    "title": "Thermal insulation",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Thermal_insulation"
+   },
+   {
+    "title": "Water Heater Blanket",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Water_Heater_Blanket"
+   },
+   {
+    "title": "Thermal Bridging Literature Review",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Thermal_Bridging_Literature_Review"
+   }
+  ],
+  "pos": -1,
+  "ms": 2524
+ },
+ {
+  "id": 45,
+  "cat": "griddown",
+  "q": "how to make soap",
+  "expect": "soap",
+  "sq": "soap making fats base lye",
+  "hits": [
+   {
+    "title": "Soap making",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Soap_making"
+   },
+   {
+    "title": "Soap",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Soap"
+   },
+   {
+    "title": "Practical Action/Soapmaking",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Practical_Action/Soapmaking"
+   }
+  ],
+  "pos": 0,
+  "ms": 1997
+ },
+ {
+  "id": 46,
+  "cat": "griddown",
+  "q": "how to signal for rescue",
+  "expect": "signal|rescue",
+  "sq": "rescue signal light smoke whistle flare",
+  "hits": [
+   {
+    "title": "Smoke",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Smoke"
+   },
+   {
+    "title": "Avalanche rescue",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Avalanche_rescue"
+   },
+   {
+    "title": "Rega (air rescue)",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Rega_(air_rescue)"
+   }
+  ],
+  "pos": 1,
+  "ms": 2640
+ },
+ {
+  "id": 47,
+  "cat": "griddown",
+  "q": "what should be in an emergency supply kit",
+  "expect": "kit|disaster suppl|are you ready|emergency suppl|preparedness",
+  "sq": "water food first aid blanket flashlight battery",
+  "hits": [
+   {
+    "title": "Practical Action/Water supplies for food processing",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Practical_Action/Water_supplies_for_food_processing"
+   },
+   {
+    "title": "Keeping Chickens/How poultry make use of food and water",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Keeping_Chickens/How_poultry_make_use_of_food_and_water"
+   },
+   {
+    "title": "Food Commons Rain Water Hydroponics",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Food_Commons_Rain_Water_Hydroponics"
+   }
+  ],
+  "pos": -1,
+  "ms": 2437
+ },
+ {
+  "id": 48,
+  "cat": "griddown",
+  "q": "how to preserve meat by drying it",
+  "expect": "jerky|dry|dried|dehydrat|preserv",
+  "sq": "drying meat preservation salt curing vacuum sealing",
+  "hits": [
+   {
+    "title": "Curing",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Curing"
+   },
+   {
+    "title": "Washing meat",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Washing_meat"
+   },
+   {
+    "title": "Meats",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Meats"
+   }
+  ],
+  "pos": -1,
+  "ms": 2559
+ },
+ {
+  "id": 49,
+  "cat": "griddown",
+  "q": "grow vegetables in a small space",
+  "expect": "garden|grow|vegetable",
+  "sq": "vertical gardening container composting shelf",
+  "hits": [
+   {
+    "title": "Container gardening",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Container_gardening"
+   },
+   {
+    "title": "Container composting",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Container_composting"
+   },
+   {
+    "title": "Composting",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Composting"
+   }
+  ],
+  "pos": 0,
+  "ms": 1992
+ },
+ {
+  "id": 50,
+  "cat": "griddown",
+  "q": "how to treat drinking water with iodine",
+  "expect": "iodine|water purification|water treatment",
+  "sq": "iodine water purification",
+  "hits": [
+   {
+    "title": "Iodine",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Iodine"
+   },
+   {
+    "title": "Portable water purification",
+    "book": "MDWiki Medical Encyclopedia",
+    "href": "/kiwix/content/mdwiki_en_all_maxi_2025-11/Portable_water_purification"
+   },
+   {
+    "title": "Water supply and purification for emergencies",
+    "book": "Appropedia",
+    "href": "/kiwix/content/appropedia_en_all_maxi_2026-02/Water_supply_and_purification_for_emergencies"
+   }
+  ],
+  "pos": 0,
+  "ms": 1797
+ }
+]

@@ -1,0 +1,12 @@
+[Unit]
+Description=Aftergrid: offline library server (kiwix)
+After=aftergrid-refresh.service
+Wants=aftergrid-refresh.service
+[Service]
+ExecStartPre=/bin/sh -c 'test -s /run/aftergrid/library.xml || /usr/local/bin/aftergrid-portal-refresh'
+ExecStart=/usr/bin/kiwix-serve --library --monitorLibrary --address=127.0.0.1 --port=8080 --urlRootLocation=/kiwix /run/aftergrid/library.xml
+Restart=always
+RestartSec=3
+DynamicUser=yes
+[Install]
+WantedBy=multi-user.target

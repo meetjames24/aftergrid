@@ -1,0 +1,57 @@
+#!/usr/bin/env python3
+"""Aftergrid meaning-based search for the first-aid cards and field manuals.
+Serves GET /search?q=...&k=8 on 127.0.0.1:8083 (proxied as /sem/ by lighttpd).
+Embeds the question with the local embedding server (127.0.0.1:8082) and compares it with a prebuilt index.
+Index: $AFTERGRID_INDEX (default: the library's ai/semantic folder) holding vectors.npy and meta.json.
+"""
+import glob, json, os, re, sys, urllib.parse, urllib.request
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+import numpy as np
+
+CANDIDATES = [os.environ.get("AFTERGRID_INDEX", ""), "/run/live/medium/aftergrid-library/ai/semantic",
+              "/opt/aftergrid-library/ai/semantic"]
+IDX = next((d for d in CANDIDATES if d and os.path.isfile(f"{d}/vectors.npy")), None)
+EMBED = "http://127.0.0.1:8082/v1/embeddings"
+QPREFIX = "Represent this sentence for searching relevant passages: "   # bge query instruction
+
+if not IDX: sys.exit("aftergrid-semantic: no index found")
+V = np.load(f"{IDX}/vectors.npy").astype(np.float32)
+META = json.load(open(f"{IDX}/meta.json"))
+
+def zim_stems():
+    """Book name -> current ZIM file stem (the stem carries a date that changes when a book is updated)."""
+    try: zims = json.load(open("/run/aftergrid/index.json")).get("zims", [])
+    except Exception: zims = [os.path.basename(z) for z in glob.glob("/run/live/medium/aftergrid-library/zim/*.zim")]
+    out = {}
+    for z in zims:
+        m = re.match(r"(.+?)_(\d{4}-\d{2})\.zim$", z)
+        if m: out[m.group(1)] = z[:-4]
+    return out
+
+def embed(text):
+    req = urllib.request.Request(EMBED, data=json.dumps({"input": [QPREFIX + text]}).encode(), headers={"Content-Type": "application/json"})
+    v = np.array(json.load(urllib.request.urlopen(req, timeout=20))["data"][0]["embedding"], dtype=np.float32)
+    return v / (np.linalg.norm(v) + 1e-9)
+
+class H(BaseHTTPRequestHandler):
+    def log_message(self, *a): pass
+    def send(self, code, obj):
+        b = json.dumps(obj).encode(); self.send_response(code)
+        self.send_header("Content-Type", "application/json"); self.send_header("Content-Length", str(len(b))); self.end_headers(); self.wfile.write(b)
+    def do_GET(self):
+        u = urllib.parse.urlparse(self.path); qs = urllib.parse.parse_qs(u.query)
+        if u.path.endswith("/health"): return self.send(200, {"status": "ok", "entries": len(META)})
+        if not u.path.endswith("/search"): return self.send(404, {"error": "not found"})
+        q = (qs.get("q") or [""])[0].strip()[:500]; k = min(20, int((qs.get("k") or ["8"])[0]))
+        if not q: return self.send(400, {"error": "q is empty"})
+        try: qv = embed(q)
+        except Exception as e: return self.send(503, {"error": f"embedding server unavailable: {e}"})
+        sims = V @ qv; top = np.argsort(-sims)[:k]; stems = zim_stems(); out = []
+        for i in top:
+            m = META[int(i)]; stem = stems.get(m["book"])
+            if not stem: continue
+            out.append({"title": m["title"], "book": m["book_title"], "href": f"/kiwix/content/{stem}/{m['path']}", "score": round(float(sims[i]), 4)})
+        self.send(200, {"results": out})
+
+if __name__ == "__main__":
+    ThreadingHTTPServer(("127.0.0.1", 8083), H).serve_forever()

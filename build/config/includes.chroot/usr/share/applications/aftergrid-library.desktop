@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Offline Library
+Comment=Wikipedia, medicine, survival guides (Kiwix)
+Exec=xdg-open http://localhost/topic.html?t=library
+Icon=kiwix-desktop
+Type=Application
+Categories=Education;

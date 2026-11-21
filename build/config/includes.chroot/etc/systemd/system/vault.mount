@@ -1,0 +1,7 @@
+[Unit]
+Description=Aftergrid VAULT (models + offline library)
+[Mount]
+What=/dev/disk/by-label/VAULT
+Where=/vault
+Type=exfat
+Options=uid=1000,gid=1000,umask=022,noatime

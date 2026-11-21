@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Winlink (Pat)
+Comment=Email over radio (needs a ham licence)
+Exec=sh -c 'pat http -a 127.0.0.1:8090 & sleep 2; xdg-open http://127.0.0.1:8090'
+Icon=mail-send
+Type=Application
+Categories=Network;HamRadio;

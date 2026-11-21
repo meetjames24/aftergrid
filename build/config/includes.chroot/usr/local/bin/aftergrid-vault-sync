@@ -1,0 +1,182 @@
+#!/usr/bin/env python3
+"""aftergrid-vault-sync: download / refresh Aftergrid's offline library and AI model onto the VAULT partition.
+
+Usage:  aftergrid-vault-sync [--dest /vault] [--yes] [--list] TIER [TIER ...]
+        aftergrid-vault-sync --from /media/OTHER-Aftergrid-VAULT     copy everything you lack from another Aftergrid (no internet)
+Tiers:  see --list   (default: core)
+Re-running is safe: finished files are skipped, partial files resume,
+and newer Kiwix releases replace older ones.
+"""
+import argparse, hashlib, json, os, re, shutil, subprocess, sys, urllib.request
+
+CATALOG = "/usr/share/aftergrid/catalog.json"
+UA = {"User-Agent": "aftergrid-vault-sync/1.0"}
+
+def human(n):
+    for u in ["B", "KB", "MB", "GB", "TB"]:
+        if n < 1024 or u == "TB":
+            return f"{n:.1f} {u}" if u != "B" else f"{n} B"
+        n /= 1024
+
+def http_get(url):
+    with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=60) as r:
+        return r.read().decode("utf-8", "replace")
+
+def http_size(url):
+    try:
+        req = urllib.request.Request(url, headers=UA, method="HEAD")
+        with urllib.request.urlopen(req, timeout=60) as r:
+            return int(r.headers.get("Content-Length") or 0)
+    except Exception:
+        return 0
+
+_listing = {}
+def kiwix_latest(base, d, prefix):
+    if d not in _listing:
+        _listing[d] = re.findall(r'href="([^"]+\.zim)"', http_get(f"{base}/{d}/"))
+    pat = re.compile(re.escape(prefix) + r"_(\d{4}-\d{2})\.zim$")
+    hits = sorted((m.group(1), f) for f in _listing[d] if (m := pat.match(f)))
+    if not hits:
+        raise RuntimeError(f"no ZIM found for {prefix} in {d}/")
+    return hits[-1][1]
+
+def resolve(cat, item, dest_root):
+    t = item["type"]
+    if t == "kiwix":
+        fname = kiwix_latest(cat["base_kiwix"], item["dir"], item["prefix"])
+        url = f'{cat["base_kiwix"]}/{item["dir"]}/{fname}'
+        return dict(url=url, path=os.path.join(dest_root, "zim", fname), sha_url=url + ".sha256",
+                    stale_glob=(os.path.join(dest_root, "zim"), re.compile(re.escape(item["prefix"]) + r"_\d{4}-\d{2}\.zim$"), fname))
+    if t == "hf":
+        url = f'https://huggingface.co/{item["repo"]}/resolve/main/{item["file"]}'
+        return dict(url=url, path=os.path.join(dest_root, item["dest"], item["file"]), sha_url=None, stale_glob=None)
+    if t == "pmtiles":
+        return dict(url=None, pmtiles=item, path=os.path.join(dest_root, "maps", item["name"] + ".pmtiles"), sha_url=None, stale_glob=None)
+    if t == "url":
+        return dict(url=item["url"], path=os.path.join(dest_root, item["dest"], item["name"]), sha_url=None, stale_glob=None)
+    raise ValueError(t)
+
+SHIPPED = ["/run/live/medium/aftergrid-library", "/opt/aftergrid-library"]
+def already_shipped(path):
+    """True if this exact file already ships inside Aftergrid (baked into the image)."""
+    parts = path.split(os.sep)
+    for sub in ("zim", "maps", "models", "library"):
+        if sub in parts:
+            rel = os.path.join(*parts[parts.index(sub):])
+            return any(os.path.exists(os.path.join(r, rel)) for r in SHIPPED)
+    return False
+
+def latest_protomaps():
+    import datetime
+    d = datetime.date.today()
+    for i in range(0, 15):
+        day = (d - datetime.timedelta(days=i)).strftime("%Y%m%d")
+        url = f"https://build.protomaps.com/{day}.pmtiles"
+        if http_size(url) > 0:
+            return url
+    raise RuntimeError("no recent Protomaps build reachable")
+
+def copy_from(src, dest):
+    """Peer sync: copy library files from another Aftergrid's VAULT (or any folder with the same layout)."""
+    n = 0
+    for sub in ("zim", "maps", "library", "models"):
+        for root, _, files in os.walk(os.path.join(src, sub)):
+            for f in files:
+                s = os.path.join(root, f); d = os.path.join(dest, os.path.relpath(s, src))
+                if os.path.exists(d) and os.path.getsize(d) == os.path.getsize(s):
+                    continue
+                os.makedirs(os.path.dirname(d), exist_ok=True)
+                print("  copying", os.path.relpath(s, src), human(os.path.getsize(s)))
+                shutil.copyfile(s, d + ".part"); os.replace(d + ".part", d); n += 1
+    print(f"Copied {n} file(s).")
+
+def sha256_file(p):
+    h = hashlib.sha256()
+    with open(p, "rb") as f:
+        for chunk in iter(lambda: f.read(8 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+def download(url, path):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    cmd = ["curl", "-fL", "--retry", "5", "--retry-delay", "5", "-C", "-", "--progress-bar",
+           "-o", path + ".part", url]
+    if subprocess.call(cmd) != 0:
+        raise RuntimeError("download failed: " + url)
+    os.replace(path + ".part", path)
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("tiers", nargs="*", default=["core"])
+    ap.add_argument("--dest", default="/vault")
+    ap.add_argument("--yes", "-y", action="store_true", help="don't ask for confirmation")
+    ap.add_argument("--list", action="store_true", help="show tiers and exit")
+    ap.add_argument("--catalog", default=CATALOG)
+    ap.add_argument("--from", dest="src", help="copy from another Aftergrid vault instead of the internet")
+    a = ap.parse_args()
+    if a.src:
+        return copy_from(a.src, a.dest)
+    cat = json.load(open(a.catalog))
+    if a.list:
+        for k, v in cat["tiers"].items():
+            print(f"  {k:10} {v['label']}")
+        return
+    if not os.path.isdir(a.dest) or not os.access(a.dest, os.W_OK):
+        sys.exit(f"{a.dest} is not mounted/writable. Run 'aftergrid' -> 'Set up this stick' first, or pass --dest.")
+    bad = [t for t in a.tiers if t not in cat["tiers"]]
+    if bad:
+        sys.exit(f"unknown tier(s): {bad}. Use --list.")
+
+    print("Checking what's new...")
+    plan, total = [], 0
+    for t in a.tiers:
+        for item in cat["tiers"][t]["items"]:
+            try:
+                r = resolve(cat, item, a.dest)
+            except Exception as e:
+                print(f"  ! skip ({e})"); continue
+            if os.path.exists(r["path"]) or already_shipped(r["path"]):
+                continue
+            r["size"] = http_size(r["url"]) if r["url"] else 0
+            done = os.path.getsize(r["path"] + ".part") if os.path.exists(r["path"] + ".part") else 0
+            total += max(r["size"] - done, 0)
+            plan.append(r)
+    free = shutil.disk_usage(a.dest).free
+    if not plan:
+        print("Everything in", ", ".join(a.tiers), "is already up to date."); return
+    for r in plan:
+        print(f"  + {os.path.relpath(r['path'], a.dest):70} {human(r['size'])}")
+    unknown = sum(1 for r in plan if not r["size"])
+    print(f"\nTo download: {human(total)}{' + map extracts (size shown while downloading)' if unknown else ''}   Free on vault: {human(free)}")
+    if total > free:
+        sys.exit("Not enough space on the vault. Pick fewer tiers or use a bigger drive.")
+    if not a.yes and input("Start? [Y/n] ").strip().lower() not in ("", "y", "yes"):
+        return
+
+    failed = []
+    for i, r in enumerate(plan, 1):
+        print(f"\n[{i}/{len(plan)}] {os.path.basename(r['path'])}")
+        try:
+            if r.get("pmtiles"):
+                m = r["pmtiles"]; os.makedirs(os.path.dirname(r["path"]), exist_ok=True)
+                if subprocess.call(["pmtiles", "extract", latest_protomaps(), r["path"] + ".part",
+                                    f"--bbox={m['bbox']}", f"--maxzoom={m['maxzoom']}"]) != 0:
+                    raise RuntimeError("map extract failed")
+                os.replace(r["path"] + ".part", r["path"]); continue
+            download(r["url"], r["path"])
+            if r["sha_url"]:
+                want = http_get(r["sha_url"]).split()[0].lower()
+                print("  verifying checksum...")
+                if sha256_file(r["path"]) != want:
+                    os.remove(r["path"]); raise RuntimeError("checksum mismatch, file removed")
+            if r["stale_glob"]:
+                d, pat, keep = r["stale_glob"]
+                for f in os.listdir(d):
+                    if pat.match(f) and f != keep:
+                        os.remove(os.path.join(d, f)); print("  removed old", f)
+        except Exception as e:
+            print("  !", e); failed.append(r["path"])
+    print("\nDone." if not failed else f"\nDone with {len(failed)} failure(s); re-run to retry.")
+
+if __name__ == "__main__":
+    main()

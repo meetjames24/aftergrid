@@ -1,0 +1,17 @@
+[Desktop Entry]
+Name=Aftergrid Control
+Name[el]=Έλεγχος Aftergrid
+Name[fr]=Contrôle Aftergrid
+Name[de]=Aftergrid-Steuerung
+Name[pt]=Controle Aftergrid
+Name[tr]=Aftergrid Kontrol
+Comment=Set up the stick, download the library, status
+Comment[el]=Ρύθμιση του stick, λήψη βιβλιοθήκης, κατάσταση
+Comment[fr]=Configurer la clé, télécharger la bibliothèque, état
+Comment[de]=Stick einrichten, Bibliothek laden, Status
+Comment[pt]=Configurar o pendrive, baixar a biblioteca, status
+Comment[tr]=Belleği kur, kütüphaneyi indir, durum
+Exec=/usr/local/bin/aftergrid
+Icon=aftergrid-os
+Type=Application
+Categories=System;

@@ -1,0 +1,207 @@
+[
+ {
+  "q": "How do I stop heavy bleeding from a leg wound?",
+  "must": [
+   "/pressure/i",
+   "/tourniquet/i"
+  ],
+  "mustNot": [
+   "/elastic (bandage|band)[^.]*tourniquet|tourniquet[^.]*elastic(?! )/i"
+  ],
+  "answer": "To stop heavy bleeding from a leg wound:\n\n1. Make sure you are safe, then send someone for help.  \n2. Apply firm pressure directly on the wound using a clean cloth, gauze, or your gloved hand. Do not lift to check the bleeding—keep pressing.  \n3. For a deep wound in the leg: pack cloth or gauze tightly into the wound and continue pressing.  \n4. If bleeding is life-threatening (spurting, pooling, soaking through), apply a tourniquet immediately, 5 to 7 cm (2 to 3 inches) above the wound, not on a joint.  \n5. Tighten the tourniquet until bleeding stops. Use a strip of strong, non-stretchy cloth at least 4 cm (1.5 inches) wide, tied around the limb, with a stick through the knot twisted until bleeding stops, then tied in place.  \n6. Keep the person lying down and warm.  \n7. Do not remove the tourniquet once it is on.  \n\nSevere bleeding from a leg requires hospital treatment even after it stops [1].  \n\nReference: [1]",
+  "sources": [
+   "1\nSevere bleeding\n· Aftergrid First Aid Cards",
+   "2\nCleaning a wound and spotting infection\n· Aftergrid First Aid Cards",
+   "3\nArmy First Aid (FM 4-25.11), p. 17: bleeding from an open wound, stop the evaluation and begin first aid\n· Field Manuals (searchable)"
+  ],
+  "cites": 2,
+  "warn": "",
+  "missing": [],
+  "bad": [],
+  "pass": true,
+  "secs": 148
+ },
+ {
+  "q": "my kid swallowed something and can't breathe",
+  "must": [
+   "/back blow|abdominal thrust|chest thrust|heimlich/i"
+  ],
+  "mustNot": [],
+  "answer": "Your kid swallowed something and can't breathe. This is a medical emergency.\n\nIf the child is under 1 year old, lay them face down along your forearm, head lower than the body, supporting the jaw with your hand. Give up to 5 firm back blows between the shoulder blades with the heel of your hand [1]. Do not use abdominal thrusts [1].\n\nIf the child is over 1 year old, ask: \"Are you choking?\" If they can cough, speak, or breathe, encourage them to keep coughing. If they cannot cough, speak, or breathe, stand behind them, lean them forward, and give up to 5 firm back blows. If still choking, give up to 5 abdominal thrusts (fist above navel, pull sharply in and up) [3]. Each time you open the airway, look in the mouth and remove any visible object [3].\n\nGet help urgently:  \n- Always get a baby checked after a choking episode that needed back blows or thrusts [1].  \n- Anyone who needed abdominal thrusts should be checked by a clinician — the thrusts can cause internal injury [3].  \n- If there is any sign of breathing trouble, drowsiness, seizures, or if corrosive substances were swallowed, get help immediately [2].\n\nDo not:  \n- Make them vomit [2].\n\nImmediate action:  \nCall emergency services or go to the nearest hospital right away. This is not a situation to wait or manage at home.  \n\nSafety first: A child who cannot breathe requires immediate medical attention. Do not delay. Evacuate or call emergency services now.",
+  "sources": [
+   "1\nChoking (baby under 1 year)\n· Aftergrid First Aid Cards",
+   "2\nPoisoning (swallowed), including wild mushrooms\n· Aftergrid First Aid Cards",
+   "3\nChoking (adult or child over 1 year)\n· Aftergrid First Aid Cards"
+  ],
+  "cites": 8,
+  "warn": "",
+  "missing": [],
+  "bad": [],
+  "pass": true,
+  "secs": 139
+ },
+ {
+  "q": "someone collapsed and isn't breathing",
+  "must": [
+   "/compression|cpr/i",
+   "/100|120|5 cm|2 inch/i"
+  ],
+  "mustNot": [],
+  "answer": "If someone has collapsed and isn't breathing:\n\n1. Tap the shoulders and shout to check for response.  \n2. If there is no response and no breathing (or only gasping), shout for help and send someone for an AED (defibrillator) if one exists.  \n3. Kneel beside the person.  \n4. If trained and willing, after every 30 compressions, give 2 rescue breaths: tilt the head back, lift the chin, pinch the nose, and breathe in until the chest rises.  \n5. If not trained, continue chest compressions only.  \n6. Do not stop compressions for more than about 10 seconds.  \n7. Keep going until the person starts breathing normally, trained help takes over, or you are too exhausted to continue.  \n8. Swap with another person every 2 minutes if possible.  \n\nCardiac arrest is a medical emergency. Do not stop compressions for more than 10 seconds [1].  \n\nNote: If cardiac arrest occurs after 20 weeks of pregnancy, someone should pull or push the uterus to the left during CPR. If a pulse has not returned by four minutes, emergency Cesarean section is recommended [2].  \n\nAlways seek trained medical help immediately. This is not a substitute for professional care [1].",
+  "sources": [
+   "1\nCPR for adults (not breathing)\n· Aftergrid First Aid Cards",
+   "2\nCardiac arrest\n· MDWiki Medical Encyclopedia",
+   "3\nRespiratory failure\n· MDWiki Medical Encyclopedia"
+  ],
+  "cites": 3,
+  "warn": "",
+  "missing": [
+   "/100|120|5 cm|2 inch/i"
+  ],
+  "bad": [],
+  "pass": false,
+  "secs": 196
+ },
+ {
+  "q": "bee sting, face swelling up, can't breathe",
+  "must": [
+   "/epinephrine|adrenaline|epipen|auto-?injector/i"
+  ],
+  "mustNot": [],
+  "answer": "Bee sting, face swelling, and inability to breathe are signs of a severe allergic reaction (anaphylaxis) [1]. \n\nImmediate action: Give epinephrine (adrenaline) right away if an auto-injector (e.g., EpiPen) is available. Inject into the outer thigh, through clothing if needed [1].\n\nThis is a life-threatening emergency and requires trained medical help immediately. Do not delay. Evacuate the person to a medical facility after administering epinephrine [1]. \n\nNote: The library does not specify dosage, timing, or duration of epinephrine administration — only that it should be given \"right away\" [1]. For precise dosing, consult medical guidelines or the auto-injector instructions.",
+  "sources": [
+   "1\nSevere allergic reaction (anaphylaxis)\n· Aftergrid First Aid Cards",
+   "2\nAnaphylaxis\n· MDWiki Medical Encyclopedia",
+   "3\nArmy First Aid (FM 4-25.11), p. 140: Insect bites/stings may cause anaphylactic shock (a\n· Field Manuals (searchable)"
+  ],
+  "cites": 4,
+  "warn": "",
+  "missing": [],
+  "bad": [],
+  "pass": true,
+  "secs": 123
+ },
+ {
+  "q": "how to treat a burn from boiling water",
+  "must": [
+   "/cool/i",
+   "/20 minutes|running water/i"
+  ],
+  "mustNot": [],
+  "answer": "To treat a burn from boiling water:\n\n1. Stop the burning: Remove the person from the heat source [1].  \n2. Cool the burn under cool running water (not ice-cold) for 20 minutes [1]. Start as soon as possible; cooling helps up to 3 hours after the burn [1].  \n3. Remove rings, watches, or clothing near the burn unless stuck to the skin [1].  \n4. Cover the burn loosely with cling film or a clean, non-fluffy cloth [1].  \n5. Keep the rest of the person warm, as large burns can cause dangerous cooling [1].  \n\nDo not use ice, butter, oil, toothpaste, or creams [1].  \n\nGet help urgently if:  \n- The burn is larger than the person's palm,  \n- It is on the face, hands, feet, genitals, or across joints,  \n- It is a deep burn (white, leathery, or charred),  \n- It is in a baby, child, or older adult, or  \n- There is trouble breathing after smoke exposure [1].  \n\nNote: Boiling water causes a scald, which is typically a first- or second-degree burn; third-degree burns can result from prolonged contact [3].",
+  "sources": [
+   "1\nBurns and scalds\n· Aftergrid First Aid Cards",
+   "2\nMaking water safe to drink\n· Aftergrid First Aid Cards",
+   "3\nThermal burn\n· MDWiki Medical Encyclopedia"
+  ],
+  "cites": 9,
+  "warn": "",
+  "missing": [],
+  "bad": [],
+  "pass": true,
+  "secs": 150
+ },
+ {
+  "q": "what are the warning signs of heat stroke",
+  "must": [
+   "/confus/i",
+   "/cool/i"
+  ],
+  "mustNot": [],
+  "answer": "The warning signs of heat stroke include:\n\n- Very hot skin (dry or sweaty)  \n- Confusion or strange behaviour  \n- Collapse or seizures after heat or hard exercise  \n- Disorientation  \n- Lack of sweating (in classic heat stroke), though excessive sweating may occur in exertional heat stroke  \n- Red, flushed skin  \n- High body temperature greater than 40.6 °C (105.1 °F)  \n- Symptoms may be harder to notice if heat stroke occurs while asleep  \n\nThese signs are based on the presence of hyperthermia in combination with disorientation and a failure of the body’s cooling mechanism [2]. In classic heat stroke, there is generally a lack of sweating, while in exertional heat stroke, sweating is present [2].  \n\nNote: Heat stroke is an emergency; immediate cooling and medical help are required [1].  \n\nFor young children or elderly adults left alone in a vehicle, heat stroke can occur within minutes, even with a slightly opened window [2].  \n\nAlways seek trained medical help immediately upon recognizing these signs.",
+  "sources": [
+   "1\nHeat stroke and heat exhaustion\n· Aftergrid First Aid Cards",
+   "2\nHeat stroke\n· MDWiki Medical Encyclopedia",
+   "3\nArmy First Aid (FM 4-25.11), p. 114: Signs and symptoms. A service member suffering\n· Field Manuals (searchable)"
+  ],
+  "cites": 4,
+  "warn": "",
+  "missing": [],
+  "bad": [],
+  "pass": true,
+  "secs": 129
+ },
+ {
+  "q": "how do I make oral rehydration solution",
+  "must": [
+   "/6 (level )?teaspoons|six (level )?teaspoons/i",
+   "/half|1\\/2|½/i"
+  ],
+  "mustNot": [],
+  "answer": "To make homemade oral rehydration solution (ORS):\n\n- 1 litre of clean water  \n- 6 level teaspoons of sugar  \n- Half a level teaspoon of salt  \n\nStir until dissolved [1].",
+  "sources": [
+   "1\nDehydration, diarrhoea and oral rehydration solution\n· Aftergrid First Aid Cards",
+   "2\nElectrolyte\n· MDWiki Medical Encyclopedia",
+   "3\nDiarrhea\n· MDWiki Medical Encyclopedia"
+  ],
+  "cites": 1,
+  "warn": "",
+  "missing": [],
+  "bad": [],
+  "pass": true,
+  "secs": 104
+ },
+ {
+  "q": "running a generator indoors and everyone has a headache",
+  "must": [
+   "/carbon monoxide/i",
+   "/fresh air|outside|outdoors/i"
+  ],
+  "mustNot": [],
+  "answer": "Running a generator indoors and everyone having a headache is a sign of carbon monoxide (CO) poisoning [1]. Carbon monoxide is a colorless, odorless gas produced by incomplete combustion, and when inhaled in excess, it can cause symptoms such as headache, dizziness, weakness, nausea, confusion, and sleepiness [1]. Since the symptoms are non-specific and can mimic other conditions like flu or fatigue, it is critical to suspect CO poisoning when multiple people (or pets) in the same place experience similar symptoms [1].\n\nImmediate action:\n- Get everyone out of the enclosed space into fresh air immediately [1].\n- Do not go back inside until the source (e.g., generator) is turned off and the area is well-ventilated [1].\n- Turn off the generator only if it is safe to do so; otherwise, do not risk further exposure [1].\n\nNote: Carbon monoxide poisoning can have delayed effects, and pregnant women and children are at higher risk [1]. If symptoms persist or worsen, seek urgent medical help [1].\n\nTreatment:\n- Initial treatment is to remove the person from exposure [2].\n- For those with high CO levels, oxygen therapy may be needed:  \n  - 21% oxygen at normal atmospheric pressure (fresh air) for 5 hours 20 minutes to reduce carboxyhemoglobin by 50% [2].  \n  - 100% oxygen via non-rebreather mask for 1 hour 20 minutes [2].  \n  - 100% hyperbaric oxygen at 3 atmospheres absolute for 23 minutes [2].\n\nThis situation requires urgent attention and evacuation. A trained clinician or emergency medical services should be contacted immediately [1]. Do not delay medical evaluation, especially if symptoms persist or if anyone is unconscious [2]. \n\nSource: [1], [2]",
+  "sources": [
+   "1\nCarbon monoxide poisoning\n· Aftergrid First Aid Cards",
+   "2\nCarbon monoxide poisoning\n· MDWiki Medical Encyclopedia",
+   "3\nIndoor air quality\n· MDWiki Medical Encyclopedia"
+  ],
+  "cites": 16,
+  "warn": "",
+  "missing": [],
+  "bad": [],
+  "pass": true,
+  "secs": 218
+ },
+ {
+  "q": "how much bleach to purify drinking water",
+  "must": [
+   "/(2|two) drops/i",
+   "/30 minutes/i"
+  ],
+  "mustNot": [],
+  "answer": "To purify drinking water using bleach, use plain, unscented household bleach (6% or 8.25% sodium hypochlorite). Add:\n\n- 2 drops per litre (or quart), or  \n- 8 drops of 6% bleach / 6 drops of 8.25% bleach per gallon.\n\nDouble this amount if the water is cloudy or very cold. Stir and let the water stand for 30 minutes. It should smell slightly of chlorine; if not, repeat the dose and wait 15 more minutes [1].",
+  "sources": [
+   "1\nMaking water safe to drink\n· Aftergrid First Aid Cards",
+   "2\nDrinking water\n· MDWiki Medical Encyclopedia",
+   "3\nChlorine\n· MDWiki Medical Encyclopedia"
+  ],
+  "cites": 1,
+  "warn": "",
+  "missing": [],
+  "bad": [],
+  "pass": true,
+  "secs": 133
+ },
+ {
+  "q": "nosebleed that won't stop",
+  "must": [
+   "/lean(ing)? forward/i",
+   "/pinch/i"
+  ],
+  "mustNot": [],
+  "answer": "For a nosebleed that won't stop:\n\n- Apply direct pressure to the soft part of the nose (below the bony bridge) firmly and continuously for 10 to 15 minutes [1].\n- If the bleeding continues after 20 minutes of direct pressure, seek medical attention [2].\n- If pressure and chemical cauterization fail, nasal packing (such as with a balloon catheter like the Rapid Rhino) may be used [2].\n- If bleeding persists despite good nasal packing, it is a surgical emergency and requires endoscopic evaluation under general anesthesia to identify and ligate the bleeding vessels [2].\n\nNote: Always seek trained medical help if the nosebleed lasts longer than 20 minutes or if it does not stop with first aid measures [2].",
+  "sources": [
+   "1\nNosebleed\n· Aftergrid First Aid Cards",
+   "2\nNosebleed\n· MDWiki Medical Encyclopedia",
+   "3\nNasal septum deviation\n· MDWiki Medical Encyclopedia"
+  ],
+  "cites": 5,
+  "warn": "",
+  "missing": [
+   "/lean(ing)? forward/i",
+   "/pinch/i"
+  ],
+  "bad": [],
+  "pass": false,
+  "secs": 136
+ }
+]

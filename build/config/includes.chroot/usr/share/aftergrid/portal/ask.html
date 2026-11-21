@@ -1,0 +1,202 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ask Aftergrid</title><link rel="stylesheet" href="/aftergrid.css"></head><body>
+<main><div class="chat">
+<h2 data-t>Ask Aftergrid (offline AI)</h2>
+<div id="state" class="note" data-t>Checking the local AI…</div>
+<form id="f" class="composer"><input id="q" data-tp placeholder="e.g. how do I make water safe to drink with bleach?" autocomplete="off"><button class="primary" data-t>Ask</button></form>
+<label id="enlbl" hidden style="display:block;margin:0 0 6px 6px;color:var(--dim);font-size:14px"><input type="checkbox" id="en"> <span data-t>Answer in English (more accurate with the small AI)</span></label>
+<div id="qecho" class="bubble-q" hidden></div>
+<div id="ailbl" class="ai-label" hidden><img src="/aftergrid-mark.svg" alt="">Aftergrid <span class="badge" data-t>offline</span></div>
+<div id="out" class="answer" hidden></div>
+<h2 id="srch" hidden data-t>Sources used</h2><div id="src" class="src"></div>
+<div id="figs" class="figs"></div>
+</div></main>
+<script src="/aftergrid-i18n.js"></script><script src="/aftergrid.js"></script>
+<script>
+// Retrieval-augmented answers: search the offline library, read the top articles,
+// then ask the local model to answer ONLY from those excerpts and cite them.
+const SYSTEM = `You are Aftergrid, an offline field reference. The internet may be down.
+Answer ONLY from the numbered library excerpts provided. Cite them like [1], [2].
+If the excerpts do not contain the answer, say so plainly and suggest what to search for.
+Give doses, temperatures, times and quantities exactly as an excerpt states them. If no excerpt gives the number, write that the library does not give it here; never fill it in from memory.
+For first aid, keep the key numbers the excerpts give (how deep, how fast, how long, how much); they matter.
+Safety first, then numbered steps. For an emergency, always include what to do right now, even if the question only asks about signs. Say clearly when something needs a trained clinician or evacuation. Be brief.`;
+
+async function articleText(href, words) {
+  try {
+    const html = await (await fetch(href)).text();
+    const d = new DOMParser().parseFromString(html, 'text/html');
+    d.querySelectorAll('script,style,nav,table.infobox,.navbox,sup,footer').forEach(n => n.remove());
+    const t = (d.body ? d.body.textContent : '').replace(/\s+/g, ' ').trim();
+    if (t.length <= 2700) return t;   // short sources (first-aid cards, manual pages) go in whole: every step matters
+    // Keep the passages that mention the question's words, not just the start of the article.
+    const parts = t.match(/(?:[^.!?]|[.!?](?=\d))+[.!?]*/g) || [t];   // don't split 8.25 at the dot
+    // Rare question words (e.g. "bleach") count more than common ones (e.g. "water").
+    const low = parts.map(p => p.toLowerCase());
+    const wt = Object.fromEntries(words.map(w => [w, 1 / (1 + low.filter(p => p.includes(w)).length)]));
+    const score = s => words.reduce((n, w) => n + (s.toLowerCase().includes(w) ? wt[w] : 0), 0);
+    // Spend the budget on the best passages first (plus the sentence after each), then restore article order.
+    const keep = new Set([0]); let used = parts[0].length;
+    for (const [, i] of parts.map((s, i) => [score(s), i]).filter(x => x[0] > 0).sort((a, b) => b[0] - a[0] || a[1] - b[1])) {
+      for (const j of [i, i + 1]) if (j < parts.length && !keep.has(j) && used + parts[j].length < 2600) { keep.add(j); used += parts[j].length; }
+      if (used > 2400) break;
+    }
+    let out = '', last = -2;
+    [...keep].sort((a, b) => a - b).forEach(i => { out += (i === last + 1 ? '' : ' … ') + parts[i].trim() + ' '; last = i; });
+    return out.slice(0, 2800);
+  } catch (e) { return ''; }
+}
+// Light markdown for the model's answer: **bold**, *italic*, > notes. Text is escaped first.
+function md(t) {
+  return t.replace(/[&<>]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;'}[c]))
+    .replace(/^&gt;\s?/gm, '').replace(/^#{1,4}\s*/gm, '')
+    .replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<i>$2</i>');
+}
+// Diagrams from cited first-aid cards: shown under the sources, tap to open full size.
+async function showDiagrams(hits) {
+  const box = document.getElementById('figs'); box.innerHTML = '';
+  for (const h of hits.filter(h => /first aid card/i.test(h.book))) {
+    try {
+      const d = new DOMParser().parseFromString(await (await fetch(h.href)).text(), 'text/html');
+      for (const img of d.querySelectorAll('figure.dg img')) {
+        const url = new URL(img.getAttribute('src'), location.origin + h.href).pathname;
+        const f = document.createElement('a'); f.href = url; f.target = '_blank'; f.className = 'fig';
+        f.innerHTML = `<img src="${url}" alt="${(img.alt || '').replace(/"/g, '&quot;')}" loading="lazy">`;
+        box.append(f);
+      }
+    } catch (e) {}
+  }
+}
+// Citation links: each [n] opens source n at the excerpt sentence that best matches the answer sentence around it.
+const SENT = /(?:[^.!?]|[.!?](?=\d))+[.!?]*/g;
+function bestSentence(claim, excerpt) {
+  const ws = new Set(claim.toLowerCase().split(/[^\p{L}\d]+/u).filter(w => w.length > 3));
+  let best = '', bs = -1;
+  for (const raw of (excerpt.replace(/ … /g, '. ').match(SENT) || [])) {
+    const t = raw.trim(); if (t.length < 25) continue;
+    const sc = t.toLowerCase().split(/[^\p{L}\d]+/u).filter(w => ws.has(w)).length;
+    if (sc > bs) { bs = sc; best = t; }
+  }
+  return best.slice(0, 300);
+}
+function readLink(h, hl) { return '/read.html?u=' + encodeURIComponent(h.href) + (hl ? '&hl=' + encodeURIComponent(hl) : ''); }
+function linkCitations(html, hits, texts) {
+  return html.replace(/\[(\d)\]/g, (m, n, at) => {
+    const h = hits[n - 1]; if (!h) return m;
+    const before = html.slice(0, at).replace(/<[^>]+>/g, ' '), after = html.slice(at).replace(/<[^>]+>/g, ' ');
+    const claim = (before.split(/[.!?]\s/).pop() || '') + ' ' + (after.split(/[.!?]\s/)[0] || '');
+    return `<a class="cite" href="${readLink(h, bestSentence(claim, texts[n - 1] || ''))}" title="${h.title.replace(/"/g, '&quot;')}">[${n}]</a>`;
+  });
+}
+// Every number in the answer must appear in the excerpts; anything else is flagged to the reader.
+const NUMW = {one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,ten:10,eleven:11,twelve:12,fifteen:15,twenty:20,thirty:30,sixty:60,hundred:100};
+function numbers(s) { s = s.toLowerCase().replace(/\b(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|fifteen|twenty|thirty|sixty|hundred)\b/g, w => NUMW[w]);
+  return new Set((s.match(/\d+(?:[.,]\d+)?/g) || []).map(n => n.replace(',', '.'))); }
+
+// Find the best library passages for a question. Exposed as window.agRetrieve for the test harness.
+async function retrieve(q, up) {
+  let sq = q, titles = [];
+  if (up) {   // English search words plus the encyclopedia titles that likely answer it ("generator indoors, headache" -> "Carbon monoxide poisoning")
+    try {
+      const r = await fetch('/ai/v1/chat/completions', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({temperature: 0, max_tokens: 80,
+        response_format: {type: 'json_schema', json_schema: {schema: {type: 'object', properties: {keywords: {type: 'string'}, titles: {type: 'array', items: {type: 'string'}, maxItems: 3}}, required: ['keywords', 'titles']}}},
+        messages: [{role: 'system', content: "Turn the question into an English encyclopedia search. keywords: the 2-4 most important English nouns. titles: up to 3 titles of medical or practical encyclopedia articles that would answer it, for example 'Carbon monoxide poisoning' or 'Water purification'. Reply as JSON."}, {role: 'user', content: q}]})});
+      const j = JSON.parse((await r.json()).choices[0].message.content);
+      sq = String(j.keywords || '').replace(/[^\w\s-]/g, ' ').trim() || q;
+      titles = (j.titles || []).map(t => String(t).replace(/[^\w\s()'-]/g, ' ').trim()).filter(Boolean).slice(0, 3);
+    } catch (e) {}
+  }
+  // Re-rank: articles whose title names a word from the question come first.
+  const STOP = new Set('what when where which with from that this have does should about into your their there them then than will would could make made safe good best much many some most more very also only just like does doing done need want know tell help'.split(' '));
+  const words = [...new Set((sq + ' ' + q + ' ' + titles.join(' ')).toLowerCase().split(/[^\p{L}\d]+/u).filter(w => w.length > 3 && !STOP.has(w)))];
+  // Search the keywords, plus each adjacent pair of them ("heat stroke" inside "warning signs heat stroke"),
+  // so one vague word can't drown the article the question is really about.
+  const kw = sq.toLowerCase().split(/\s+/).filter(w => w.length > 2 && !STOP.has(w));
+  const queries = [...new Set([sq, ...titles, ...kw.slice(0, -1).map((w, i) => w + ' ' + kw[i + 1])])].slice(0, 7);
+  // Words too generic to tie a card to a question ("Soap making" must not pull up "Making water safe to drink").
+  const GENERIC = new Set('making safe signs care treatment first emergency severe over under year including what when'.split(' '));
+  const cardFits = title => title.toLowerCase().split(/[^\p{L}\d]+/u).some(w => w.length > 3 && !GENERIC.has(w) && words.includes(w));
+  const seen = new Set(), pool = [];
+  // Meaning-based search over the first-aid cards and field manuals (finds "generator indoors" -> carbon monoxide card).
+  const sem = fetch('/sem/search?k=6&q=' + encodeURIComponent(Aftergrid.lang === 'en' ? q : [sq, ...titles].join(' ')))
+    .then(r => r.ok ? r.json() : {results: []}).then(j => j.results || []).catch(() => []);
+  const [semHits, ...lists] = await Promise.all([sem, ...queries.map(x => Aftergrid.searchAll(x, 10))]);
+  for (const h of semHits) {   // a close meaning match earns a boost; a weak one only joins the pool
+    // bge-small scores: ~.66+ is a strong match, .60-.66 related. Cards are vetted, so they get the larger boost.
+    // A card only counts as a card when its title shares a word with the question or the AI's search terms
+    // (stops "start a fire" from pulling up the Burns card).
+    const card = /first aid card/i.test(h.book) && (cardFits(h.title) || h.score >= .75);   // or a very strong meaning match
+    const boost = h.score >= .66 ? (card ? 32 : 14) : h.score >= .62 ? (card ? 20 : 6) : h.score >= .58 && card ? 8 : -1;
+    if (boost < 0 || seen.has(h.href)) continue;
+    seen.add(h.href); pool.push({title: h.title, href: h.href, book: h.book, snippet: '', sem: boost, card});
+  }
+  for (const list of lists)
+    for (const h of list) { const s0 = pool.find(x => x.href === h.href); if (s0) continue; if (!seen.has(h.href)) { seen.add(h.href); pool.push(h); } }
+  // Rank: title words from the question, titles the AI predicted, and our vetted first-aid cards first.
+  const want = titles.map(t => t.toLowerCase());
+  const rank = (h, i) => { const t = h.title.toLowerCase();
+    return words.filter(w => t.includes(w)).length * 10 + (t.split(/\s+/).every(x => words.includes(x)) ? 15 : 0)
+      + (want.some(w => t === w || t.startsWith(w + ' (')) ? 40 : want.some(w => t.includes(w) || w.includes(t)) ? 15 : 0)
+      + (/first aid card/i.test(h.book) && (h.card || cardFits(t)) ? 25 : 0) + (h.sem || 0) - i * .2; };
+  // Best three; within them, a vetted first-aid card goes first so the AI leans on it.
+  const isCard = h => /first aid card/i.test(h.book) && (h.card || cardFits(h.title));
+  const hits = pool.map((h, i) => ({h, s: rank(h, i)})).sort((a, b) => b.s - a.s).slice(0, 3).map(x => x.h)
+                   .sort((a, b) => isCard(b) - isCard(a));
+  return {sq, titles, words, hits};
+}
+window.agRetrieve = retrieve;
+
+Aftergrid.load().then(async () => {
+  Aftergrid.header('Ask');
+  const st = document.getElementById('state');
+  let up = false;
+  try { up = (await fetch('/ai/health')).ok; } catch (e) {}
+  const INTL = Aftergrid.lang !== 'en' && !!AFTERGRID_I18N[Aftergrid.lang];   // asking in another language
+  const LANGNAME = {el: 'Greek (Ελληνικά)', fr: 'French', de: 'German', pt: 'Portuguese', tr: 'Turkish'}[Aftergrid.lang] || 'English';
+  st.textContent = up
+    ? Aftergrid.T(INTL ? 'Local AI is running. Ask in your language: it searches the library (mostly English) and lists its sources. The small AI makes mistakes outside English: for medical or critical topics, read the source or ask for an English answer.'
+                   : 'Local AI is running. Answers come from this Aftergrid\'s library and list their sources. Always check the source for anything critical.')
+    : Aftergrid.T('Local AI is not running. On the Aftergrid desktop: Aftergrid Control → Start local AI. Library search still works: use the search box above.');
+  if (INTL) document.getElementById('enlbl').hidden = false;
+  document.getElementById('f').onsubmit = async (ev) => {
+    ev.preventDefault(); window.aftergridAskDone = false;
+    try { await ask(); } finally { window.aftergridAskDone = true; }   // every exit, including errors and 'AI is off'
+  };
+  async function ask() {
+    const q = document.getElementById('q').value.trim(); if (!q) return;
+    const out = document.getElementById('out'), src = document.getElementById('src');
+    const qe = document.getElementById('qecho'); qe.textContent = q; qe.hidden = false; document.getElementById('ailbl').hidden = false;
+    document.getElementById('q').value = '';
+    out.hidden = false; out.textContent = Aftergrid.T('Searching the library…'); src.innerHTML = '';
+    const {sq, words, hits} = await retrieve(q, up);
+    if (!hits.length) { out.textContent = Aftergrid.T('Nothing in the library matched. Try different words.'); return; }
+    document.getElementById('srch').hidden = false;
+    hits.forEach((h, i) => { const a = document.createElement('a'); a.href = h.href; a.innerHTML = `<b>${i + 1}</b> ${h.title.replace(/</g, '&lt;')} <span style="color:var(--dim)">· ${h.book.replace(/</g, '&lt;')}</span>`; src.append(a); });
+    showDiagrams(hits);   // pictures from the cited first-aid cards appear at once, before the AI has finished
+    if (!up) { out.textContent = Aftergrid.T('Local AI is off. Here are the most relevant articles:'); return; }
+    out.textContent = Aftergrid.T('Reading articles…');
+    const texts = await Promise.all(hits.map(h => articleText(h.href, words)));
+    const ctx = hits.map((h, i) => `[${i + 1}] ${h.title}\n${texts[i] || h.snippet}`).join('\n\n');
+    out.textContent = '';
+    const r = await fetch('/ai/v1/chat/completions', {method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({stream: true, temperature: 0, max_tokens: 700, messages: [
+        {role: 'system', content: SYSTEM + (INTL && !document.getElementById('en').checked ? `\nWrite the whole answer in ${LANGNAME}, keeping the [n] citations.` : '')}, {role: 'user', content: `Library excerpts:\n\n${ctx}\n\nQuestion: ${q}`}]})});
+    const rd = r.body.getReader(), dec = new TextDecoder(); let buf = '', raw = '';
+    while (true) {
+      const {done, value} = await rd.read(); if (done) break;
+      buf += dec.decode(value, {stream: true});
+      const lines = buf.split('\n'); buf = lines.pop();
+      for (const l of lines) {
+        if (!l.startsWith('data: ') || l.includes('[DONE]')) continue;
+        try { raw += JSON.parse(l.slice(6)).choices[0].delta.content || ''; out.innerHTML = md(raw); } catch (e) {}
+      }
+    }
+    out.innerHTML = linkCitations(md(raw), hits, texts);
+    src.querySelectorAll('a').forEach((a, i) => { a.href = readLink(hits[i], bestSentence(raw, texts[i] || '')); });
+    const have = numbers(ctx), bad = [...numbers(out.textContent.replace(/\[\d+\]/g, '').replace(/^\s*\d+[.)]\s/gm, ''))]   // ignore citations and list numbering
+      .filter(n => !have.has(n));
+    if (bad.length) { const w = document.createElement('div'); w.className = 'note'; w.style.marginTop = '12px';
+      w.textContent = '⚠ ' + Aftergrid.T('Check before acting: these numbers are not in the sources:') + ' ' + bad.join(', '); out.append(w); }
+  }
+});
+</script></body></html>

@@ -1,0 +1,25 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aftergrid search</title><link rel="stylesheet" href="/aftergrid.css"></head><body>
+<main><h2 id="t">Search</h2><div class="list" id="list"></div></main>
+<script src="/aftergrid-i18n.js"></script><script src="/aftergrid.js"></script>
+<script>
+// Searches every library that has a full-text index.
+Aftergrid.load().then(async () => {
+  Aftergrid.header();
+  const q = new URLSearchParams(location.search).get('q') || '';
+  document.querySelector('header input').value = q;
+  document.getElementById('t').textContent = `${Aftergrid.T('Results for')} "${q}"`;
+  const list = document.getElementById('list');
+  if (!q) return;
+  list.innerHTML = `<div class="note">${Aftergrid.T('Searching…')}</div>`;
+  // Vetted first-aid cards first, then the rest in relevance order.
+  const results = (await Aftergrid.searchAll(q, 30)).map((r, i) => [r, i]).sort((a, b) => (/first aid card/i.test(b[0].book) - /first aid card/i.test(a[0].book)) || a[1] - b[1]).map(x => x[0]);
+  list.innerHTML = '';
+  if (!results.length) list.innerHTML = `<div class="note">${Aftergrid.T('Nothing found. Try fewer or simpler words. PDF manuals are listed under each topic on the home screen.')}</div>`;
+  for (const r of results) {
+    const a = document.createElement('a'); a.className = 'item'; a.href = r.href;
+    a.innerHTML = `<span class="k">${r.book}</span><span><b>${r.title}</b><br><small style="color:var(--dim)">${r.snippet}</small></span>`;
+    list.append(a);
+  }
+});
+</script></body></html>

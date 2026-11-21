@@ -1,0 +1,62 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aftergrid</title><link rel="stylesheet" href="/aftergrid.css"></head><body>
+<main><h2 id="t"></h2><div id="intro"></div><div class="list" id="list"></div></main>
+<script src="/aftergrid-i18n.js"></script><script src="/aftergrid.js"></script>
+<script>
+const TOPICS = {
+  medical: {t: 'Medical', intro: 'Start with first aid for emergencies. WikiMed is a full medical encyclopedia. If trained help can be reached, use it.', items: [
+    {k: 'Manual', label: 'US Army First Aid (FM 4-25.11)', pdf: 'US-Army-FM-4-25.11-First-Aid.pdf'},
+    {k: 'Library', label: 'WikiMed: medical encyclopedia (conditions, drugs, procedures)', zim: 'mdwiki_en_all'},
+    {k: 'Library', label: 'Medicine collection (field medicine PDFs)', zim: 'zimgit-medicine_en'},
+    {k: 'Manual', label: 'Special Forces Medical Handbook (ST 31-91B)', pdf: 'ST-31-91B-Special-Forces-Medical-Handbook.pdf'},
+    {k: 'Manual', label: 'Emergency War Surgery, 5th ed.', pdf: 'Emergency-War-Surgery-5th-Ed.pdf'},
+    {k: 'Library', label: 'Greek Wikipedia (summaries of every article)', zim: 'wikipedia_el_all'},
+    {k: 'Library', label: 'Wikipedia Medicine', zim: 'wikipedia_en_medicine'},
+    {k: 'Library', label: 'LibreTexts Medicine', zim: 'libretexts.org_en_med'},
+    {k: 'Ask', label: 'Ask Aftergrid a medical question (answers cite WikiMed)', href: '/ask.html'}]},
+  water: {t: 'Water', intro: 'Untreated water is the fastest way to get sick after a disaster.', items: [
+    {k: 'Library', label: 'Water collection: finding, filtering, disinfecting, storing', zim: 'zimgit-water_en'},
+    {k: 'Manual', label: 'Field Hygiene & Sanitation (FM 21-10): water, waste, disease', pdf: 'US-Army-FM-21-10-Field-Hygiene-and-Sanitation.pdf'},
+    {k: 'Search', label: 'Appropedia: water purification projects', zim: 'appropedia_en_all', search: 'water purification'},
+    {k: 'Search', label: 'WikiMed: waterborne diseases', zim: 'mdwiki_en_all', search: 'waterborne disease'}]},
+  food: {t: 'Food', intro: 'Preserve what you have, then produce more.', items: [
+    {k: 'Library', label: 'Food preparation & preservation collection', zim: 'zimgit-food-preparation_en'},
+    {k: 'Search', label: 'Appropedia: food preservation', zim: 'appropedia_en_all', search: 'food preservation'},
+    {k: 'Search', label: 'Appropedia: gardening and growing food', zim: 'appropedia_en_all', search: 'gardening'},
+    {k: 'Manual', label: 'Army Survival (ATP 3-50.21): wild food chapters', pdf: 'US-Army-ATP-3-50.21-Survival.pdf'}]},
+  shelter: {t: 'Shelter & Survival', intro: 'Disaster response, survival skills and fallout protection.', items: [
+    {k: 'Library', label: 'Post-disaster collection (FEMA/Red Cross-style guides)', zim: 'zimgit-post-disaster_en'},
+    {k: 'Manual', label: 'Army Survival (ATP 3-50.21, current)', pdf: 'US-Army-ATP-3-50.21-Survival.pdf'},
+    {k: 'Manual', label: 'Army Survival (FM 21-76, classic)', pdf: 'US-Army-FM-21-76-Survival.pdf'},
+    {k: 'Manual', label: 'Nuclear War Survival Skills (Kearny)', pdf: 'Nuclear-War-Survival-Skills-Kearny.pdf'},
+    {k: 'Library', label: 'Knots', zim: 'zimgit-knots_en'}]},
+  repair: {t: 'Repair & Build', intro: 'Fix what breaks and build what you need.', items: [
+    {k: 'Library', label: 'Appropedia: appropriate technology & sustainability', zim: 'appropedia_en_all'},
+    {k: 'Library', label: 'iFixit repair guides', zim: 'ifixit_en_all'},
+    {k: 'Library', label: 'Stack Exchange: DIY', zim: 'diy.stackexchange.com'},
+    {k: 'Library', label: 'Stack Exchange: Electronics', zim: 'electronics.stackexchange.com'}]},
+  power: {t: 'Power', intro: 'Keep this machine and your radios running.', items: [
+    {k: 'Search', label: 'Appropedia: solar power', zim: 'appropedia_en_all', search: 'solar panel'},
+    {k: 'Search', label: 'Appropedia: batteries', zim: 'appropedia_en_all', search: 'battery'},
+    {k: 'Search', label: 'Appropedia: generators & micro-hydro', zim: 'appropedia_en_all', search: 'generator'},
+    {k: 'Search', label: 'Post-disaster guides: power outages', zim: 'zimgit-post-disaster_en', search: 'power outage'},
+    {k: 'Tip', label: 'Save battery on this machine: Aftergrid Control → Low power mode', href: '#'}]},
+};
+Aftergrid.load().then(() => {
+  Aftergrid.header();
+  const key = new URLSearchParams(location.search).get('t');
+  const list = document.getElementById('list');
+  if (key === 'library') {
+    document.getElementById('t').textContent = Aftergrid.T('Everything on this Aftergrid');
+    const items = Aftergrid.books.map(b => ({k: 'Library', label: b.title, href: b.href}))
+      .concat((Aftergrid.index.pdfs || []).map(p => ({k: 'Manual', label: p.title, href: p.url})));
+    Aftergrid.render(list, items);
+    return;
+  }
+  const T = TOPICS[key] || TOPICS.medical;
+  document.title = 'Aftergrid · ' + Aftergrid.T(T.t);
+  document.getElementById('t').textContent = Aftergrid.T(T.t);
+  document.getElementById('intro').innerHTML = `<p class="note">${Aftergrid.T(T.intro)}</p>`;
+  Aftergrid.render(list, T.items);
+});
+</script></body></html>

@@ -1,0 +1,7 @@
+[Unit]
+Description=Aftergrid: register Claude apt repositories
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/aftergrid-repos
+[Install]
+WantedBy=multi-user.target

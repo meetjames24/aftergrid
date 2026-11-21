@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Aftergrid look
+Exec=/usr/local/bin/aftergrid-firstlogin
+Type=Application
+X-KDE-autostart-phase=2
+NoDisplay=true

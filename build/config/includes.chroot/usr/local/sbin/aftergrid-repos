@@ -1,0 +1,6 @@
+#!/bin/sh
+# Register Anthropic + Google apt repos so `sudo apt update && sudo apt upgrade` updates Claude and Chrome.
+[ -f /etc/apt/sources.list.d/claude-desktop.list ] || echo "deb [arch=amd64,arm64 signed-by=/usr/share/keyrings/claude-desktop-archive-keyring.asc] https://downloads.claude.ai/claude-desktop/apt/stable stable main" > /etc/apt/sources.list.d/claude-desktop.list
+[ -f /etc/apt/sources.list.d/claude-code.list ] || echo "deb [signed-by=/etc/apt/keyrings/claude-code.asc] https://downloads.claude.ai/claude-code/apt/stable stable main" > /etc/apt/sources.list.d/claude-code.list
+[ -f /etc/apt/sources.list.d/google-chrome.list ] || { [ -f /usr/share/aftergrid/google-chrome.list ] && cp /usr/share/aftergrid/google-chrome.list /etc/apt/sources.list.d/; }
+exit 0

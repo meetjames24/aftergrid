@@ -1,0 +1,25 @@
+# Large / downloaded / generated - rebuilt by fetch-content.sh and build-aftergrid.sh
+/out/
+/stage/
+/dl/
+/work/
+/llama.cpp-src/
+/build/*
+!/build/config/
+/build/config/packages.chroot/
+/build/config/includes.chroot/opt/llama/
+/build/config/includes.chroot/usr/local/bin/pat
+/build/config/includes.chroot/usr/local/bin/pmtiles
+/content/zim/
+/content/models/
+/content/maps/
+/content/library/
+/content/ai/semantic/*.npy
+/marketing/out/
+/marketing/foot/
+/web/node_modules/
+*.log
+*.iso
+*.part
+__pycache__/
+*.pyc

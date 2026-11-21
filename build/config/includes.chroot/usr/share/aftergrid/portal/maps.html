@@ -1,0 +1,69 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aftergrid Maps</title><link rel="stylesheet" href="/aftergrid.css"><link rel="stylesheet" href="/vendor/maplibre-gl.css">
+<style>#map{position:absolute;top:66px;left:0;right:0;bottom:0}#bar{position:absolute;top:76px;left:10px;z-index:5;display:flex;gap:8px;flex-wrap:wrap}#bar select,#bar button{padding:8px 14px;border-radius:999px;background:var(--surface);color:var(--txt);border:1px solid var(--line2);font:500 15px var(--sans);box-shadow:var(--shadow)}footer{display:none}</style>
+</head><body>
+<div id="map"></div>
+<div id="bar"><select id="region" aria-label="Map region"></select><button id="locate" title="GPS" data-t>◎ Where am I</button></div>
+<script src="/aftergrid-i18n.js"></script><script src="/aftergrid.js"></script><script src="/vendor/maplibre-gl.js"></script><script src="/vendor/pmtiles.js"></script><script src="/vendor/basemaps.js"></script>
+<script>
+// Offline vector maps: every *.pmtiles file in a maps/ folder becomes a region.
+// world.pmtiles (low zoom, whole planet) is always drawn underneath the selected region.
+const protocol = new pmtiles.Protocol();
+maplibregl.addProtocol('pmtiles', protocol.tile);
+
+function cleanLayers(src) {
+  // No icon sprite ships offline: keep text labels, drop icons.
+  return basemaps.layers(src, basemaps.namedFlavor(Aftergrid.theme() === 'night' ? 'dark' : 'light'), {lang: ['el','fr','de','pt','tr'].includes(Aftergrid.lang) ? Aftergrid.lang : 'en'}).flatMap(l => {
+    if (l.layout && l.layout['icon-image'] !== undefined) {
+      if (!l.layout['text-field']) return [];
+      l = JSON.parse(JSON.stringify(l)); delete l.layout['icon-image'];
+    }
+    return [l];
+  });
+}
+
+Aftergrid.load().then(async () => {
+  Aftergrid.header('Maps');
+  const maps = Aftergrid.index.maps || [];
+  const sel = document.getElementById('region');
+  if (!maps.length) { document.getElementById('map').innerHTML = '<main><div class="note">' + Aftergrid.T('No maps on this Aftergrid yet. Aftergrid Control → Download → Maps.') + '</div></main>'; return; }
+  const world = maps.find(m => m.name === 'world');
+  const regions = maps.filter(m => m.name !== 'world');
+  sel.add(new Option(Aftergrid.T('Jump to region…'), '')); sel.options[0].disabled = true;
+  for (const m of (regions.length ? regions : maps)) sel.add(new Option(m.title, m.url));
+
+  // Every region is drawn at once (largest first, most detailed on top), so the map
+  // is seamless wherever you scroll; the selector only jumps to a region.
+  const heads = {};
+  await Promise.all(maps.map(async m => { try { heads[m.url] = await new pmtiles.PMTiles(location.origin + m.url).getHeader(); } catch (e) {} }));
+  const area = h => h ? (h.maxLon - h.minLon) * (h.maxLat - h.minLat) : 0;
+  const ordered = maps.filter(m => heads[m.url]).sort((x, y) => area(heads[y.url]) - area(heads[x.url]));
+  const style = () => {
+    const sources = {}, layers = [];
+    ordered.forEach((m, i) => {
+      const id = 's' + i;
+      sources[id] = {type: 'vector', url: 'pmtiles://' + location.origin + m.url, attribution: '© OpenStreetMap contributors, Protomaps'};
+      layers.push(...cleanLayers(id).filter(l => i === 0 || l.type !== 'background').map(l => ({...l, id: id + '-' + l.id})));
+    });
+    return {version: 8, glyphs: location.origin + '/maps/glyphs/{fontstack}/{range}.pbf', sources, layers};
+  };
+
+  const startHash = !!location.hash;
+  const map = new maplibregl.Map({container: 'map', style: style(), hash: true});
+  window.addEventListener('aftergrid-theme', () => map.setStyle(style()));   // Day/Night switch redraws the map
+  map.addControl(new maplibregl.NavigationControl());
+  map.addControl(new maplibregl.ScaleControl({unit: 'metric'}));
+  function fit() {
+    const h = heads[sel.value]; if (!h) return;
+    map.fitBounds([[h.minLon, h.minLat], [h.maxLon, h.maxLat]], {padding: 20, duration: 0});
+  }
+  if (!startHash) { sel.selectedIndex = 1; fit(); }
+  sel.onchange = () => fit();
+  document.getElementById('locate').onclick = () => {
+    if (!navigator.geolocation) return alert('No location source available.');
+    navigator.geolocation.getCurrentPosition(
+      p => { new maplibregl.Marker({color: '#f2a33a'}).setLngLat([p.coords.longitude, p.coords.latitude]).addTo(map); map.flyTo({center: [p.coords.longitude, p.coords.latitude], zoom: 14}); },
+      () => alert('No position available. Offline, this needs a USB GPS receiver or a phone with GPS.'), {timeout: 15000});
+  };
+});
+</script></body></html>

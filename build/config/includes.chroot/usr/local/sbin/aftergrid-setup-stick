@@ -1,0 +1,83 @@
+#!/bin/bash
+# aftergrid-setup-stick: add an encrypted persistence partition + an exFAT VAULT
+# partition to the free space on the Aftergrid USB drive (MBR max = 4 partitions:
+# existing ISO partitions are kept; two new ones are appended after them).
+#   --device /dev/sdX   target disk (default: the disk Aftergrid booted from)
+#   --size 8G           persistence size (default: 8G under 40 GB, 16G under 100 GB, else 32G)
+#   --no-encrypt        unencrypted persistence (not recommended)
+#   --yes               skip the typed confirmation (for testing)
+#   --pass-stdin        read the encryption passphrase from standard input (used by the setup wizard)
+set -euo pipefail
+ORIG_ARGS=("$@")
+DEV=""; SIZE=""; ENCRYPT=1; YES=0
+while [ $# -gt 0 ]; do case "$1" in
+  --device) DEV="$2"; shift 2;; --size) SIZE="$2"; shift 2;;
+  --no-encrypt) ENCRYPT=0; shift;; --yes) YES=1; shift;; --pass-stdin) IFS= read -r AFTERGRID_PASS; export AFTERGRID_PASS; shift;;
+  -h|--help) sed -n '2,9p' "$0"; exit 0;; *) echo "unknown option $1"; exit 1;; esac; done
+[ "$(id -u)" = 0 ] || exec sudo -E "$0" "${ORIG_ARGS[@]}"
+die(){ echo -e "\n✗ $*" >&2; exit 1; }
+
+if [ -z "$DEV" ]; then
+  SRC=$(findmnt -no SOURCE /run/live/medium 2>/dev/null || true)
+  [ -n "$SRC" ] || die "Can't find the boot drive (not running from Aftergrid live?). Use --device /dev/sdX."
+  DEV=/dev/$(lsblk -no PKNAME "$SRC" | head -1)
+fi
+[ -b "$DEV" ] || die "$DEV is not a block device"
+part(){ case "$DEV" in *[0-9]) echo "${DEV}p$1";; *) echo "${DEV}$1";; esac; }
+
+if lsblk -no LABEL "$DEV" | grep -qx VAULT || blkid -t TYPE=crypto_LUKS -o device | grep -q "^$DEV"; then
+  die "$DEV already has Aftergrid partitions. Nothing to do."
+fi
+NPARTS=$(sfdisk -d "$DEV" 2>/dev/null | grep -c '^/dev' || true)
+LABEL=$(sfdisk -d "$DEV" | awk '/^label:/{print $2}')
+[ "$LABEL" = dos ] && [ "$NPARTS" -gt 2 ] && die "Expected at most 2 partitions on a freshly flashed Aftergrid stick, found $NPARTS."
+P3N=$((NPARTS + 1)); P4N=$((NPARTS + 2))
+
+DISKSZ=$(lsblk -bdno SIZE "$DEV")
+LASTEND=$(partx -g -o START,SECTORS "$DEV" | awk '{e=$1+$2; if(e>m)m=e} END{print m+0}')
+FREE=$(( DISKSZ - LASTEND*512 ))
+[ -n "$SIZE" ] || { if [ "$DISKSZ" -lt $((40*1000*1000*1000)) ]; then SIZE=8G; elif [ "$DISKSZ" -lt $((100*1000*1000*1000)) ]; then SIZE=16G; else SIZE=32G; fi; }
+SIZEB=$(numfmt --from=iec "$SIZE")
+[ "$FREE" -gt $((SIZEB + 4*1024*1024*1024)) ] || die "Not enough free space: $(numfmt --to=iec $FREE) free, need $SIZE + 4G."
+
+echo "Aftergrid stick setup"
+echo "  Drive:        $DEV  ($(lsblk -dno MODEL,SIZE "$DEV" | xargs))"
+echo "  Persistence:  $SIZE  $( [ $ENCRYPT = 1 ] && echo '(LUKS2 encrypted: settings, logins, files)' || echo '(NOT encrypted)')"
+echo "  VAULT:        $(numfmt --to=iec $((FREE - SIZEB)))  (exFAT, readable from Windows/Mac: offline library + your files)"
+echo "  Existing Aftergrid system partitions are not touched."
+if [ $YES = 0 ]; then read -rp $'\nType YES to continue: ' A; [ "$A" = YES ] || die "Cancelled."; fi
+
+if [ "$LABEL" = dos ]; then
+  printf ',%s,L\n,,7\n' "$SIZE" | sfdisk --append --no-reread --wipe never "$DEV"
+else
+  printf ',%s,L\n,,EBD0A0A2-B9E5-4433-87C0-68B6B72699C7\n' "$SIZE" | sfdisk --append --no-reread --wipe never "$DEV"
+fi
+partx -a "$DEV" 2>/dev/null || partx -u "$DEV"; udevadm settle; sleep 1
+P3=$(part $P3N); P4=$(part $P4N)
+# safety: only touch partitions that start after the Aftergrid system data
+for p in "$P3" "$P4"; do
+  N=${p##*[!0-9]}; ST=$(partx -g -o START -n "$N" "$DEV" | tr -d " "); ST=${ST:-0}
+  [ "$ST" -ge "$LASTEND" ] || die "$p overlaps the Aftergrid system; refusing to touch it."
+  wipefs -qa "$p"
+done
+[ -b "$P3" ] && [ -b "$P4" ] || die "New partitions did not appear ($P3, $P4). Reboot and run again."
+
+if [ $ENCRYPT = 1 ]; then
+  echo -e "\nChoose your Aftergrid passphrase. You'll type it at every boot. If you lose it, the saved data is gone."
+  if [ -n "${AFTERGRID_PASS:-}" ]; then printf %s "$AFTERGRID_PASS" | cryptsetup luksFormat --type luks2 --batch-mode "$P3" -
+                                   printf %s "$AFTERGRID_PASS" | cryptsetup open "$P3" aftergridpersist -
+  else cryptsetup luksFormat --type luks2 --verify-passphrase "$P3"; cryptsetup open "$P3" aftergridpersist; fi
+  PDEV=/dev/mapper/aftergridpersist
+else PDEV=$P3; fi
+mkfs.ext4 -q -F -L persistence "$PDEV"
+M=$(mktemp -d); mount "$PDEV" "$M"; echo "/ union" > "$M/persistence.conf"; umount "$M"; rmdir "$M"
+[ $ENCRYPT = 1 ] && cryptsetup close aftergridpersist
+
+mkfs.exfat -n VAULT "$P4" >/dev/null
+mkdir -p /vault; mount -o uid=1000,gid=1000,umask=022 "$P4" /vault 2>/dev/null || true
+if mountpoint -q /vault; then
+  mkdir -p /vault/{zim,maps,models,library/{survival,medical},backups}
+  cp -r /usr/share/aftergrid/docs /vault/library/Aftergrid-guide 2>/dev/null || true
+fi
+sync
+echo -e "\n✓ Done. Next:\n  1) Reboot, pick 'Aftergrid - Encrypted persistence', type your passphrase.\n  2) Open Aftergrid Control -> 'Download offline library' (needs internet once)."

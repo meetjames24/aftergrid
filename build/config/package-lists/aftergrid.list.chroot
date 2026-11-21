@@ -1,0 +1,187 @@
+# --- live system core ---
+live-boot
+live-config
+live-config-systemd
+user-setup
+systemd-sysv
+sudo
+cryptsetup
+cryptsetup-initramfs
+dbus-user-session
+polkitd
+# --- hardware / firmware (runs on most PCs) ---
+firmware-linux
+firmware-linux-nonfree
+firmware-misc-nonfree
+firmware-iwlwifi
+firmware-realtek
+firmware-atheros
+firmware-brcm80211
+firmware-intel-sound
+firmware-sof-signed
+firmware-amd-graphics
+firmware-mediatek
+bluez-firmware
+amd64-microcode
+intel-microcode
+mesa-vulkan-drivers
+libvulkan1
+vulkan-tools
+pciutils
+usbutils
+inxi
+lshw
+# --- network ---
+network-manager
+wpasupplicant
+modemmanager
+bluez
+ca-certificates
+curl
+wget
+openssh-client
+# --- KDE Plasma desktop ---
+kde-plasma-desktop
+sddm
+sddm-theme-debian-breeze
+plasma-nm
+plasma-pa
+bluedevil
+powerdevil
+kscreen
+konsole
+dolphin
+kate
+okular
+okular-extra-backends
+ark
+gwenview
+kde-spectacle
+kwalletmanager
+kinfocenter
+systemsettings
+kdialog
+partitionmanager
+xdg-desktop-portal-kde
+xdg-desktop-portal-gtk
+pipewire-audio
+wireplumber
+fonts-noto
+fonts-noto-color-emoji
+# --- Claude (desktop app + Claude Code; debs in packages.chroot) ---
+claude-desktop
+claude-code
+qemu-system-x86
+ovmf
+virtiofsd
+bubblewrap
+socat
+libayatana-appindicator3-1
+libsecret-1-0
+# --- browsers ---
+firefox-esr
+google-chrome-stable
+# --- offline library ---
+kiwix
+kiwix-tools
+# --- study / office ---
+libreoffice-writer
+libreoffice-calc
+libreoffice-impress
+libreoffice-kf6
+# --- dev / power tools ---
+git
+python3
+python3-venv
+python3-pip
+nodejs
+npm
+jq
+ripgrep
+htop
+btop
+tmux
+vim
+nano
+unzip
+p7zip-full
+zstd
+aria2
+rsync
+rclone
+syncthing
+keepassxc
+gnupg
+vlc
+ffmpeg
+yt-dlp
+# --- rescue / disk tools ---
+gparted
+testdisk
+gddrescue
+ntfs-3g
+exfatprogs
+dosfstools
+smartmontools
+nvme-cli
+hdparm
+chntpw
+clamav
+parted
+# --- grid-down comms (ham radio) ---
+chirp
+fldigi
+js8call
+# --- install Aftergrid to an internal disk ---
+calamares
+calamares-settings-debian
+# --- Aftergrid 1.1: Field Mode portal + hotspot ---
+lighttpd
+dnsmasq-base
+# --- Aftergrid 1.1: SDR, packet, satellites ---
+gqrx-sdr
+rtl-sdr
+rtl-433
+direwolf
+gpredict
+# --- Aftergrid 1.1: power ---
+power-profiles-daemon
+powertop
+brightnessctl
+# --- Aftergrid 1.1: branding ---
+plymouth
+plymouth-label
+os-prober
+# --- Aftergrid 1.1: Greek language option ---
+locales
+firefox-esr-l10n-el
+libreoffice-l10n-el
+libreoffice-help-el
+hunspell-el
+hyphen-el
+# French, German, Portuguese (PT+BR), Turkish
+firefox-esr-l10n-fr
+firefox-esr-l10n-de
+firefox-esr-l10n-tr
+firefox-esr-l10n-pt-pt
+firefox-esr-l10n-pt-br
+libreoffice-l10n-fr
+libreoffice-l10n-de
+libreoffice-l10n-tr
+libreoffice-l10n-pt
+libreoffice-l10n-pt-br
+libreoffice-help-fr
+libreoffice-help-de
+libreoffice-help-tr
+libreoffice-help-pt
+libreoffice-help-pt-br
+hunspell-fr
+hunspell-de-de
+hunspell-pt-pt
+hunspell-pt-br
+hunspell-tr
+hyphen-fr
+hyphen-de
+hyphen-pt-pt
+hyphen-pt-br
+python3-numpy

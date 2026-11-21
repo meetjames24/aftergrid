@@ -1,0 +1,33 @@
+---
+componentName:   aftergrid
+welcomeStyleCalamares: true
+welcomeExpandingLogo: true
+windowExpanding: normal
+windowSize: 820px,600px
+windowPlacement: center
+strings:
+    productName:         Aftergrid
+    shortProductName:    Aftergrid
+    version:             "1.1"
+    shortVersion:        "1.1"
+    versionedName:       Aftergrid 1.1
+    shortVersionedName:  Aftergrid 1.1
+    bootloaderEntryName: Aftergrid
+    productUrl:          https://getaftergrid.com
+    supportUrl:          https://getaftergrid.com
+    knownIssuesUrl:      https://getaftergrid.com
+    releaseNotesUrl:     https://getaftergrid.com
+    donateUrl:           https://getaftergrid.com
+sidebar: widget
+navigation: widget
+images:
+    productLogo:         "aftergrid-logo.png"
+    productIcon:         "aftergrid-logo.png"
+    productWelcome:      "welcome.png"
+slideshow:               "show.qml"
+style:
+   SidebarBackground:    "#14171a"
+   SidebarText:          "#e9ecef"
+   SidebarTextCurrent:   "#f2a33a"
+   SidebarBackgroundCurrent: "#1f2428"
+slideshowAPI: 2

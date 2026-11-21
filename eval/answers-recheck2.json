@@ -1,0 +1,25 @@
+[
+ {
+  "q": "nosebleed that won't stop",
+  "must": [
+   "/lean(ing)? forward/i",
+   "/pinch/i"
+  ],
+  "mustNot": [],
+  "answer": "For a nosebleed that won't stop:\n\n- Apply firm pressure to the soft part of the nose (below the bony bridge) for 10 to 15 minutes. If still bleeding, repeat the pressure for another 10 to 15 minutes [1].\n- If bleeding lasts longer than 20 to 30 minutes, or is very heavy, or occurs after a head injury, or in someone on blood thinners, get help urgently [1].\n- If direct pressure and vasoconstrictive medications (like oxymetazoline or phenylephrine) do not stop the bleeding after 20 minutes, seek medical attention [2].\n- In cases where pressure and chemical cauterization fail, nasal packing may be required [2].\n- If bleeding persists despite good nasal packing, it is a surgical emergency and requires endoscopic evaluation under general anesthesia to identify and ligate the bleeding vessels [2].\n\nDo not tilt the head back; instead, tilt it forward to reduce the risk of nausea and airway obstruction [2].\n\nGet help urgently if bleeding continues beyond 20–30 minutes or if there are signs of trauma or underlying conditions. A trained clinician or evacuation is required in such cases.",
+  "sources": [
+   "1\nNosebleed\n· Aftergrid First Aid Cards",
+   "2\nNosebleed\n· MDWiki Medical Encyclopedia",
+   "3\nNasal septum deviation\n· MDWiki Medical Encyclopedia"
+  ],
+  "cites": 6,
+  "warn": "",
+  "missing": [
+   "/lean(ing)? forward/i",
+   "/pinch/i"
+  ],
+  "bad": [],
+  "pass": false,
+  "secs": 112
+ }
+]

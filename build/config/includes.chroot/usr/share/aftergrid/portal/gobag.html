@@ -1,0 +1,33 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aftergrid Go-Bag</title><link rel="stylesheet" href="/aftergrid.css">
+<style>.card{background:#fff;color:#000;border-radius:10px;padding:18px;max-width:720px}.card h3{margin:0 0 8px}.card [contenteditable]{border-bottom:1px dotted #999;min-height:1.4em;outline:none}.card td{border-color:#ccc;color:#000}.card th{color:#444}</style></head><body>
+<main>
+<h2 data-t>Emergency card</h2>
+<p class="note noprint">Fill this in once, then print it (Ctrl+P) for every family member's wallet and bag. It saves in this browser on this Aftergrid only. Keep scans of IDs, prescriptions and insurance in the <b>GoBag</b> folder in your home folder; it sits on the encrypted part of the stick.</p>
+<div class="card" id="card">
+<h3 contenteditable data-k="name" data-t>Name</h3>
+<table>
+<tr><th data-t>Date of birth</th><td contenteditable data-k="dob"></td><th data-t>Blood type</th><td contenteditable data-k="blood"></td></tr>
+<tr><th data-t>Allergies</th><td colspan="3" contenteditable data-k="allergies"></td></tr>
+<tr><th data-t>Medications & doses</th><td colspan="3" contenteditable data-k="meds"></td></tr>
+<tr><th data-t>Conditions</th><td colspan="3" contenteditable data-k="conditions"></td></tr>
+<tr><th data-t>Emergency contact 1</th><td colspan="3" contenteditable data-k="c1"></td></tr>
+<tr><th data-t>Emergency contact 2</th><td colspan="3" contenteditable data-k="c2"></td></tr>
+<tr><th data-t>Out-of-area contact</th><td colspan="3" contenteditable data-k="c3"></td></tr>
+<tr><th data-t>Meeting point (near)</th><td colspan="3" contenteditable data-k="m1"></td></tr>
+<tr><th data-t>Meeting point (far)</th><td colspan="3" contenteditable data-k="m2"></td></tr>
+<tr><th data-t>Radio plan</th><td colspan="3" contenteditable data-k="radio">e.g. PMR446 ch 1 at the top of every hour</td></tr>
+<tr><th data-t>Doctor / pharmacy</th><td colspan="3" contenteditable data-k="doc"></td></tr>
+</table>
+</div>
+<p class="noprint"><button class="primary" onclick="print()" data-t>Print card</button> <button onclick="if(confirm('Clear the card?')){localStorage.removeItem('aftergrid-card');location.reload()}" data-t>Clear</button></p>
+</main>
+<script src="/aftergrid-i18n.js"></script><script src="/aftergrid.js"></script>
+<script>
+Aftergrid.load().then(() => Aftergrid.header('Go-Bag'));
+let saved = {}; try { saved = JSON.parse(localStorage.getItem('aftergrid-card') || '{}'); } catch (e) {}
+document.querySelectorAll('[data-k]').forEach(el => {
+  if (saved[el.dataset.k]) el.textContent = saved[el.dataset.k];
+  el.addEventListener('input', () => { saved[el.dataset.k] = el.textContent; try { localStorage.setItem('aftergrid-card', JSON.stringify(saved)); } catch (e) {} });
+});
+</script></body></html>

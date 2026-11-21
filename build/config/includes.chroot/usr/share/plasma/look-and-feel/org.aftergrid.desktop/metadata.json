@@ -1,0 +1,1 @@
+{"KPackageStructure": "Plasma/LookAndFeel", "KPlugin": {"Id": "org.aftergrid.desktop", "Name": "Aftergrid", "Description": "Aftergrid splash", "Authors": [{"Name": "Aftergrid"}], "License": "GPL-2.0+", "Version": "1.1"}, "X-Plasma-MainScript": "defaults"}

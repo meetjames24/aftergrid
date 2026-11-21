@@ -1,0 +1,63 @@
+#!/usr/bin/env python3
+"""Rebuild Aftergrid's library index: /run/aftergrid/library.xml (for kiwix-serve, auto-reloaded)
+and /run/aftergrid/index.json (for the Field Mode portal). Safe to run any time."""
+import glob, json, os, re, subprocess, tempfile, urllib.request
+
+RUN = "/run/aftergrid"
+ROOTS = [("baked", "/run/live/medium/aftergrid-library"), ("opt", "/opt/aftergrid-library"), ("vault", "/vault")]
+MAP_TITLES = {"world": "World (overview)", "greece": "Greece", "crete": "Crete (detailed)", "arkansas": "Arkansas (detailed)",
+              "europe": "Europe", "usa": "United States"}
+
+def roots():
+    seen = set()
+    for key, path in ROOTS:
+        if os.path.isdir(path) and os.path.realpath(path) not in seen:
+            seen.add(os.path.realpath(path)); yield key, path
+
+def main():
+    os.makedirs(RUN, exist_ok=True)
+    zims, maps, pdfs, models = [], [], [], []
+    newest = {}   # one copy per book: the newest edition wins wherever it lives
+    for key, root in roots():
+        for z in sorted(glob.glob(f"{root}/zim/*.zim")):
+            m = re.match(r"(.+?)_(\d{4}-\d{2})\.zim$", os.path.basename(z))
+            stem, date = (m.group(1), m.group(2)) if m else (os.path.basename(z), "")
+            if stem not in newest or date > newest[stem][0]:
+                newest[stem] = (date, z)
+        for m in sorted(glob.glob(f"{root}/maps/*.pmtiles")):
+            n = os.path.basename(m)[:-8]
+            if not any(x["name"] == n for x in maps):
+                maps.append({"name": n, "title": MAP_TITLES.get(n, n.replace("-", " ").title()),
+                             "url": f"/files/{key}/maps/{os.path.basename(m)}"})
+        for p in sorted(glob.glob(f"{root}/library/**/*.pdf", recursive=True)):
+            rel = os.path.relpath(p, root)
+            pdfs.append({"file": os.path.basename(p), "title": os.path.basename(p)[:-4].replace("-", " "),
+                         "cat": rel.split("/")[1] if rel.count("/") > 1 else "", "url": f"/files/{key}/{rel}"})
+        models += [g for g in glob.glob(f"{root}/models/**/*.gguf", recursive=True) if "mmproj" not in g and "/embed/" not in g]   # the embedding model is not a chat model
+    zims = [z for _, z in sorted(newest.values(), key=lambda v: os.path.basename(v[1]))]
+    # kiwix library (written atomically; kiwix-serve --monitorLibrary picks it up)
+    tmp = tempfile.NamedTemporaryFile(dir=RUN, delete=False, suffix=".xml").name
+    os.remove(tmp)
+    for z in zims:
+        subprocess.call(["kiwix-manage", tmp, "add", z], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    if not os.path.exists(tmp):
+        open(tmp, "w").write('<?xml version="1.0" encoding="UTF-8" ?>\n<library version="20110515">\n</library>\n')
+    os.chmod(tmp, 0o644); os.replace(tmp, f"{RUN}/library.xml")
+    with open(f"{RUN}/models.list", "w") as f:
+        f.write("\n".join(models) + ("\n" if models else ""))
+    ai = False
+    try: ai = urllib.request.urlopen("http://127.0.0.1:8081/health", timeout=1).status == 200
+    except Exception: pass
+    hotspot = ""
+    try:
+        out = subprocess.run(["nmcli", "-t", "-f", "NAME,TYPE", "con", "show", "--active"], capture_output=True, text=True, timeout=5).stdout
+        if "Aftergrid-Hotspot:" in out:
+            hotspot = subprocess.run(["nmcli", "-g", "802-11-wireless.ssid", "con", "show", "Aftergrid-Hotspot"], capture_output=True, text=True, timeout=5).stdout.strip()
+    except Exception: pass
+    idx = {"zims": [os.path.basename(z) for z in zims], "maps": maps, "pdfs": pdfs,
+           "models": [os.path.basename(m) for m in models], "ai": ai, "hotspot": hotspot, "lowpower": os.path.exists(f"{RUN}/lowpower")}
+    with open(f"{RUN}/index.json.tmp", "w") as f: json.dump(idx, f)
+    os.chmod(f"{RUN}/index.json.tmp", 0o644); os.replace(f"{RUN}/index.json.tmp", f"{RUN}/index.json")
+
+if __name__ == "__main__":
+    main()

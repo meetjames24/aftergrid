@@ -1,0 +1,14 @@
+#!/bin/sh
+# First-run welcome (once per user), in the desktop language.
+[ -f "$HOME/.config/aftergrid-welcomed" ] && exit 0
+sleep 6
+case "$LANG" in
+  el*) T="Καλώς ήρθες στο Aftergrid"; M="Καλώς ήρθες στο Aftergrid.\n\nΌλα λειτουργούν χωρίς ίντερνετ: άνοιξε τη «Λειτουργία Πεδίου» στην επιφάνεια εργασίας.\n\nΠρώτη φορά σε αυτό το stick; Έλεγχος Aftergrid → 1) Ρύθμιση του stick, για να κρατά τις ρυθμίσεις και τους λογαριασμούς σου.";;
+  fr*) T="Bienvenue dans Aftergrid"; M="Bienvenue dans Aftergrid.\n\nTout fonctionne sans internet : ouvre le Mode Terrain sur le bureau.\n\nPremière fois sur cette clé ? Contrôle Aftergrid → 1) Configurer cette clé, pour garder tes réglages et tes connexions.\n\nLa plupart des bibliothèques sont en anglais.";;
+  de*) T="Willkommen bei Aftergrid"; M="Willkommen bei Aftergrid.\n\nAlles funktioniert ohne Internet: öffne den Feldmodus auf dem Desktop.\n\nZum ersten Mal auf diesem Stick? Aftergrid-Steuerung → 1) Diesen Stick einrichten, damit deine Einstellungen und Anmeldungen erhalten bleiben.\n\nDie meisten Bibliotheken sind auf Englisch.";;
+  pt*) T="Bem-vindo ao Aftergrid"; M="Bem-vindo ao Aftergrid.\n\nTudo funciona sem internet: abra o Modo Campo na área de trabalho.\n\nPrimeira vez neste pendrive? Controle Aftergrid → 1) Configurar este pendrive, para guardar suas configurações e logins.\n\nA maioria das bibliotecas está em inglês.";;
+  tr*) T="Aftergrid'e hoş geldin"; M="Aftergrid'e hoş geldin.\n\nHer şey internetsiz çalışır: masaüstündeki Saha Modunu aç.\n\nBu bellekte ilk kez mi? Aftergrid Kontrol → 1) Bu USB belleği kur; ayarların ve oturumların saklansın.\n\nKütüphanelerin çoğu İngilizcedir.";;
+  *)   T="Welcome to Aftergrid"; M="Welcome to Aftergrid.\n\nEverything works offline: open Aftergrid Field Mode on the desktop.\n\nFirst time on this stick? Aftergrid Control -> 1) Set up this stick, to keep your settings and logins.";;
+esac
+kdialog --title "$T" --msgbox "$M"
+touch "$HOME/.config/aftergrid-welcomed"

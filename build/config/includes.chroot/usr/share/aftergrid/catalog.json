@@ -1,0 +1,300 @@
+{
+ "base_kiwix": "https://download.kiwix.org/zim",
+ "tiers": {
+  "core": {
+   "label": "Core extras: iFixit repair guides (~3.6 GB). (WikiMed, survival packs, Appropedia, manuals and maps ship inside Aftergrid.)",
+   "items": [
+    {
+     "type": "kiwix",
+     "dir": "ifixit",
+     "prefix": "ifixit_en_all"
+    },
+    {
+     "type": "kiwix",
+     "dir": "other",
+     "prefix": "mdwiki_en_all_maxi"
+    },
+    {
+     "type": "kiwix",
+     "dir": "other",
+     "prefix": "zimgit-post-disaster_en"
+    },
+    {
+     "type": "kiwix",
+     "dir": "other",
+     "prefix": "zimgit-water_en"
+    },
+    {
+     "type": "kiwix",
+     "dir": "other",
+     "prefix": "zimgit-medicine_en"
+    },
+    {
+     "type": "kiwix",
+     "dir": "other",
+     "prefix": "zimgit-food-preparation_en"
+    },
+    {
+     "type": "kiwix",
+     "dir": "other",
+     "prefix": "zimgit-knots_en"
+    },
+    {
+     "type": "kiwix",
+     "dir": "other",
+     "prefix": "appropedia_en_all_maxi"
+    }
+   ]
+  },
+  "med": {
+   "label": "Med school: Wikipedia Medicine + LibreTexts medicine, biology, chemistry (~7 GB)",
+   "items": [
+    {
+     "type": "kiwix",
+     "dir": "wikipedia",
+     "prefix": "wikipedia_en_medicine_maxi"
+    },
+    {
+     "type": "kiwix",
+     "dir": "libretexts",
+     "prefix": "libretexts.org_en_med"
+    },
+    {
+     "type": "kiwix",
+     "dir": "libretexts",
+     "prefix": "libretexts.org_en_bio"
+    },
+    {
+     "type": "kiwix",
+     "dir": "libretexts",
+     "prefix": "libretexts.org_en_chem"
+    }
+   ]
+  },
+  "skills": {
+   "label": "Practical skills: Stack Exchange (outdoors, DIY, gardening, cooking, ham radio, electronics, sustainability), Wikibooks, Wikivoyage (~13 GB)",
+   "items": [
+    {
+     "type": "kiwix",
+     "dir": "stack_exchange",
+     "prefix": "outdoors.stackexchange.com_en_all"
+    },
+    {
+     "type": "kiwix",
+     "dir": "stack_exchange",
+     "prefix": "diy.stackexchange.com_en_all"
+    },
+    {
+     "type": "kiwix",
+     "dir": "stack_exchange",
+     "prefix": "gardening.stackexchange.com_en_all"
+    },
+    {
+     "type": "kiwix",
+     "dir": "stack_exchange",
+     "prefix": "cooking.stackexchange.com_en_all"
+    },
+    {
+     "type": "kiwix",
+     "dir": "stack_exchange",
+     "prefix": "ham.stackexchange.com_en_all"
+    },
+    {
+     "type": "kiwix",
+     "dir": "stack_exchange",
+     "prefix": "electronics.stackexchange.com_en_all"
+    },
+    {
+     "type": "kiwix",
+     "dir": "stack_exchange",
+     "prefix": "sustainability.stackexchange.com_en_all"
+    },
+    {
+     "type": "kiwix",
+     "dir": "wikibooks",
+     "prefix": "wikibooks_en_all_maxi"
+    },
+    {
+     "type": "kiwix",
+     "dir": "wikivoyage",
+     "prefix": "wikivoyage_en_all_maxi"
+    }
+   ]
+  },
+  "greek": {
+   "label": "Ελληνικά / Greek: full Greek Wikipedia (text) + Greek Wiktionary (~3.2 GB)",
+   "items": [
+    {
+     "type": "kiwix",
+     "dir": "wikipedia",
+     "prefix": "wikipedia_el_all_nopic"
+    },
+    {
+     "type": "kiwix",
+     "dir": "wiktionary",
+     "prefix": "wiktionary_el_all_nopic"
+    }
+   ]
+  },
+  "ai": {
+   "label": "Offline AI: Qwen3 4B Instruct, runs on 8 GB RAM, no GPU needed (~2.5 GB)",
+   "items": [
+    {
+     "type": "hf",
+     "repo": "unsloth/Qwen3-4B-Instruct-2507-GGUF",
+     "file": "Qwen3-4B-Instruct-2507-Q4_K_M.gguf",
+     "dest": "models/qwen3-4b"
+    }
+   ]
+  },
+  "ai-8b": {
+   "label": "Offline AI, better: Qwen3 8B, used automatically on PCs with 14 GB+ RAM (~5 GB)",
+   "items": [
+    {
+     "type": "hf",
+     "repo": "unsloth/Qwen3-8B-GGUF",
+     "file": "Qwen3-8B-Q4_K_M.gguf",
+     "dest": "models/qwen3-8b"
+    }
+   ]
+  },
+  "ai-large": {
+   "label": "Offline AI, large: Bonsai 27B (1-bit), smarter, needs 16 GB RAM (~3.8 GB)",
+   "items": [
+    {
+     "type": "hf",
+     "repo": "lmstudio-community/Bonsai-27B-GGUF",
+     "file": "Bonsai-27B-Q1_0.gguf",
+     "dest": "models/bonsai-27b"
+    }
+   ]
+  },
+  "maps-europe": {
+   "label": "Maps: all of Europe, street level in towns (zoom 13)",
+   "items": [
+    {
+     "type": "pmtiles",
+     "name": "europe",
+     "bbox": "-25,34,45,72",
+     "maxzoom": 13
+    }
+   ]
+  },
+  "maps-usa": {
+   "label": "Maps: contiguous United States (zoom 13)",
+   "items": [
+    {
+     "type": "pmtiles",
+     "name": "usa",
+     "bbox": "-125,24,-66,50",
+     "maxzoom": 13
+    }
+   ]
+  },
+  "wikipedia": {
+   "label": "All of English Wikipedia with images + full Greek Wikipedia with images (~125 GB)",
+   "items": [
+    {
+     "type": "kiwix",
+     "dir": "wikipedia",
+     "prefix": "wikipedia_en_all_maxi"
+    },
+    {
+     "type": "kiwix",
+     "dir": "wikipedia",
+     "prefix": "wikipedia_el_all_maxi"
+    }
+   ]
+  },
+  "books": {
+   "label": "Project Gutenberg: ~70,000 public-domain books (very large)",
+   "items": [
+    {
+     "type": "kiwix",
+     "dir": "gutenberg",
+     "prefix": "gutenberg_en_all"
+    }
+   ]
+  },
+  "french": {
+   "label": "Français / French: Wikipedia (summaries) + French medical Wikipedia (~5.6 GB)",
+   "items": [
+    {
+     "type": "kiwix",
+     "dir": "wikipedia",
+     "prefix": "wikipedia_fr_all_mini"
+    },
+    {
+     "type": "kiwix",
+     "dir": "wikipedia",
+     "prefix": "wikipedia_fr_medicine_nopic"
+    }
+   ]
+  },
+  "german": {
+   "label": "Deutsch / German: Wikipedia (summaries) + German medical Wikipedia (~4.6 GB)",
+   "items": [
+    {
+     "type": "kiwix",
+     "dir": "wikipedia",
+     "prefix": "wikipedia_de_all_mini"
+    },
+    {
+     "type": "kiwix",
+     "dir": "wikipedia",
+     "prefix": "wikipedia_de_medicine_nopic"
+    }
+   ]
+  },
+  "portuguese": {
+   "label": "Português / Portuguese: Wikipedia (summaries) + Portuguese medical Wikipedia (~1.8 GB)",
+   "items": [
+    {
+     "type": "kiwix",
+     "dir": "wikipedia",
+     "prefix": "wikipedia_pt_all_mini"
+    },
+    {
+     "type": "kiwix",
+     "dir": "wikipedia",
+     "prefix": "wikipedia_pt_medicine_nopic"
+    }
+   ]
+  },
+  "turkish": {
+   "label": "Türkçe / Turkish: Wikipedia (summaries) + Turkish Wiktionary (~1.9 GB)",
+   "items": [
+    {
+     "type": "kiwix",
+     "dir": "wikipedia",
+     "prefix": "wikipedia_tr_all_mini"
+    },
+    {
+     "type": "kiwix",
+     "dir": "wiktionary",
+     "prefix": "wiktionary_tr_all_nopic"
+    }
+   ]
+  },
+  "med-intl": {
+   "label": "Medical Wikipedia in French + German + Portuguese only (~0.6 GB)",
+   "items": [
+    {
+     "type": "kiwix",
+     "dir": "wikipedia",
+     "prefix": "wikipedia_fr_medicine_nopic"
+    },
+    {
+     "type": "kiwix",
+     "dir": "wikipedia",
+     "prefix": "wikipedia_de_medicine_nopic"
+    },
+    {
+     "type": "kiwix",
+     "dir": "wikipedia",
+     "prefix": "wikipedia_pt_medicine_nopic"
+    }
+   ]
+  }
+ }
+}

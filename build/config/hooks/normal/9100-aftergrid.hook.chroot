@@ -1,0 +1,54 @@
+#!/bin/sh
+set -e
+# Python tools: offline-library MCP server + Meshtastic CLI
+python3 -m venv /opt/aftergrid/venv
+/opt/aftergrid/venv/bin/pip install --no-index --find-links=/opt/aftergrid/wheels openzim-mcp meshtastic rns lxmf nomadnet
+ln -sf /opt/aftergrid/venv/bin/openzim-mcp /usr/local/bin/openzim-mcp
+for b in meshtastic rnsd rnstatus rnpath rnprobe nomadnet lxmd; do ln -sf /opt/aftergrid/venv/bin/$b /usr/local/bin/$b; done
+rm -rf /opt/aftergrid/wheels
+# Claude Desktop: let the deb register its repo normally once installed systems are online
+rm -f /etc/default/claude-desktop
+# Chrome's repo list: park it, re-enabled at boot by aftergrid-repos
+mkdir -p /usr/share/aftergrid
+[ -f /etc/apt/sources.list.d/google-chrome.list ] && mv /etc/apt/sources.list.d/google-chrome.list /usr/share/aftergrid/google-chrome.list || true
+# Plasma + gnome-keyring conflict breaks Claude's saved sign-in
+apt-get purge -y gnome-keyring 2>/dev/null || true
+# services
+systemctl enable aftergrid-repos.service aftergrid-refresh.service aftergrid-refresh.path aftergrid-kiwix.service aftergrid-ai.service aftergrid-embed.service aftergrid-semantic.service lighttpd.service
+# llama.cpp shared libraries
+echo /opt/llama/bin > /etc/ld.so.conf.d/aftergrid-llama.conf; ldconfig
+# lighttpd log dir
+mkdir -p /var/log/lighttpd && chown www-data:www-data /var/log/lighttpd
+# remove clamav auto-updates from hammering boot when offline
+systemctl disable clamav-freshclam.service 2>/dev/null || true
+# Make the offline docs world readable
+chmod -R a+rX /usr/share/aftergrid
+# Installer: copy the baked library onto installed systems
+if [ -f /etc/calamares/settings.conf ] && ! grep -q aftergrid /etc/calamares/settings.conf; then
+  sed -i 's/^  - unpackfs$/  - unpackfs\n  - shellprocess@aftergrid/' /etc/calamares/settings.conf
+  grep -q '^instances:' /etc/calamares/settings.conf || printf '\ninstances:\n- id: aftergrid\n  module: shellprocess\n  config: shellprocess-aftergrid.conf\n' >> /etc/calamares/settings.conf
+fi
+# ---- Branding ----
+# OS identity (ID stays debian so Debian packages and tools keep working)
+dpkg-divert --quiet --local --rename --add /usr/lib/os-release
+cat > /usr/lib/os-release <<'OSR'
+PRETTY_NAME="Aftergrid 1.1"
+NAME="Aftergrid"
+VERSION_ID="1.1"
+VERSION="1.1 (based on Debian 13 trixie)"
+VERSION_CODENAME=trixie
+ID=debian
+ID_LIKE=debian
+HOME_URL="https://getaftergrid.com"
+LOGO=aftergrid-os
+ANSI_COLOR="38;2;242;163;58"
+OSR
+# Installer branding
+[ -f /etc/calamares/settings.conf ] && sed -i 's/^branding: .*/branding: aftergrid/' /etc/calamares/settings.conf
+# Boot splash
+plymouth-set-default-theme aftergrid || true
+gtk-update-icon-cache -q /usr/share/icons/hicolor 2>/dev/null || true
+update-initramfs -u -k all
+# ---- Greek: generate the locale so the desktop can switch language at any time ----
+for l in en_US el_GR fr_FR de_DE pt_PT pt_BR tr_TR; do sed -i "s/^# *\($l.UTF-8 UTF-8\)/\1/" /etc/locale.gen; done
+locale-gen

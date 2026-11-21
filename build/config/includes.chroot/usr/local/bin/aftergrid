@@ -1,0 +1,69 @@
+#!/bin/bash
+# Aftergrid Control: one menu for the whole system.
+term(){ konsole --hold -e bash -c "$*"; }
+# Menu text follows the desktop language.
+case "$LANG" in
+el*) L=(  "Έλεγχος Aftergrid" "Τι θέλεις να κάνεις;"
+       "Λειτουργία Πεδίου (βιβλιοθήκη, χάρτες, ιατρικά, επικοινωνίες)" "Έλεγχος κατάστασης"
+       "1. Ρύθμιση του stick (κρυπτογραφημένη αποθήκευση + VAULT)" "2. Λήψη περισσότερων: βιβλιοθήκη, χάρτες, ΤΝ"
+       "Αντιγραφή βιβλιοθήκης από άλλο Aftergrid stick (χωρίς ίντερνετ)" "Κοινή χρήση βιβλιοθήκης μέσω Wi-Fi στα κινητά (hotspot)"
+       "Εκκίνηση / διακοπή τοπικής ΤΝ" "Χαμηλή κατανάλωση on / off" "Μηνύματα mesh (Reticulum / NomadNet)"
+       "Άνοιγμα Claude (online)" "Οδηγός Aftergrid" "Ενημέρωση εφαρμογών (χρειάζεται ίντερνετ)" "Εγκατάσταση του Aftergrid στον δίσκο του υπολογιστή" "Επανάληψη αρχικής ρύθμισης" );;
+fr*) L=(  "Contrôle Aftergrid" "Que veux-tu faire ?"
+       "Ouvrir le Mode Terrain (bibliothèque, cartes, médical, communications)" "Vérifier l'état"
+       "1. Configurer cette clé (sauvegardes chiffrées + VAULT)" "2. Télécharger plus : bibliothèque, cartes, IA hors ligne"
+       "Copier la bibliothèque depuis une autre clé Aftergrid (sans internet)" "Partager la bibliothèque en Wi-Fi vers les téléphones (point d'accès)"
+       "Démarrer / arrêter l'IA hors ligne" "Mode basse consommation on / off" "Messagerie maillée (Reticulum / NomadNet)"
+       "Ouvrir Claude (en ligne)" "Lire le guide Aftergrid" "Mettre à jour les applications (internet requis)" "Installer Aftergrid sur le disque de cet ordinateur" "Relancer la configuration initiale" );;
+de*) L=(  "Aftergrid-Steuerung" "Was möchtest du tun?"
+       "Feldmodus öffnen (Bibliothek, Karten, Medizin, Funk)" "Statusprüfung"
+       "1. Diesen Stick einrichten (verschlüsselte Speicherung + VAULT)" "2. Mehr herunterladen: Bibliothek, Karten, Offline-KI"
+       "Bibliothek von einem anderen Aftergrid-Stick kopieren (ohne Internet)" "Bibliothek per WLAN mit Handys teilen (Hotspot)"
+       "Offline-KI starten / stoppen" "Energiesparmodus an / aus" "Mesh-Messenger (Reticulum / NomadNet)"
+       "Claude öffnen (online)" "Aftergrid-Handbuch lesen" "Alle Apps aktualisieren (Internet nötig)" "Aftergrid auf der Festplatte dieses Rechners installieren" "Ersteinrichtung erneut starten" );;
+pt*) L=(  "Controle Aftergrid" "O que você quer fazer?"
+       "Abrir o Modo Campo (biblioteca, mapas, médico, comunicação)" "Verificar status"
+       "1. Configurar este pendrive (salvamento criptografado + VAULT)" "2. Baixar mais: biblioteca, mapas, IA offline"
+       "Copiar a biblioteca de outro pendrive Aftergrid (sem internet)" "Compartilhar a biblioteca por Wi-Fi com celulares (hotspot)"
+       "Iniciar / parar a IA offline" "Modo de baixo consumo liga / desliga" "Mensagens mesh (Reticulum / NomadNet)"
+       "Abrir o Claude (online)" "Ler o guia do Aftergrid" "Atualizar todos os apps (precisa de internet)" "Instalar o Aftergrid no disco deste computador" "Refazer a configuração inicial" );;
+tr*) L=(  "Aftergrid Kontrol" "Ne yapmak istiyorsun?"
+       "Saha Modunu aç (kütüphane, haritalar, tıbbi, iletişim)" "Durum kontrolü"
+       "1. Bu USB belleği kur (şifreli kayıt + VAULT)" "2. Daha fazlasını indir: kütüphane, haritalar, çevrimdışı yapay zekâ"
+       "Kütüphaneyi başka bir Aftergrid belleğinden kopyala (internetsiz)" "Kütüphaneyi Wi-Fi ile telefonlarla paylaş (erişim noktası)"
+       "Çevrimdışı yapay zekâyı başlat / durdur" "Düşük güç modu aç / kapat" "Mesh mesajlaşma (Reticulum / NomadNet)"
+       "Claude'u aç (çevrimiçi)" "Aftergrid rehberini oku" "Tüm uygulamaları güncelle (internet gerekir)" "Aftergrid'i bu bilgisayarın diskine kur" "İlk kurulumu yeniden çalıştır" );;
+*)   L=(  "Aftergrid Control" "What do you want to do?"
+       "Open Field Mode (library, maps, medical, comms)" "Status check"
+       "1. Set up this stick (encrypted saves + VAULT)" "2. Download more: library, maps, offline AI"
+       "Copy library from another Aftergrid stick (no internet)" "Share the library over Wi-Fi to phones (hotspot)"
+       "Start / stop the offline AI" "Low power mode on / off" "Mesh messenger (Reticulum / NomadNet)"
+       "Open Claude (online)" "Read the Aftergrid guide" "Update all apps (needs internet)" "Install Aftergrid onto this computer's disk" "Run first-time setup again" );;
+esac
+while true; do
+C=$(kdialog --title "${L[0]}" --geometry 600x580 --menu "${L[1]}" \
+  field "${L[2]}" status "${L[3]}" setup "${L[4]}" sync "${L[5]}" peer "${L[6]}" hotspot "${L[7]}" \
+  ai "${L[8]}" power "${L[9]}" mesh "${L[10]}" claude "${L[11]}" guide "${L[12]}" update "${L[13]}" install "${L[14]}" wizard "${L[15]}" ) || exit 0
+case $C in
+  field)   xdg-open http://localhost/ >/dev/null 2>&1 & ;;
+  status)  term aftergrid-status;;
+  setup)   term sudo aftergrid-setup-stick;;
+  sync)    mapfile -t A < <(python3 -c "import json
+for k,v in json.load(open('/usr/share/aftergrid/catalog.json'))['tiers'].items(): print(k); print(v['label']); print('off')")
+           T=$(kdialog --title "Download" --checklist "Pick what to download (needs internet once):" "${A[@]}") && \
+             eval "set -- $T" && [ $# -gt 0 ] && term aftergrid-vault-sync "$@";;
+  peer)    D=$(kdialog --title "Pick the other Aftergrid's VAULT drive" --getexistingdirectory /media) && term aftergrid-vault-sync --from "$D";;
+  hotspot) if aftergrid-hotspot status | grep -q ON; then term aftergrid-hotspot off; else
+             P=$(kdialog --title "Hotspot" --inputbox "Wi-Fi password for phones (8+ characters):" aftergrid) && term aftergrid-hotspot on Aftergrid-Library "$P"; fi;;
+  ai)      if systemctl is-active -q aftergrid-ai; then term "sudo systemctl stop aftergrid-ai; echo Offline AI stopped."; else
+             term "sudo mkdir -p /run/aftergrid && sudo touch /run/aftergrid/ai-force && sudo systemctl start aftergrid-ai && echo 'Offline AI starting (about 30 seconds). Use it in Field Mode -> Ask Aftergrid.' || echo 'No AI model yet: Aftergrid Control -> Download -> ai'"; fi;;
+  power)   O=$(kdialog --title "Low power" --yesnocancel "Turn low power mode ON? (No = turn it off)"; echo $?); [ "$O" = 0 ] && term aftergrid-lowpower on; [ "$O" = 1 ] && term aftergrid-lowpower off;;
+  mesh)    konsole -e nomadnet & ;;
+  claude)  claude-desktop >/dev/null 2>&1 & ;;
+  guide)   G=/usr/share/aftergrid/docs/AFTERGRID-GUIDE.md; [ "${LANG#el}" != "$LANG" ] && G=/usr/share/aftergrid/docs/AFTERGRID-ODIGOS-EL.md
+           okular "$G" >/dev/null 2>&1 & ;;
+  update)  term "sudo apt update && sudo apt full-upgrade";;
+  wizard)  aftergrid-setup --again & ;;
+  install) kdialog --warningcontinuecancel "This installs Aftergrid onto THIS computer's internal disk. Choose Manual partitioning and only use the partition you made for Aftergrid. Continue?" && sudo -E calamares & ;;
+esac
+done

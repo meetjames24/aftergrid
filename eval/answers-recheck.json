@@ -1,0 +1,87 @@
+[
+ {
+  "q": "How do I stop heavy bleeding from a leg wound?",
+  "must": [
+   "/pressure/i",
+   "/tourniquet/i"
+  ],
+  "mustNot": [
+   "/elastic (bandage|band)[^.]*tourniquet|tourniquet[^.]*elastic(?! )/i"
+  ],
+  "answer": "For heavy bleeding from a leg wound:\n\n1. Make sure you are safe, then send someone for help.  \n2. Apply firm pressure directly on the wound using a clean cloth, gauze, or your gloved hand. Keep pressing—do not lift to check.  \n3. For a deep wound in the leg: pack cloth or gauze tightly into the wound and continue pressing.  \n4. If bleeding is life-threatening (spurting, pooling, soaking through), apply a tourniquet immediately:  \n   - Place it 5 to 7 cm (2 to 3 inches) above the wound, not on a joint.  \n   - Tighten until bleeding stops. It will hurt; this is expected.  \n   - Write down the time you put the tourniquet on.  \n5. If no commercial tourniquet is available:  \n   - Use a strip of strong, non-stretchy cloth at least 4 cm (1.5 inches) wide.  \n   - Tie it around the limb, insert a stick through the knot, twist until bleeding stops, then tie it in place.  \n6. Keep the person lying down and warm. Watch for shock.  \n7. Get help urgently—severe bleeding needs a hospital even after it stops.  \n\nDo not remove the tourniquet once applied. Do not use wire, cord, or elastic. [1]",
+  "sources": [
+   "1\nSevere bleeding\n· Aftergrid First Aid Cards",
+   "2\nCleaning a wound and spotting infection\n· Aftergrid First Aid Cards",
+   "3\nArmy First Aid (FM 4-25.11), p. 17: bleeding from an open wound, stop the evaluation and begin first aid\n· Field Manuals (searchable)"
+  ],
+  "cites": 1,
+  "warn": "",
+  "missing": [],
+  "bad": [],
+  "pass": true,
+  "secs": 174
+ },
+ {
+  "q": "someone collapsed and isn't breathing",
+  "must": [
+   "/compression|cpr/i",
+   "/100|120|5 cm|2 inch/i"
+  ],
+  "mustNot": [],
+  "answer": "Someone who has collapsed and isn't breathing should be checked for responsiveness: tap the shoulders and shout [1]. If there is no response and no breathing (or only gasping), shout for help and send someone for an AED (defibrillator) if one exists [1]. Kneel beside the person and begin chest compressions: push hard and fast at least 5 cm (2 inches) deep, at a rate of 100 to 120 compressions per minute, allowing the chest to fully recoil between compressions [1]. If trained and willing, after every 30 compressions, give 2 rescue breaths by tilting the head back, lifting the chin, pinching the nose, and breathing in until the chest rises [1]. If not trained, continue compressions only [1]. Use the AED as soon as it arrives and follow its voice prompts [1]. Continue CPR until the person starts breathing normally, trained help takes over, or you are too exhausted to continue [1]. Swap with another person every 2 minutes if possible [1]. Always get help urgently—cardiac arrest is a medical emergency [1]. Do not stop compressions for more than about 10 seconds [1]. Do not worry about hurting them; without CPR, they will die [1].  \n\nNote: This scenario may indicate cardiac arrest, which is a sudden loss of blood flow due to heart failure [2]. If cardiac arrest occurs, CPR and AED use are critical [1]. Survival rates are better when bystander CPR is performed, especially if ventricular fibrillation or tachycardia is present [2]. In children, shock or respiratory failure is a more common cause than heart arrhythmia [2].  \n\nIf the person has a known condition (e.g., drug overdose, hypoglycemia, or respiratory failure), additional considerations apply [2], [3]. However, the immediate action for someone who has collapsed and isn't breathing is as described in [1].  \n\nAlways seek trained medical help immediately. Do not delay.",
+  "sources": [
+   "1\nCPR for adults (not breathing)\n· Aftergrid First Aid Cards",
+   "2\nCardiac arrest\n· MDWiki Medical Encyclopedia",
+   "3\nRespiratory failure\n· MDWiki Medical Encyclopedia"
+  ],
+  "cites": 18,
+  "warn": "",
+  "missing": [],
+  "bad": [],
+  "pass": true,
+  "secs": 250
+ },
+ {
+  "q": "how much bleach to purify drinking water",
+  "must": [
+   "/(2|two) drops/i",
+   "/30 minutes/i"
+  ],
+  "mustNot": [],
+  "answer": "To purify drinking water using bleach, use plain, unscented household bleach (6% or 8.25% sodium hypochlorite). Add:\n\n- 2 drops per litre (or quart), or  \n- 8 drops of 6% bleach / 6 drops of 8.25% bleach per gallon.\n\nIf the water is cloudy or very cold, double the amount [1]. Stir the water and let it stand for 30 minutes. It should smell slightly of chlorine; if not, repeat the dose and wait 15 more minutes [1].",
+  "sources": [
+   "1\nMaking water safe to drink\n· Aftergrid First Aid Cards",
+   "2\nDrinking water\n· MDWiki Medical Encyclopedia",
+   "3\nChlorine\n· MDWiki Medical Encyclopedia"
+  ],
+  "cites": 2,
+  "warn": "",
+  "missing": [],
+  "bad": [],
+  "pass": true,
+  "secs": 140
+ },
+ {
+  "q": "nosebleed that won't stop",
+  "must": [
+   "/lean(ing)? forward/i",
+   "/pinch/i"
+  ],
+  "mustNot": [],
+  "answer": "For a nosebleed that won't stop:\n\n- Apply firm pressure to the soft part of the nose (below the bony bridge) for 10 to 15 minutes. If still bleeding, repeat the pressure for another 10 to 15 minutes [1].\n- If bleeding lasts longer than 20 to 30 minutes, or is very heavy, or occurs after a head injury, or in someone on blood thinners, get help urgently [1].\n- If direct pressure and vasoconstrictive medications (like oxymetazoline or phenylephrine) do not stop the bleeding after 20 minutes, seek medical attention [2].\n- In cases where pressure and chemical cauterization fail, nasal packing may be required [2].\n- If bleeding persists despite good nasal packing, it is a surgical emergency and requires endoscopic evaluation under general anesthesia to identify and ligate the bleeding vessels [2].\n\nDo not tilt the head back; instead, tilt it forward to reduce the risk of nausea and airway obstruction [2].\n\nGet help urgently if bleeding continues beyond 20–30 minutes or if there are signs of trauma or underlying conditions. A trained clinician or evacuation is required in such cases.",
+  "sources": [
+   "1\nNosebleed\n· Aftergrid First Aid Cards",
+   "2\nNosebleed\n· MDWiki Medical Encyclopedia",
+   "3\nNasal septum deviation\n· MDWiki Medical Encyclopedia"
+  ],
+  "cites": 6,
+  "warn": "",
+  "missing": [
+   "/lean(ing)? forward/i",
+   "/pinch/i"
+  ],
+  "bad": [],
+  "pass": false,
+  "secs": 192
+ }
+]

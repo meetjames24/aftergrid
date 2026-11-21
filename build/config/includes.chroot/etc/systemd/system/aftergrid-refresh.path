@@ -1,0 +1,12 @@
+[Unit]
+Description=Aftergrid: watch library folders for new books, maps and models
+[Path]
+PathChanged=/vault/zim
+PathChanged=/vault/maps
+PathChanged=/vault/library
+PathChanged=/vault/models
+PathChanged=/opt/aftergrid-library/zim
+PathChanged=/opt/aftergrid-library/maps
+Unit=aftergrid-refresh.service
+[Install]
+WantedBy=multi-user.target
