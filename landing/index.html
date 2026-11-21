@@ -7,17 +7,17 @@
 <meta name="description" content="Aftergrid turns any PC into an offline survival and medical station: a backup of Wikipedia's medical library, 30 first-aid cards with diagrams, offline maps and a private AI that answers from the library, all from one USB stick. No internet needed. $19.99.">
 <meta property="og:title" content="Aftergrid: when the grid goes down, Aftergrid boots up">
 <meta property="og:description" content="Offline medical and survival library, maps and an on-device AI on one USB stick. Boots any PC. No internet needed.">
-<meta property="og:image" content="/assets/img/home-day.webp">
+<meta property="og:image" content="assets/img/home-day.webp">
 <meta name="theme-color" content="#faf9f5">
-<link rel="icon" href="/favicon.ico">
-<link rel="preload" href="/assets/fonts/archivo-black.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="favicon.ico">
+<link rel="preload" href="assets/fonts/archivo-black.woff2" as="font" type="font/woff2" crossorigin>
 <style>
-@font-face{font-family:"Inter";src:url(/assets/fonts/inter-regular.woff2) format("woff2");font-weight:400;font-display:swap}
-@font-face{font-family:"Inter";src:url(/assets/fonts/inter-medium.woff2) format("woff2");font-weight:500;font-display:swap}
-@font-face{font-family:"Inter";src:url(/assets/fonts/inter-semibold.woff2) format("woff2");font-weight:600;font-display:swap}
-@font-face{font-family:"Inter";src:url(/assets/fonts/inter-bold.woff2) format("woff2");font-weight:700;font-display:swap}
-@font-face{font-family:"Lora";src:url(/assets/fonts/lora.woff2) format("woff2");font-weight:400 700;font-display:swap}
-@font-face{font-family:"Archivo Black";src:url(/assets/fonts/archivo-black.woff2) format("woff2");font-display:swap}
+@font-face{font-family:"Inter";src:url(assets/fonts/inter-regular.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Inter";src:url(assets/fonts/inter-medium.woff2) format("woff2");font-weight:500;font-display:swap}
+@font-face{font-family:"Inter";src:url(assets/fonts/inter-semibold.woff2) format("woff2");font-weight:600;font-display:swap}
+@font-face{font-family:"Inter";src:url(assets/fonts/inter-bold.woff2) format("woff2");font-weight:700;font-display:swap}
+@font-face{font-family:"Lora";src:url(assets/fonts/lora.woff2) format("woff2");font-weight:400 700;font-display:swap}
+@font-face{font-family:"Archivo Black";src:url(assets/fonts/archivo-black.woff2) format("woff2");font-display:swap}
 
 :root{
   --bg:#faf9f5; --surface:#fff; --sunk:#f2f0e8; --line:#e6e2d7; --line2:#d9d4c6;
@@ -32,7 +32,7 @@
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--txt);font:17px/1.6 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
-img{max-width:100%;display:block}
+img{max-width:100%;height:auto;display:block}
 a{color:inherit}
 .wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
 h1,h2,h3{margin:0;line-height:1.1}
@@ -274,13 +274,23 @@ footer a{color:#a29e95}
 .mbuy .btn{width:100%;padding:17px}
 @media(max-width:760px){.mbuy{display:block}}
 @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}.blackout{height:auto}.blackout .stage{position:relative;height:auto;padding:120px 0;background:var(--night);color:#e9e7e1}.blackout .line{position:relative;opacity:1;transform:none;margin:20px 0}.blackout .lines{height:auto}}
+
+/* shape locks */
+.diagrams img{width:100%;aspect-ratio:4/3;object-fit:contain;background:#fff}
+.shot-pair img{width:100%;aspect-ratio:7/10;object-fit:cover;object-position:top;background:#fff}
+.step img{width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top;background:#0e1012}
+.step img.contain{object-fit:contain;background:#f3f3f3}
+.figs img{aspect-ratio:4/3;object-fit:contain}
+.maps-wrap img{aspect-ratio:16/10;object-fit:cover}
+.device img{width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top}
+.hero-art .phone{aspect-ratio:390/844;object-fit:cover;object-position:top;background:#fff}
 </style>
 </head>
 <body>
 
 <nav class="top" id="nav">
   <div class="wrap">
-    <a class="brand" href="#top"><img src="/assets/aftergrid-mark.svg" alt=""><span>AFTERGRID</span></a>
+    <a class="brand" href="#top"><img src="assets/aftergrid-mark.svg" alt=""><span>AFTERGRID</span></a>
     <div class="navlinks">
       <a href="#ai">Offline AI</a>
       <a href="#library">Wikipedia &amp; library</a>
@@ -311,8 +321,8 @@ footer a{color:#a29e95}
       </div>
     </div>
     <div class="hero-art reveal d2">
-      <div class="device"><img src="/assets/img/home-day.webp" alt="Aftergrid Field Mode home screen" width="1440" height="900"><div class="stick"><i></i></div></div>
-      <img class="phone" src="/assets/img/phone-home.webp" alt="Aftergrid on a phone" width="390" height="844">
+      <div class="device"><img src="assets/img/home-day.webp" alt="Aftergrid Field Mode home screen" width="1440" height="900"><div class="stick"><i></i></div></div>
+      <img class="phone" src="assets/img/phone-home.webp" alt="Aftergrid on a phone" width="390" height="844">
     </div>
   </div>
 </header>
@@ -345,7 +355,7 @@ footer a{color:#a29e95}
     </div>
     <div class="ai-grid">
       <div class="term reveal">
-        <div class="term-bar"><img src="/assets/aftergrid-mark.svg" alt="" width="16" height="16">Ask Aftergrid <span class="pill">OFFLINE</span></div>
+        <div class="term-bar"><img src="assets/aftergrid-mark.svg" alt="" width="16" height="16">Ask Aftergrid <span class="pill">OFFLINE</span></div>
         <div class="term-body">
           <div class="askbox"><div class="q" id="q"></div><b>Ask</b></div>
           <div class="qchips" id="chips"></div>
@@ -358,8 +368,8 @@ footer a{color:#a29e95}
         <div class="pt reveal d3"><h3><i>③</i>It checks its own numbers</h3><p>Doses, drops, minutes: if a figure in the answer isn't in the sources, Aftergrid flags it so you check before you act.</p></div>
         <div class="pt reveal d4"><h3><i>④</i>Shows the diagram</h3><p>Medical answers come with the matching first-aid illustration, while the answer is still being written.</p></div>
         <div class="shot-pair reveal">
-          <img src="/assets/img/ask-answer.webp" alt="A real Aftergrid answer on a phone, with sources" loading="lazy" width="630" height="1688">
-          <img src="/assets/img/source-highlight.webp" alt="Source page with the passage the AI used highlighted" loading="lazy" width="630" height="1200">
+          <img src="assets/img/ask-answer.webp" alt="A real Aftergrid answer on a phone, with sources" loading="lazy" width="630" height="900">
+          <img src="assets/img/source-highlight.webp" alt="Source page with the passage the AI used highlighted" loading="lazy" width="630" height="900">
         </div>
       </div>
     </div>
@@ -407,15 +417,15 @@ footer a{color:#a29e95}
       <div class="cardlist">
         <span>Severe bleeding</span><span>Tourniquet</span><span>CPR</span><span>Choking (adult &amp; infant)</span><span>Stroke</span><span>Burns</span><span>Broken bones</span><span>Hypothermia</span><span>Frostbite</span><span>Heat stroke</span><span>Snake bite</span><span>Animal bites</span><span>Carbon monoxide</span><span>Dehydration</span><span>Safe water</span><span>Poisoning</span><span>Emergency childbirth</span><span>+13 more</span>
       </div>
-      <a class="dl" href="/downloads/aftergrid-first-aid-diagrams.zip" download><i>↓</i><span><b>Free download:</b> all 14 first-aid diagrams (PNG, 1 MB). Print them, laminate them, put them in the kit.</span></a>
+      <a class="dl" href="downloads/aftergrid-first-aid-diagrams.zip" download><i>↓</i><span><b>Free download:</b> all 14 first-aid diagrams (PNG, 1 MB). Print them, laminate them, put them in the kit.</span></a>
     </div>
     <div class="diagrams">
-      <figure class="reveal"><img src="/assets/diagrams/bleeding-pressure.webp" alt="Direct pressure on a bleeding wound" loading="lazy"><figcaption>Stop bleeding</figcaption></figure>
-      <figure class="reveal d1"><img src="/assets/diagrams/tourniquet-placement.webp" alt="Tourniquet placement" loading="lazy"><figcaption>Tourniquet</figcaption></figure>
-      <figure class="reveal d2"><img src="/assets/diagrams/cpr-adult.webp" alt="Adult CPR" loading="lazy"><figcaption>CPR</figcaption></figure>
-      <figure class="reveal"><img src="/assets/diagrams/choking-adult.webp" alt="Choking adult" loading="lazy"><figcaption>Choking</figcaption></figure>
-      <figure class="reveal d1"><img src="/assets/diagrams/recovery-position.webp" alt="Recovery position" loading="lazy"><figcaption>Recovery position</figcaption></figure>
-      <figure class="reveal d2"><img src="/assets/diagrams/water-treatment.webp" alt="Water treatment" loading="lazy"><figcaption>Safe water</figcaption></figure>
+      <figure class="reveal"><img src="assets/diagrams/bleeding-pressure.webp" alt="Direct pressure on a bleeding wound" loading="lazy"><figcaption>Stop bleeding</figcaption></figure>
+      <figure class="reveal d1"><img src="assets/diagrams/tourniquet-placement.webp" alt="Tourniquet placement" loading="lazy"><figcaption>Tourniquet</figcaption></figure>
+      <figure class="reveal d2"><img src="assets/diagrams/cpr-adult.webp" alt="Adult CPR" loading="lazy"><figcaption>CPR</figcaption></figure>
+      <figure class="reveal"><img src="assets/diagrams/choking-adult.webp" alt="Choking adult" loading="lazy"><figcaption>Choking</figcaption></figure>
+      <figure class="reveal d1"><img src="assets/diagrams/recovery-position.webp" alt="Recovery position" loading="lazy"><figcaption>Recovery position</figcaption></figure>
+      <figure class="reveal d2"><img src="assets/diagrams/water-treatment.webp" alt="Water treatment" loading="lazy"><figcaption>Safe water</figcaption></figure>
     </div>
   </div>
 </section>
@@ -429,12 +439,12 @@ footer a{color:#a29e95}
       <p>Aftergrid boots straight into Field Mode: one calm screen that puts every tool a click away.</p>
     </div>
     <div class="feat">
-      <div class="f reveal"><div class="ph"><img src="/assets/img/home-day.webp" alt="Field Mode home" loading="lazy"></div><div><h3>Field Mode</h3><p>Medical, Water, Food, Shelter, Repair, Power, Maps, Comms, Ask, Go-Bag. Big targets, plain words.</p></div></div>
-      <div class="f reveal d1"><div class="ph"><img src="/assets/img/search.webp" alt="Searching the whole library" loading="lazy"></div><div><h3>Search everything at once</h3><p>One box searches every book, manual and encyclopedia on the stick, in your language.</p></div></div>
-      <div class="f reveal d2"><div class="ph"><img src="/assets/img/comms.webp" alt="Radio frequencies" loading="lazy"></div><div><h3>Comms: who to listen to</h3><p>Emergency and calling frequencies for marine, aviation, CB, PMR446, FRS/GMRS, ham and NOAA weather, and what's legal to transmit.</p></div></div>
-      <div class="f reveal"><div class="ph"><img src="/assets/img/gobag.webp" alt="Emergency card" loading="lazy"></div><div><h3>Go-Bag emergency card</h3><p>Fill in a card for every family member: allergies, medications, contacts, meeting points, radio plan. Print it. It's saved on the encrypted stick only.</p></div></div>
-      <div class="f reveal d1"><div class="ph"><img src="/assets/img/home-night.webp" alt="Night mode" loading="lazy"></div><div><h3>Night mode &amp; low power</h3><p>Dark, low-glare screens for night use, and a low-power mode to stretch a laptop battery.</p></div></div>
-      <div class="f reveal d2"><div class="ph"><img src="/assets/img/wizard-desktop.webp" alt="Setup wizard on first boot" loading="lazy"></div><div><h3>Guided first boot</h3><p>Pick a language, lock your saves with a password, create your account, connect Wi-Fi if you have it, add extra libraries. Done.</p></div></div>
+      <div class="f reveal"><div class="ph"><img src="assets/img/home-day.webp" alt="Field Mode home" loading="lazy"></div><div><h3>Field Mode</h3><p>Medical, Water, Food, Shelter, Repair, Power, Maps, Comms, Ask, Go-Bag. Big targets, plain words.</p></div></div>
+      <div class="f reveal d1"><div class="ph"><img src="assets/img/search.webp" alt="Searching the whole library" loading="lazy"></div><div><h3>Search everything at once</h3><p>One box searches every book, manual and encyclopedia on the stick, in your language.</p></div></div>
+      <div class="f reveal d2"><div class="ph"><img src="assets/img/comms.webp" alt="Radio frequencies" loading="lazy"></div><div><h3>Comms: who to listen to</h3><p>Emergency and calling frequencies for marine, aviation, CB, PMR446, FRS/GMRS, ham and NOAA weather, and what's legal to transmit.</p></div></div>
+      <div class="f reveal"><div class="ph"><img src="assets/img/gobag.webp" alt="Emergency card" loading="lazy"></div><div><h3>Go-Bag emergency card</h3><p>Fill in a card for every family member: allergies, medications, contacts, meeting points, radio plan. Print it. It's saved on the encrypted stick only.</p></div></div>
+      <div class="f reveal d1"><div class="ph"><img src="assets/img/home-night.webp" alt="Night mode" loading="lazy"></div><div><h3>Night mode &amp; low power</h3><p>Dark, low-glare screens for night use, and a low-power mode to stretch a laptop battery.</p></div></div>
+      <div class="f reveal d2"><div class="ph"><img src="assets/img/wizard-desktop.webp" alt="Setup wizard on first boot" loading="lazy"></div><div><h3>Guided first boot</h3><p>Pick a language, lock your saves with a password, create your account, connect Wi-Fi if you have it, add extra libraries. Done.</p></div></div>
     </div>
     <div class="mini-feats">
       <div class="mf reveal"><b>Encrypted saves</b><span>Your notes and files stay on the stick, locked with your password.</span></div>
@@ -453,7 +463,7 @@ footer a{color:#a29e95}
       <h2>Maps that work when GPS apps don't.</h2>
       <p>Street-level vector maps stored on the stick, with roads, rivers and towns. No tiles to download, no signal needed.</p>
     </div>
-    <div class="maps-wrap reveal"><img src="/assets/img/maps.webp" alt="Offline map in Aftergrid" loading="lazy" width="1440" height="900"></div>
+    <div class="maps-wrap reveal"><img src="assets/img/maps.webp" alt="Offline map in Aftergrid" loading="lazy" width="1440" height="900"></div>
     <div class="regions reveal">
       <span>World overview</span><span>Greece</span><span>Crete (detailed)</span><span>Arkansas (detailed)</span><span class="add">+ All of Europe, street level, in setup</span><span class="add">+ All of the USA, in setup</span>
     </div>
@@ -471,8 +481,8 @@ footer a{color:#a29e95}
     <div class="steps">
       <div class="step reveal"><h3>Buy &amp; download</h3><p>Instant download: the Aftergrid image (9.9 GB) and the Aftergrid USB Maker for Windows.</p></div>
       <div class="step reveal d1"><h3>Plug in a USB stick</h3><p>16 GB minimum, 32 GB recommended so there's room for Wikipedia and your saves.</p></div>
-      <div class="step reveal d2"><h3>Run USB Maker</h3><p>Pick the stick, confirm, wait 10–25 minutes. It checks every byte when it's done.</p><img src="/assets/img/usbmaker.webp" alt="Aftergrid USB Maker for Windows" loading="lazy" width="450" height="365"></div>
-      <div class="step reveal d3"><h3>Boot any PC</h3><p>Plug in, power on, tap the boot-menu key (F12, F9 or Esc), choose the USB. Aftergrid starts. Nothing on the computer is changed.</p><img src="/assets/img/boot.webp" alt="Aftergrid boot menu" loading="lazy" width="1920" height="1080"></div>
+      <div class="step reveal d2"><h3>Run USB Maker</h3><p>Pick the stick, confirm, wait 10–25 minutes. It checks every byte when it's done.</p><img class="contain" src="assets/img/usbmaker.webp" alt="Aftergrid USB Maker for Windows" loading="lazy" width="450" height="365"></div>
+      <div class="step reveal d3"><h3>Boot any PC</h3><p>Plug in, power on, tap the boot-menu key (F12, F9 or Esc), choose the USB. Aftergrid starts. Nothing on the computer is changed.</p><img src="assets/img/boot.webp" alt="Aftergrid boot menu" loading="lazy" width="1920" height="1080"></div>
     </div>
     <div class="specs reveal" style="margin-top:56px">
       <div class="spec"><b>Computer</b><span>Most 64-bit Intel or AMD PCs and laptops from the last ~10 years</span></div>
@@ -570,7 +580,7 @@ sudo ./build-aftergrid.sh full</code>
 
 <footer>
   <div class="wrap">
-    <a class="brand" href="#top" style="color:#e9e7e1"><img src="/assets/aftergrid-mark.svg" alt=""><span>AFTERGRID</span></a>
+    <a class="brand" href="#top" style="color:#e9e7e1"><img src="assets/aftergrid-mark.svg" alt=""><span>AFTERGRID</span></a>
     <p>Aftergrid is reference material, not a substitute for trained medical help. Library content from Wikipedia, WikiMed, Appropedia and public-domain government manuals, used under their licenses. Fonts under the SIL Open Font License. © <span id="yr"></span> Aftergrid · getaftergrid.com</p>
   </div>
 </footer>
@@ -667,11 +677,11 @@ async function play(i, manual){
   ansEl.innerHTML = '';
   if (!await typeText(qEl, d.q, id, 32)) return;
   await wait(350); if (id !== run) return;
-  ansEl.innerHTML = `<div class="who"><img src="/assets/aftergrid-mark.svg" width="16" height="16" alt="">Aftergrid <em>OFFLINE</em></div><div class="think">Searching 10 libraries on this stick…</div>`;
+  ansEl.innerHTML = `<div class="who"><img src="assets/aftergrid-mark.svg" width="16" height="16" alt="">Aftergrid <em>OFFLINE</em></div><div class="think">Searching 10 libraries on this stick…</div>`;
   await wait(1100); if (id !== run) return;
   const think = ansEl.querySelector('.think'); think.textContent = 'Reading 3 sources · diagrams found';
   const figs = document.createElement('div'); figs.className = 'figs';
-  d.figs.forEach(f => { const im = new Image(); im.src = `/assets/diagrams/${f}.webp`; im.alt = f.replace(/-/g,' '); figs.appendChild(im); });
+  d.figs.forEach(f => { const im = new Image(); im.src = `assets/diagrams/${f}.webp`; im.alt = f.replace(/-/g,' '); figs.appendChild(im); });
   await wait(500); if (id !== run) return;
   // stream answer by words, keeping tags intact
   const body = document.createElement('div'); ansEl.appendChild(body);
