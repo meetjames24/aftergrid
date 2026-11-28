@@ -202,7 +202,7 @@ class MainForm : Form {
         string sizes = chosen.Count == 0 ? "Nothing ticked: you can add packs later in Aftergrid Control → Download." :
             chosen.Count + " pack(s), " + (chosen.All(p => p.Measured || p.Gb <= 0) ? "" : "about ") + gb.ToString("0.#") + " GB" + (chosen.Any(p => p.Gb <= 0) ? " + maps (size varies)" : "") + ".";
         if (d != null && image != null) {
-            double free = (d.Size - image.Size - StickLayout.Reserve(d.Size)) / 1e9;
+            double free = (d.Size - image.Size - StickLayout.Reserve(d.Size, image.Size)) / 1e9;
             sizes += "  Room on this stick: about " + Math.Max(0, free).ToString("0") + " GB.";
             packInfo.ForeColor = gb > free ? Red : Dim;
             if (gb > free) sizes += "  Too much for this stick.";
@@ -339,6 +339,12 @@ class MainForm : Form {
                         if (!Native.SetFilePointerEx(h, off, out np, 0) || !Native.WriteFile(h, buf, 1 << 20, out w, IntPtr.Zero))
                             throw new Exception("Couldn't prepare the VAULT area (Windows error " + Marshal.GetLastWin32Error() + ").");
                     }
+                }
+                // GPT images: the backup partition table goes at the very end of the stick.
+                if (layout != null && layout.Skip == null && layout.Backup != null) {
+                    var bk = layout.Backup; Marshal.Copy(bk, 0, buf, bk.Length); long np; uint w;
+                    if (!Native.SetFilePointerEx(h, layout.BackupOffset, out np, 0) || !Native.WriteFile(h, buf, (uint)bk.Length, out w, IntPtr.Zero))
+                        throw new Exception("Couldn't write the backup partition table at the end of the stick (Windows error " + Marshal.GetLastWin32Error() + ").");
                 }
                 Native.FlushFileBuffers(h);
             }

@@ -66,11 +66,11 @@ An offline survival and medical library, maps and an on-device AI on one USB sti
 
 <table>
 <tr>
-<td width="33%"><img src="docs/screenshots/13-ask-answer.jpg" alt="Answer with sources"></td>
+<td width="33%"><img src="docs/screenshots/13-ask-answer-real.png" alt="Answer with sources"></td>
 <td width="33%"><img src="docs/screenshots/14-source-highlighted.png" alt="Source with passage highlighted"></td>
 <td width="33%"><img src="docs/screenshots/12-first-aid-card.png" alt="First-aid card"></td>
 </tr>
-<tr><td align="center">A real answer, with sources</td><td align="center">Source, passage highlighted</td><td align="center">First-aid card</td></tr>
+<tr><td align="center">A real answer, with sources<br><sub>(from the built 1.1 ISO, CPU only)</sub></td><td align="center">Source, passage highlighted</td><td align="center">First-aid card</td></tr>
 </table>
 
 ### First-aid diagrams
@@ -115,13 +115,15 @@ An offline survival and medical library, maps and an on-device AI on one USB sti
 
 ## Build it
 
-Needs Debian or Ubuntu, root, ~20 GB free.
+Needs Debian or Ubuntu, root, ~35 GB free.
 
 ```bash
-./fetch-content.sh                 # libraries, llama.cpp, AI models, manuals (not in git)
-sudo ./build-aftergrid.sh standard # or: full | lite
-./release.sh v1.1                  # upload parts + latest.json + catalog.json to the GitHub release
+sudo ./fetch-content.sh                # builds llama.cpp/pmtiles/pat (Debian 13 chroot), downloads + builds the library
+sudo ./build-aftergrid.sh standard     # or: full | lite   (REUSE_BASE=1 re-stages the library only)
+./release.sh v1.1                      # optional: upload a local build to the GitHub release
 ```
+
+Or let GitHub do it: pushing a tag like `v1.1` runs `iso.yml` (builds the ISO, about an hour) and `release.yml` (builds and signs USB Maker), and both attach to the release.
 
 Output goes to `out/parts/`: the image in 380 MB parts, `aftergrid-image.json` and `Aftergrid USB Maker.exe`.
 

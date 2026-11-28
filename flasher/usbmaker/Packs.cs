@@ -145,43 +145,110 @@ class Job {
     }
 }
 
-// Adds two MBR entries after the Aftergrid image: a blank partition reserved for encrypted saves
+// Adds two partitions after the Aftergrid image: a blank partition reserved for encrypted saves
 // (the OS encrypts it on first setup, see aftergrid-setup-stick) and the VAULT (exFAT, Windows-readable).
 // Done by patching the image's first sector while it is written, so no extra raw write is needed later.
 class StickLayout {
     public long SavesStart, SavesSectors, VaultStart, VaultSectors; public string Skip;
     public long VaultOffset { get { return VaultStart * 512; } }
-    public static long Reserve(long disk) { return (disk < 40e9 ? 8L : disk < 100e9 ? 16L : 32L) << 30; }
+    // Space kept for encrypted saves: 8/16/32 GB by stick size, but never more than a third of what's left after
+    // the image, so a 16 GB stick still gets a VAULT big enough for the offline AI pack. (min 2 GB, MiB-aligned)
+    public static long Reserve(long disk, long image) {
+        long r = (disk < 40e9 ? 8L : disk < 100e9 ? 16L : 32L) << 30;
+        r = Math.Min(r, Math.Max(2L << 30, (disk - image) / 3));
+        return r / (1 << 20) * (1 << 20);
+    }
 
-    public static StickLayout Plan(byte[] mbr, long diskBytes, long imageBytes) {
-        if (mbr[510] != 0x55 || mbr[511] != 0xAA) return new StickLayout { Skip = "the image has no MBR" };
+    // GPT images (live-build's) get partitions 4+5 in the GPT, with the backup GPT moved to the end of
+    // the stick; MBR images (Debian's official ISOs) get MBR entries 3+4. Same layout aftergrid-setup-stick makes.
+    public bool Gpt; public long BackupOffset; public byte[] Backup;          // backup GPT, written at the end of the stick
+    int slot; long diskSectors, lastUsable, entriesLba; int entries, entrySize, entrySectors;
+    static long U64(byte[] b, int o) { return BitConverter.ToInt64(b, o); }
+    static int U32(byte[] b, int o) { return BitConverter.ToInt32(b, o); }
+
+    public static StickLayout Plan(byte[] b, long diskBytes, long imageBytes) {
+        if (b[510] != 0x55 || b[511] != 0xAA) return new StickLayout { Skip = "the image has no partition table" };
+        var L = new StickLayout { diskSectors = diskBytes / 512 };
         long lastEnd = (imageBytes + 511) / 512; int used = 0;
-        for (int i = 0; i < 4; i++) {
-            int o = 446 + 16 * i; byte type = mbr[o + 4];
-            long start = BitConverter.ToUInt32(mbr, o + 8), n = BitConverter.ToUInt32(mbr, o + 12);
-            if (type == 0xEE) return new StickLayout { Skip = "the image uses GPT" };
-            if (n == 0) continue;
-            if (i != used) return new StickLayout { Skip = "unexpected partition layout" };
-            used++; lastEnd = Math.Max(lastEnd, start + n);
+        for (int i = 0; i < 4; i++) if (b[446 + 16 * i + 4] == 0xEE) L.Gpt = true;
+        if (L.Gpt) {
+            if (System.Text.Encoding.ASCII.GetString(b, 512, 8) != "EFI PART") return new StickLayout { Skip = "GPT header missing" };
+            L.entriesLba = U64(b, 512 + 72); L.entries = U32(b, 512 + 80); L.entrySize = U32(b, 512 + 84);
+            if (L.entrySize != 128 || L.entriesLba * 512 + (long)L.entries * L.entrySize > b.Length) return new StickLayout { Skip = "unusual GPT" };
+            for (int i = 0; i < L.entries; i++) {
+                int o = (int)(L.entriesLba * 512) + i * L.entrySize; bool empty = true;
+                for (int k = 0; k < 16; k++) if (b[o + k] != 0) { empty = false; break; }
+                if (empty) continue;
+                if (i != used) return new StickLayout { Skip = "unexpected partition layout" };
+                used++; lastEnd = Math.Max(lastEnd, U64(b, o + 40) + 1);
+            }
+            if (used + 2 > L.entries) return new StickLayout { Skip = "no free partition slots" };
+            L.entrySectors = (L.entries * L.entrySize + 511) / 512;
+            L.lastUsable = L.diskSectors - 2 - L.entrySectors;              // backup entries + backup header at the very end
+        } else {
+            for (int i = 0; i < 4; i++) {
+                int o = 446 + 16 * i; long start = BitConverter.ToUInt32(b, o + 8), n = BitConverter.ToUInt32(b, o + 12);
+                if (n == 0) continue;
+                if (i != used) return new StickLayout { Skip = "unexpected partition layout" };
+                used++; lastEnd = Math.Max(lastEnd, start + n);
+            }
+            if (used > 2) return new StickLayout { Skip = "no free partition slots" };
+            L.lastUsable = Math.Min(L.diskSectors - 1, uint.MaxValue);
         }
-        if (used > 2) return new StickLayout { Skip = "no free partition slots" };
         const long A = 2048;                                     // 1 MiB alignment
-        var L = new StickLayout { SavesStart = (lastEnd + A - 1) / A * A, SavesSectors = Reserve(diskBytes) / 512 };
+        L.SavesStart = (lastEnd + A - 1) / A * A; L.SavesSectors = Reserve(diskBytes, imageBytes) / 512;
         L.VaultStart = L.SavesStart + L.SavesSectors;
-        L.VaultSectors = ((diskBytes / 512 - L.VaultStart) / A - 1) * A;
-        if (L.VaultSectors * 512 < (2L << 30)) return new StickLayout { Skip = "the stick is too small for a VAULT (needs about " + Drive.Gb(imageBytes + Reserve(diskBytes) + (2L << 30)) + ")" };
-        if (L.VaultStart + L.VaultSectors > uint.MaxValue) L.VaultSectors = uint.MaxValue - L.VaultStart;
+        L.VaultSectors = (L.lastUsable + 1 - L.VaultStart) / A * A;
+        if (L.VaultSectors * 512 < (2L << 30)) return new StickLayout { Skip = "the stick is too small for a VAULT (needs about " + Drive.Gb(imageBytes + (4L << 30)) + ")" };
         L.slot = used; return L;
     }
-    int slot;
-    public void Apply(byte[] mbr) {
-        Entry(mbr, slot, 0x83, SavesStart, SavesSectors);       // Linux type: Windows leaves it alone
-        Entry(mbr, slot + 1, 0x07, VaultStart, VaultSectors);   // exFAT/NTFS type: Windows can format it
+
+    public void Apply(byte[] b) {
+        if (!Gpt) {
+            Mbr(b, slot, 0x83, SavesStart, SavesSectors);        // Linux type: Windows leaves it alone
+            Mbr(b, slot + 1, 0x07, VaultStart, VaultSectors);    // exFAT/NTFS type: Windows can format it
+            return;
+        }
+        Gpe(b, slot, "0FC63DAF-8483-4772-8E79-3D69D8477DE4", SavesStart, SavesSectors, "Aftergrid saves");   // Linux filesystem
+        Gpe(b, slot + 1, "EBD0A0A2-B9E5-4433-87C0-68B6B72699C7", VaultStart, VaultSectors, "VAULT");         // Basic data
+        int eo = (int)(entriesLba * 512), elen = entries * entrySize;
+        uint ecrc = Crc32(b, eo, elen);
+        // primary header (LBA 1): backup now at the end of the stick, usable space up to it
+        BitConverter.GetBytes(diskSectors - 1).CopyTo(b, 512 + 32);
+        BitConverter.GetBytes(lastUsable).CopyTo(b, 512 + 48);
+        BitConverter.GetBytes(ecrc).CopyTo(b, 512 + 88);
+        Seal(b, 512);
+        // protective MBR covers the whole stick
+        BitConverter.GetBytes((uint)Math.Min(diskSectors - 1, uint.MaxValue)).CopyTo(b, 446 + 12);
+        // backup GPT: entries, then header (current = last sector, alternate = 1)
+        Backup = new byte[(entrySectors + 1) * 512];
+        Array.Copy(b, eo, Backup, 0, elen);
+        int ho = entrySectors * 512; Array.Copy(b, 512, Backup, ho, 512);
+        BitConverter.GetBytes(diskSectors - 1).CopyTo(Backup, ho + 24);
+        BitConverter.GetBytes(1L).CopyTo(Backup, ho + 32);
+        BitConverter.GetBytes(diskSectors - 1 - entrySectors).CopyTo(Backup, ho + 72);
+        Seal(Backup, ho);
+        BackupOffset = (diskSectors - 1 - entrySectors) * 512;
     }
-    static void Entry(byte[] m, int i, byte type, long start, long n) {
+    static void Seal(byte[] b, int h) {                       // recompute a GPT header's CRC
+        int size = U32(b, h + 12); BitConverter.GetBytes(0u).CopyTo(b, h + 16);
+        BitConverter.GetBytes(Crc32(b, h, size)).CopyTo(b, h + 16);
+    }
+    void Gpe(byte[] b, int i, string type, long start, long n, string name) {
+        int o = (int)(entriesLba * 512) + i * entrySize; Array.Clear(b, o, entrySize);
+        new Guid(type).ToByteArray().CopyTo(b, o); Guid.NewGuid().ToByteArray().CopyTo(b, o + 16);
+        BitConverter.GetBytes(start).CopyTo(b, o + 32); BitConverter.GetBytes(start + n - 1).CopyTo(b, o + 40);
+        var nm = System.Text.Encoding.Unicode.GetBytes(name); Array.Copy(nm, 0, b, o + 56, Math.Min(nm.Length, 72));
+    }
+    static void Mbr(byte[] m, int i, byte type, long start, long n) {
         int o = 446 + 16 * i;
         m[o] = 0; m[o + 1] = 0xFE; m[o + 2] = 0xFF; m[o + 3] = 0xFF; m[o + 4] = type; m[o + 5] = 0xFE; m[o + 6] = 0xFF; m[o + 7] = 0xFF;
         BitConverter.GetBytes((uint)start).CopyTo(m, o + 8); BitConverter.GetBytes((uint)n).CopyTo(m, o + 12);
+    }
+    static uint[] crcTable;
+    static uint Crc32(byte[] b, int o, int n) {
+        if (crcTable == null) { crcTable = new uint[256]; for (uint i = 0; i < 256; i++) { uint c = i; for (int k = 0; k < 8; k++) c = (c & 1) != 0 ? 0xEDB88320 ^ (c >> 1) : c >> 1; crcTable[i] = c; } }
+        uint crc = 0xFFFFFFFF; for (int i = o; i < o + n; i++) crc = crcTable[(crc ^ b[i]) & 0xFF] ^ (crc >> 8); return ~crc;
     }
 
     // Format the VAULT and give it a drive letter. Returns e.g. "E:\".

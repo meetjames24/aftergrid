@@ -1,0 +1,52 @@
+# Build the Aftergrid ISO on GitHub's servers and attach it to the release, so USB Maker can download it.
+# Runs on a v* tag (alongside release.yml, which builds + signs USB Maker) or by hand (Actions -> iso -> Run).
+# Same steps as a local build: build-tools.sh -> fetch-content.sh -> build-aftergrid.sh. About 1 hour.
+name: iso
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag: { description: "Release tag to attach to (e.g. v1.1)", required: true }
+      profile: { description: "lite | standard | full", default: standard }
+permissions:
+  contents: write
+jobs:
+  iso:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 240
+    env:
+      TAG: ${{ github.event.inputs.tag || github.ref_name }}
+      PROFILE: ${{ github.event.inputs.profile || 'standard' }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Free disk space (the build needs ~35 GB)
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache /usr/local/share/boost /usr/share/swift
+          sudo docker image prune -af >/dev/null 2>&1 || true
+          df -h /
+      - name: Host tools (Debian's live-build + debootstrap, OCR, Python libs)
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q xorriso squashfs-tools mtools dosfstools grub-efi-amd64-bin grub-pc-bin cpio rsync \
+               poppler-utils tesseract-ocr exfatprogs fdisk python3-pip python3-numpy python3-pil
+          sudo pip3 install --break-system-packages -q libzim
+          P=$(curl -fsSL http://deb.debian.org/debian/dists/trixie/main/binary-all/Packages.xz | xz -dc)
+          for p in live-build debootstrap debian-archive-keyring; do
+            f=$(echo "$P" | awk -v p=$p '$1=="Package:"{x=($2==p)} x&&$1=="Filename:"{print $2; exit}')
+            curl -fsSLO "http://deb.debian.org/debian/$f"
+          done
+          sudo dpkg -i --force-depends ./*.deb && sudo apt-get -f install -y -q && rm -f ./*.deb
+          lb --version
+      - name: Tools + content (llama.cpp, maps, library, OCR, search index, Claude/Chrome packages)
+        run: sudo -E ./fetch-content.sh
+      - name: Build ISO
+        run: sudo -E ./build-aftergrid.sh "$PROFILE"
+      - name: Attach to release
+        run: |
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Aftergrid ${TAG#v}" --notes "Run AftergridUSBMaker.exe."
+          cp build/config/includes.chroot/usr/share/aftergrid/catalog.json out/catalog.json
+          ( cd out/parts && sha256sum *.part > ../SHA256SUMS-parts.txt )
+          gh release upload "$TAG" out/parts/*.part out/latest.json out/catalog.json out/SHA256SUMS-parts.txt out/*.iso.sha256 --clobber
+          echo "USB Maker will find it at https://github.com/${{ github.repository }}/releases/latest/download/latest.json"

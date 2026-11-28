@@ -1,6 +1,6 @@
 # Push a tag like v1.1 -> builds Aftergrid USB Maker, signs it (when signing secrets are set),
-# and publishes a GitHub Release. The ISO parts + latest.json are uploaded afterwards from the
-# build machine with ./release.sh (the ISO needs root + ~20 GB, too big for hosted runners).
+# and publishes a GitHub Release. iso.yml builds the ISO on the same tag and attaches its parts +
+# latest.json (or upload a local build with ./release.sh).
 name: release
 on:
   push:

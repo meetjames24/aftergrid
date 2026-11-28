@@ -33,16 +33,23 @@ for m in $MODELS; do need "$CONTENT/models/$m/*.gguf" "./fetch-content.sh ai"; d
 
 echo "== 1/3 base system (live-build)"
 cd "$B"
+if [ -n "${REUSE_BASE:-}" ] && [ -f "$B/aftergrid-amd64.hybrid.iso" ]; then echo "(REUSE_BASE: keeping the existing base system)"; else
 lb clean >/dev/null 2>&1 || true
 lb config >/dev/null
 lb build 2>&1 | tee "$HERE/build.log" | grep -E "^P: |^E: " || true
-BASE="$B/aftergrid-amd64.hybrid.iso"
-[ -f "$BASE" ] || { echo "base build failed: see build.log"; exit 1; }
+[ -f "$B/aftergrid-amd64.hybrid.iso" ] || { echo "base build failed: see build.log"; exit 1; }
 rm -rf "$B/chroot"            # free disk space before remastering
+fi
+BASE="$B/aftergrid-amd64.hybrid.iso"
 
 echo "== 2/3 staging '$PROFILE' library"
 rm -rf "$STAGE"; mkdir -p "$STAGE/aftergrid-library"/{zim,maps,library,models}
-for pat in $ZIMS; do cp -al "$CONTENT"/zim/$pat.zim "$STAGE/aftergrid-library/zim/" 2>/dev/null || true; done   # .zim only (not checksum markers)
+# (patterns are expanded inside content/zim only: unquoted, they used to match files in the build folder)
+set -f; ZARR=($ZIMS); set +f
+for pat in "${ZARR[@]}"; do
+  ls "$CONTENT"/zim/$pat.zim >/dev/null 2>&1 || { echo "MISSING library book: content/zim/$pat.zim (run ./fetch-content.sh)"; exit 1; }
+  cp -al "$CONTENT"/zim/$pat.zim "$STAGE/aftergrid-library/zim/"          # .zim only (not checksum markers)
+done
 cp -al "$CONTENT"/maps/*.pmtiles "$STAGE/aftergrid-library/maps/"
 cp -al "$CONTENT"/library/. "$STAGE/aftergrid-library/library/"
 for m in $MODELS; do cp -al "$CONTENT/models/$m" "$STAGE/aftergrid-library/models/"; done
