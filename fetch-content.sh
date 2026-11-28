@@ -55,8 +55,9 @@ O="$HERE/work/ocr/ST-31-91B"; PDF=library/medical/ST-31-91B-Special-Forces-Medic
 if [ -f "$PDF" ] && [ ! -f "$O/done" ] && command -v tesseract >/dev/null; then
   echo "OCR $PDF (a few minutes)"; mkdir -p "$O"
   N=$(pdfinfo "$PDF" | awk '/^Pages:/{print $2}')
-  seq 1 "$N" | xargs -P "$(nproc)" -I{} sh -c "[ -s '$O/p{}.txt' ] || { pdftoppm -f {} -l {} -r 200 -gray -png '$PDF' '$O/img{}' && tesseract \$(ls '$O'/img{}*.png | head -1) '$O/p{}' >/dev/null 2>&1; rm -f '$O'/img{}*.png; }"
-  touch "$O/done"
+  # one Tesseract thread per page, one page per CPU (Tesseract's own threading oversubscribes badly)
+  seq 1 "$N" | OMP_THREAD_LIMIT=1 xargs -P "$(nproc)" -I{} sh -c "[ -s '$O/p{}.txt' ] || { pdftoppm -f {} -l {} -r 200 -gray -png '$PDF' '$O/img{}' && tesseract \$(ls '$O'/img{}*.png | head -1) '$O/p{}' >/dev/null 2>&1; rm -f '$O'/img{}*.png; }"
+  [ "$(ls "$O"/p*.txt 2>/dev/null | wc -l)" -ge "$N" ] && touch "$O/done" || { echo "FAIL OCR incomplete"; FAILED=1; }
 fi
 
 # ---- Aftergrid's own books: first-aid cards + every manual page, searchable --
@@ -80,8 +81,13 @@ if [ -x "$PM" ]; then
 fi
 
 # ---- meaning-based search index over the cards + manuals ------------------------
-if [ ! -s ai/semantic/vectors.npy ] && [ -x "$INC/opt/llama/bin/llama-server" ]; then
-  "$INC/opt/llama/bin/llama-server" -m models/embed/bge-small-en-v1.5-q8_0.gguf --host 127.0.0.1 --port 8082 \
+# llama-server is built for Debian 13, so it runs inside build-tools.sh's chroot (any host distro works)
+TC="$HERE/work/tools-chroot"
+if [ ! -s ai/semantic/vectors.npy ] && [ -x "$TC/opt/llama/bin/llama-server" ]; then
+  [ "$(id -u)" = 0 ] || { echo "FAIL meaning-search index needs root (chroot): sudo ./fetch-content.sh"; exit 1; }
+  for d in proc sys dev; do mountpoint -q "$TC/$d" || mount --bind /$d "$TC/$d"; done
+  mkdir -p "$TC/models"; cp -f models/embed/bge-small-en-v1.5-q8_0.gguf "$TC/models/"
+  chroot "$TC" /opt/llama/bin/llama-server -m /models/bge-small-en-v1.5-q8_0.gguf --host 127.0.0.1 --port 8082 \
      --embedding --pooling cls -c 2048 -ub 512 -b 2048 --no-webui >"$HERE/work/embed.log" 2>&1 & E=$!
   for i in $(seq 60); do curl -sf http://127.0.0.1:8082/health >/dev/null && break; sleep 1; done
   python3 "$C/tools/make_semantic.py" || { echo "FAIL make_semantic.py"; FAILED=1; }

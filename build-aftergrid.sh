@@ -42,7 +42,7 @@ rm -rf "$B/chroot"            # free disk space before remastering
 
 echo "== 2/3 staging '$PROFILE' library"
 rm -rf "$STAGE"; mkdir -p "$STAGE/aftergrid-library"/{zim,maps,library,models}
-for pat in $ZIMS; do cp -al "$CONTENT"/zim/$pat "$STAGE/aftergrid-library/zim/" 2>/dev/null || true; done
+for pat in $ZIMS; do cp -al "$CONTENT"/zim/$pat.zim "$STAGE/aftergrid-library/zim/" 2>/dev/null || true; done   # .zim only (not checksum markers)
 cp -al "$CONTENT"/maps/*.pmtiles "$STAGE/aftergrid-library/maps/"
 cp -al "$CONTENT"/library/. "$STAGE/aftergrid-library/library/"
 for m in $MODELS; do cp -al "$CONTENT/models/$m" "$STAGE/aftergrid-library/models/"; done
