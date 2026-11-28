@@ -11,7 +11,7 @@ An offline survival and medical library, maps and an on-device AI on one USB sti
 <a href="landing/">Landing page</a>
 </p>
 
-<p align="center"><img src="docs/screenshots/01-home-day.png" alt="Aftergrid Field Mode" width="860"></p>
+<p align="center"><img src="docs/screenshots/02-home-night.png" alt="Aftergrid Field Mode" width="860"></p>
 
 ---
 
@@ -20,21 +20,23 @@ An offline survival and medical library, maps and an on-device AI on one USB sti
 | | |
 |---|---|
 | **Field Mode** | One home screen: Medical, Water, Food, Shelter, Repair, Power, Maps, Comms, Ask, Go-Bag. Also opens on any phone on the same Wi-Fi. |
-| **Wikipedia, backed up** | WikiMed (Wikipedia's medical encyclopedia, with images) and Greek Wikipedia are on the stick. All of English Wikipedia is a one-click add-on in setup: 12 GB (every article's summary and key facts) or ~110 GB complete with images. |
+| **Wikipedia, backed up** | WikiMed (Wikipedia's medical encyclopedia, with images) and Greek Wikipedia are on the stick. All of English Wikipedia is a one-click pack: ~14 GB (every article's summary and key facts) or ~127 GB complete with images. |
 | **Field manuals** | US Army FM 4-25.11 First Aid, ST 31-91B Special Forces Medical Handbook, Emergency War Surgery, Nuclear War Survival Skills, FM 21-76 Survival, ATP 3-50.21, FM 21-10 Field Hygiene. |
 | **Survival libraries** | Appropedia, post-disaster, water, food preparation, knots and medicine collections. One search box covers everything. |
 | **First-aid cards** | 30 short cards with 14 drawn diagrams. Each lists the guideline it's based on. |
 | **Ask Aftergrid** | On-device AI (Qwen3, runs on the CPU) that answers from the library only, cites numbered sources, shows the matching diagrams and flags any number it can't find in the sources. |
 | **Source links** | Every citation opens the original page with the passage highlighted. |
-| **Offline maps** | World overview, Greece, Crete and Arkansas built in. All of Europe or the USA at street level from setup. |
+| **Offline maps** | World overview, Greece, Crete and Arkansas built in. All of Europe or the USA at street level as a pack. |
 | **Comms** | Emergency and calling frequencies (marine, aviation, CB, PMR446, FRS/GMRS, ham, NOAA) and what's legal to transmit. |
 | **Go-Bag card** | Printable emergency card per family member, saved only on the encrypted stick. |
 | **Encrypted saves** | Files, notes and settings persist on the stick, encrypted with LUKS2. |
 | **Six languages** | English, Ελληνικά, Français, Deutsch, Português, Türkçe. |
-| **Day / Night** | Light by default, Night mode, low-power mode. |
+| **Day / Night** | Dark by default, Day mode for bright sun, low-power mode. |
 | **Claude built in** | Claude desktop and Claude Code preinstalled for when there is a connection. |
 | **Setup wizard** | First boot: language, encrypted saves, your account, optional Wi-Fi, extra downloads. |
-| **USB Maker** | Windows app that writes the stick and verifies every byte. |
+| **Pick your own packs** | Wikipedia, street maps, a bigger AI, med-school texts, practical skills, five more languages. Tick them in USB Maker, or later from **Get More** on the desktop: they download straight onto the stick's VAULT, no restart. |
+| **Desktop** | One-click Field Mode, Wikipedia, Maps, Ask Aftergrid, Library and Get More. If something isn't on the stick yet, it offers the download. |
+| **USB Maker** | One small Windows download (signed). It fetches Aftergrid, writes the stick, checks every byte, then adds the packs you picked. |
 
 ## Screenshots
 
@@ -46,8 +48,10 @@ An offline survival and medical library, maps and an on-device AI on one USB sti
 <td width="33%"><img src="docs/screenshots/02-home-night.png" alt="Home, night"></td>
 <td width="33%"><img src="docs/screenshots/03-home-greek.png" alt="Home in Greek"></td>
 </tr>
-<tr><td align="center">Day</td><td align="center">Night</td><td align="center">Ελληνικά</td></tr>
+<tr><td align="center">Day</td><td align="center">Night (default)</td><td align="center">Ελληνικά</td></tr>
 </table>
+
+<p align="center"><img src="docs/screenshots/20-tile-hover.png" alt="Tile hover" width="860"><br><sub>Each feature has its own night-landscape card; hovering lifts it, glows amber and lights the icon.</sub></p>
 
 ### Ask Aftergrid: the on-device AI
 
@@ -100,24 +104,29 @@ An offline survival and medical library, maps and an on-device AI on one USB sti
 <tr>
 <td width="33%"><img src="docs/screenshots/16-boot-menu.png" alt="Boot menu"></td>
 <td width="33%"><img src="docs/screenshots/17-desktop-setup-wizard.png" alt="Desktop with setup wizard"></td>
-<td width="33%"><img src="docs/screenshots/19-usb-maker-windows.png" alt="USB Maker for Windows"></td>
+<td width="33%"><img src="docs/screenshots/19-usb-maker-windows.png" alt="USB Maker"></td>
 </tr>
-<tr><td align="center">Boot menu</td><td align="center">First boot: setup wizard</td><td align="center">USB Maker for Windows</td></tr>
+<tr><td align="center">Boot menu</td><td align="center">First boot: setup wizard</td><td align="center">USB Maker: pick edition and packs<br><sub>(preview rendered on Linux; native controls on Windows)</sub></td></tr>
 </table>
+
+### Desktop icons
+
+<p align="center"><img src="docs/screenshots/21-desktop-icons.png" alt="Desktop icons" width="860"></p>
 
 ## Build it
 
 Needs Debian or Ubuntu, root, ~20 GB free.
 
 ```bash
-./fetch-content.sh                 # libraries, models, maps, packages (~9 GB, not in git)
-sudo ./build-aftergrid.sh full     # or: standard | lite
+./fetch-content.sh                 # libraries, llama.cpp, AI models, manuals (not in git)
+sudo ./build-aftergrid.sh standard # or: full | lite
+./release.sh v1.1                  # upload parts + latest.json + catalog.json to the GitHub release
 ```
 
 Output goes to `out/parts/`: the image in 380 MB parts, `aftergrid-image.json` and `Aftergrid USB Maker.exe`.
 
 **Write the stick:**
-- **Windows:** put the parts next to `Aftergrid USB Maker.exe` and run it.
+- **Windows:** download `AftergridUSBMaker.exe` from [Releases](../../releases/latest) and run it. It downloads everything itself. (Offline: put the parts next to it.)
 - **Linux / Mac:** `cat Aftergrid-*.part | sudo dd of=/dev/sdX bs=4M status=progress`
 
 Full details in [`BUILD.md`](BUILD.md).
@@ -136,7 +145,8 @@ content/
   cards/                  First-aid cards and SVG diagrams (source)
   tools/                  Builds cards and manuals into searchable ZIM files
   ai/                     Semantic search index metadata
-flasher/usbmaker/         Aftergrid USB Maker for Windows (C#)
+flasher/usbmaker/         Aftergrid USB Maker for Windows (C#): image, VAULT, packs
+release.sh                Publish a built ISO to the GitHub release (USB Maker downloads from there)
 i18n/                     Translations (6 languages) and generator
 eval/                     Retrieval and answer-quality tests for the AI
 landing/                  getaftergrid.com landing page (static, Vercel-ready)

@@ -127,22 +127,22 @@ class MainForm : Form {
 
         var logo = new MarkPanel { Location = new Point(28, 24), Size = new Size(44, 44) };
         var title = new Label { Text = "AFTERGRID", Font = new Font("Segoe UI Black", 20f), Location = new Point(82, 22), AutoSize = true };
-        var sub = new Label { Text = "USB Maker: puts Aftergrid on a USB stick so any PC can start from it.", ForeColor = Dim, Location = new Point(84, 58), AutoSize = true };
+        var sub = new Label { Text = "USB Maker: puts Aftergrid on a USB stick any PC can start from.", ForeColor = Dim, Location = new Point(84, 58), AutoSize = true };
         var l1 = Step("1", "Plug in a USB stick (16 GB or larger). Everything on it will be erased.", 104);
         drives.DropDownStyle = ComboBoxStyle.DropDownList; drives.Location = new Point(60, 136); drives.Size = new Size(420, 28);
         refresh.Text = "Refresh"; refresh.Location = new Point(490, 135); refresh.Size = new Size(96, 30); refresh.FlatStyle = FlatStyle.System;
         var l2 = Step("2", "Aftergrid edition:", 186);
         editions.DropDownStyle = ComboBoxStyle.DropDownList; editions.Location = new Point(60, 214); editions.Size = new Size(526, 28); editions.Visible = false;
-        editions.SelectedIndexChanged += (s, e) => { image = editions.SelectedItem as Image; if (image != null) imageInfo.Text = "Downloads " + Drive.Gb(image.Size) + " while writing (no extra disk space needed). Internet must stay on."; };
+        editions.SelectedIndexChanged += (s, e) => { image = editions.SelectedItem as Image; if (image != null) imageInfo.Text = "Downloads " + Drive.Gb(image.Size) + " while writing. No extra disk space needed."; };
         imageInfo.Location = new Point(60, 214); imageInfo.Size = new Size(530, 40); imageInfo.ForeColor = Dim;
         foreach (var c in new Control[] { drives, editions }) { c.BackColor = Field; c.ForeColor = Ink; }
-        var l3 = Step("3", "Add to the stick (optional, downloaded for you, added to Aftergrid's VAULT):", 290);
+        var l3 = Step("3", "Add packs (optional, downloaded for you):", 290);
         packs.Location = new Point(60, 320); packs.Size = new Size(526, 172); packs.CheckOnClick = true; packs.BorderStyle = BorderStyle.FixedSingle;
-        packs.BackColor = Field; packs.ForeColor = Ink; packs.IntegralHeight = false;
+        packs.BackColor = Field; packs.ForeColor = Ink; packs.IntegralHeight = false; packs.HorizontalScrollbar = true;
         packs.ItemCheck += (s, e) => BeginInvoke((Action)UpdatePackInfo);
         packInfo.Location = new Point(60, 496); packInfo.Size = new Size(530, 40); packInfo.ForeColor = Dim; packInfo.Text = "Looking up packs…";
         drives.SelectedIndexChanged += (s, e) => UpdatePackInfo();
-        var l4 = Step("4", "Make the stick (writes, checks every byte, then adds your packs).", 546);
+        var l4 = Step("4", "Make the stick (writes, checks every byte, adds your packs).", 546);
         make.Text = "Make Aftergrid USB"; make.Cursor = Cursors.Hand; make.Location = new Point(60, 576); make.Size = new Size(220, 40);
         make.FlatStyle = FlatStyle.Flat; make.BackColor = Amber; make.ForeColor = Color.FromArgb(42, 26, 4); make.Font = new Font("Segoe UI Semibold", 11f);
         make.FlatAppearance.BorderSize = 0;
