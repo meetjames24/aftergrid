@@ -12,6 +12,6 @@ Comment[de]=Stick einrichten, Bibliothek laden, Status
 Comment[pt]=Configurar o pendrive, baixar a biblioteca, status
 Comment[tr]=Belleği kur, kütüphaneyi indir, durum
 Exec=/usr/local/bin/aftergrid
-Icon=aftergrid-os
+Icon=aftergrid-control
 Type=Application
 Categories=System;

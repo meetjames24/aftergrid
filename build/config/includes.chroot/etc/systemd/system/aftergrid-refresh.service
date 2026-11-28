@@ -4,5 +4,7 @@ After=local-fs.target vault.mount
 [Service]
 Type=oneshot
 ExecStart=/usr/local/bin/aftergrid-portal-refresh
+# A model just landed in the VAULT: start the AI without a reboot
+ExecStartPost=-/bin/sh -c 'systemctl is-active -q aftergrid-ai || systemctl start --no-block aftergrid-ai'
 [Install]
 WantedBy=multi-user.target

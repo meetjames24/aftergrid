@@ -1,10 +1,14 @@
 // Aftergrid USB Maker: writes the Aftergrid image to a USB stick on Windows and verifies it.
 // Build (any OS with Mono):  mcs -target:winexe -win32icon:aftergrid.ico -r:System.Windows.Forms.dll -r:System.Drawing.dll
-//                             -r:System.Management.dll -out:"Aftergrid USB Maker.exe" AftergridUsbMaker.cs
+//                             -r:System.Management.dll -r:System.Web.Extensions.dll -out:"Aftergrid USB Maker.exe" AftergridUsbMaker.cs
 // Runs on Windows 10/11 with the built-in .NET Framework 4.x. Restarts itself as administrator.
 //
-// Image: next to the .exe, either aftergrid-image.json + its .part files (as the build delivers them),
-// or a single Aftergrid*.iso (optionally with <iso>.sha256).
+// Image, in this order:
+//   1. next to the .exe: aftergrid-image.json + its .part files, or a single Aftergrid*.iso (+ .sha256)
+//   2. otherwise ONE-FILE MODE: download the edition catalog (CatalogUrl, or the URL in
+//      aftergrid-catalog.txt next to the .exe, or the first command-line argument) and stream the
+//      chosen edition's parts from the web straight onto the stick. No temporary disk space needed;
+//      dropped connections resume where they stopped; every byte is fingerprint-checked.
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,6 +22,8 @@ using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Net;
+using System.Web.Script.Serialization;
 using System.Windows.Forms;
 using Microsoft.Win32.SafeHandles;
 
@@ -52,6 +58,24 @@ class Drive {
 
 class Image {
     public string Name; public long Size; public string Sha256; public List<string> Files = new List<string>();
+    public string Title; public bool Remote;     // Remote: Files are URLs
+    public override string ToString() { return (Title ?? Name) + "   (" + Drive.Gb(Size) + ")"; }
+
+    public const string CatalogUrl = "https://getaftergrid.com/releases/latest.json";
+    // Catalog: {"editions":[{"id","title","name","size","sha256","parts":[{"url"}]}]}; part URLs may be relative to the catalog.
+    public static List<Image> Catalog(string url) {
+        ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;   // TLS 1.2 on .NET 4.x
+        string j; using (var wc = new WebClient()) { wc.Headers["User-Agent"] = "AftergridUsbMaker/2"; j = wc.DownloadString(url); }
+        var root = (Dictionary<string, object>)new JavaScriptSerializer { MaxJsonLength = 1 << 24 }.DeserializeObject(j);
+        var list = new List<Image>(); var baseUri = new Uri(url);
+        foreach (Dictionary<string, object> e in (object[])root["editions"]) {
+            var img = new Image { Remote = true, Name = (string)e["name"], Title = e.ContainsKey("title") ? (string)e["title"] : null,
+                                  Size = Convert.ToInt64(e["size"]), Sha256 = ((string)e["sha256"]).ToUpperInvariant() };
+            foreach (Dictionary<string, object> pt in (object[])e["parts"]) img.Files.Add(new Uri(baseUri, (string)pt["url"]).AbsoluteUri);
+            list.Add(img);
+        }
+        return list;
+    }
     public static Image Find(string dir) {
         var man = Path.Combine(dir, "aftergrid-image.json");
         if (File.Exists(man)) {
@@ -81,9 +105,9 @@ class Image {
 }
 
 class MainForm : Form {
-    static readonly Color Paper = Color.FromArgb(250, 249, 245), Ink = Color.FromArgb(31, 30, 28), Dim = Color.FromArgb(110, 106, 96);
+    static readonly Color Paper = Color.FromArgb(21, 23, 26), Ink = Color.FromArgb(233, 231, 225), Dim = Color.FromArgb(162, 158, 149), Field = Color.FromArgb(31, 35, 39);
     static readonly Color Amber = Color.FromArgb(242, 163, 58), Red = Color.FromArgb(194, 64, 44), Green = Color.FromArgb(47, 138, 87);
-    ComboBox drives = new ComboBox(); Button refresh = new Button(), make = new Button();
+    ComboBox drives = new ComboBox(), editions = new ComboBox(); Button refresh = new Button(), make = new Button();
     Label imageInfo = new Label(), status = new Label(), detail = new Label();
     ProgressBar bar = new ProgressBar(); BackgroundWorker worker = new BackgroundWorker();
     Image image; string baseDir = AppDomain.CurrentDomain.BaseDirectory;
@@ -101,16 +125,19 @@ class MainForm : Form {
         var l1 = Step("1", "Plug in a USB stick (16 GB or larger). Everything on it will be erased.", 104);
         drives.DropDownStyle = ComboBoxStyle.DropDownList; drives.Location = new Point(60, 136); drives.Size = new Size(420, 28);
         refresh.Text = "Refresh"; refresh.Location = new Point(490, 135); refresh.Size = new Size(96, 30); refresh.FlatStyle = FlatStyle.System;
-        var l2 = Step("2", "Image to write:", 186);
+        var l2 = Step("2", "Aftergrid edition:", 186);
+        editions.DropDownStyle = ComboBoxStyle.DropDownList; editions.Location = new Point(60, 214); editions.Size = new Size(526, 28); editions.Visible = false;
+        editions.SelectedIndexChanged += (s, e) => { image = editions.SelectedItem as Image; if (image != null) imageInfo.Text = "Downloads " + Drive.Gb(image.Size) + " while writing (no extra disk space needed). Internet must stay on."; };
         imageInfo.Location = new Point(60, 214); imageInfo.Size = new Size(530, 40); imageInfo.ForeColor = Dim;
+        foreach (var c in new Control[] { drives, editions }) { c.BackColor = Field; c.ForeColor = Ink; }
         var l3 = Step("3", "Make the stick (about 10 to 25 minutes, then it checks every byte).", 262);
-        make.Text = "Make Aftergrid USB"; make.Location = new Point(60, 294); make.Size = new Size(220, 40);
+        make.Text = "Make Aftergrid USB"; make.Cursor = Cursors.Hand; make.Location = new Point(60, 294); make.Size = new Size(220, 40);
         make.FlatStyle = FlatStyle.Flat; make.BackColor = Amber; make.ForeColor = Color.FromArgb(42, 26, 4); make.Font = new Font("Segoe UI Semibold", 11f);
         make.FlatAppearance.BorderSize = 0;
         bar.Location = new Point(60, 350); bar.Size = new Size(526, 18); bar.Maximum = 1000;
         status.Location = new Point(60, 376); status.Size = new Size(526, 22); status.Font = new Font("Segoe UI Semibold", 10f);
         detail.Location = new Point(60, 400); detail.Size = new Size(540, 64); detail.ForeColor = Dim;
-        Controls.AddRange(new Control[] { logo, title, sub, l1, drives, refresh, l2, imageInfo, l3, make, bar, status, detail });
+        Controls.AddRange(new Control[] { logo, title, sub, l1, drives, refresh, l2, editions, imageInfo, l3, make, bar, status, detail });
 
         refresh.Click += (s, e) => LoadDrives();
         make.Click += (s, e) => Start();
@@ -127,9 +154,25 @@ class MainForm : Form {
     void LoadImage() {
         try {
             image = Image.Find(baseDir);
-            if (image == null) { imageInfo.Text = "No Aftergrid image found. Put this program in the same folder as the Aftergrid image (the .part files and aftergrid-image.json, or an .iso)."; imageInfo.ForeColor = Red; return; }
+            if (image == null) { LoadCatalog(); return; }
             imageInfo.Text = image.Name + "   " + Drive.Gb(image.Size) + (image.Files.Count > 1 ? "   (" + image.Files.Count + " parts)" : "") + (image.Sha256 != null ? "\nFingerprint " + image.Sha256.Substring(0, 16) + "… (checked after writing)" : "");
         } catch (Exception ex) { imageInfo.Text = ex.Message; imageInfo.ForeColor = Red; image = null; }
+    }
+
+    void LoadCatalog() {
+        var url = Image.CatalogUrl; var f = Path.Combine(baseDir, "aftergrid-catalog.txt");
+        if (Environment.GetCommandLineArgs().Length > 1) url = Environment.GetCommandLineArgs()[1];
+        else if (File.Exists(f)) url = File.ReadAllText(f).Trim();
+        imageInfo.Text = "Looking up Aftergrid editions online…"; imageInfo.ForeColor = Dim;
+        var bw = new BackgroundWorker();
+        bw.DoWork += (s, e) => e.Result = Image.Catalog(url);
+        bw.RunWorkerCompleted += (s, e) => {
+            if (e.Error != null) { imageInfo.ForeColor = Red; imageInfo.Text = "Couldn't reach " + new Uri(url).Host + ". Connect to the internet and restart this program, or put a downloaded Aftergrid image next to it."; return; }
+            var list = (List<Image>)e.Result; editions.Items.Clear(); foreach (var i in list) editions.Items.Add(i);
+            if (list.Count == 0) { imageInfo.ForeColor = Red; imageInfo.Text = "No editions are published yet."; return; }
+            editions.Visible = true; imageInfo.Top = 248; editions.SelectedIndex = list.Count - 1;   // the biggest edition is listed last
+        };
+        bw.RunWorkerAsync();
     }
 
     void LoadDrives() {
@@ -188,7 +231,7 @@ class MainForm : Form {
     }
 
     void Start() {
-        if (image == null) { LoadImage(); if (image == null) return; }
+        if (image == null) { if (!editions.Visible) LoadImage(); return; }
         var d = drives.SelectedItem as Drive;
         if (d == null) { MessageBox.Show(this, "Plug in a USB stick and press Refresh.", Text); return; }
         if (d.Size < image.Size) { MessageBox.Show(this, "This stick is too small: " + Drive.Gb(d.Size) + ". Aftergrid needs at least " + Drive.Gb(image.Size) + " (16 GB or larger recommended).", Text, MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
@@ -198,7 +241,7 @@ class MainForm : Form {
         var typed = Prompt.Show(this, "Everything on this drive will be erased:\n\n" + d + "\n\nType its size in GB (" + want + ") to continue:");
         if (typed == null) return;
         if (typed.Trim().Replace(',', '.') != want) { MessageBox.Show(this, "That didn't match " + want + ". Nothing was changed.", Text); return; }
-        make.Enabled = drives.Enabled = refresh.Enabled = false; status.ForeColor = Ink; detail.Text = "";
+        make.Enabled = drives.Enabled = refresh.Enabled = editions.Enabled = false; status.ForeColor = Ink; detail.Text = "";
         worker.RunWorkerAsync(d);
     }
 
@@ -215,7 +258,7 @@ class MainForm : Form {
         var managed = new byte[Block];
         try {
             using (var h = Open(path, true)) {
-                using (var src = new PartsStream(image.Files)) {   // the parts, read as one continuous image
+                using (var src = image.Remote ? (Stream)new WebPartsStream(image.Files) : new PartsStream(image.Files)) {   // the parts, read as one continuous image
                     int n;
                     while ((n = Fill(src, managed)) > 0) {
                         sha.TransformBlock(managed, 0, n, null, 0);
@@ -226,7 +269,7 @@ class MainForm : Form {
                         if (!Native.WriteFile(h, buf, (uint)len, out w, IntPtr.Zero) || w != len)
                             throw new Exception("Writing failed at " + Drive.Gb(done) + " (Windows error " + Marshal.GetLastWin32Error() + "). The stick may be faulty or was unplugged.");
                         done += n;
-                        Report(Per(done, total) * 0.7, "Writing… " + Pct(done, total), Speed(done, total, sw));
+                        Report(Per(done, total) * 0.7, (image.Remote ? "Downloading and writing… " : "Writing… ") + Pct(done, total), Speed(done, total, sw));
                         if (worker.CancellationPending) return;
                     }
                 }
@@ -235,7 +278,7 @@ class MainForm : Form {
             sha.TransformFinalBlock(new byte[0], 0, 0);
             string written = Hex(sha.Hash);
             if (image.Sha256 != null && image.Sha256 != "" && written != image.Sha256)
-                throw new Exception("The image files themselves are damaged (fingerprint mismatch). Download them again.");
+                throw new Exception(image.Remote ? "The download arrived damaged (fingerprint mismatch). Press Make again to retry." : "The image files themselves are damaged (fingerprint mismatch). Download them again.");
 
             // Verify: read everything back straight from the stick, bypassing Windows' cache.
             var check = SHA256.Create(); long left = total, got = 0; sw.Restart();
@@ -281,7 +324,7 @@ class MainForm : Form {
         bar.Value = Math.Max(0, Math.Min(1000, e.ProgressPercentage)); var t = (string[])e.UserState; status.Text = t[0]; detail.Text = t[1];
     }
     void Done(object sender, RunWorkerCompletedEventArgs e) {
-        make.Enabled = drives.Enabled = refresh.Enabled = true;
+        make.Enabled = drives.Enabled = refresh.Enabled = editions.Enabled = true;
         if (e.Error != null) { status.ForeColor = Red; status.Text = "Not finished: " + e.Error.Message.Split(new[]{'\n'})[0]; detail.Text = e.Error.Message; bar.Value = 0; return; }
         bar.Value = 1000; status.ForeColor = Green; status.Text = "Done. The stick is ready and every byte checked out.";
         detail.Text = "To start from it: plug it in, restart, and press the boot-menu key right away:\n" +
@@ -312,6 +355,41 @@ class PartsStream : Stream {
         return 0;
     }
     protected override void Dispose(bool d) { if (cur != null) cur.Dispose(); base.Dispose(d); }
+    public override bool CanRead { get { return true; } } public override bool CanSeek { get { return false; } } public override bool CanWrite { get { return false; } }
+    public override long Length { get { throw new NotSupportedException(); } } public override long Position { get { throw new NotSupportedException(); } set { throw new NotSupportedException(); } }
+    public override void Flush() { } public override long Seek(long o, SeekOrigin s) { throw new NotSupportedException(); }
+    public override void SetLength(long v) { throw new NotSupportedException(); } public override void Write(byte[] b, int o, int n) { throw new NotSupportedException(); }
+}
+
+// Reads several URLs one after another as a single stream; a dropped connection resumes with a Range request.
+class WebPartsStream : Stream {
+    readonly List<string> urls; int i = 0; long pos = 0; Stream cur; HttpWebResponse resp;
+    public WebPartsStream(List<string> u) { urls = u; ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072; ServicePointManager.DefaultConnectionLimit = 4; }
+    void Open() {
+        Close1();
+        var rq = (HttpWebRequest)WebRequest.Create(urls[i]); rq.UserAgent = "AftergridUsbMaker/2"; rq.Timeout = 30000; rq.ReadWriteTimeout = 60000;
+        if (pos > 0) rq.AddRange(pos);
+        resp = (HttpWebResponse)rq.GetResponse();
+        if (pos > 0 && resp.StatusCode != HttpStatusCode.PartialContent) throw new IOException("server can't resume");
+        cur = resp.GetResponseStream();
+    }
+    void Close1() { if (cur != null) cur.Dispose(); if (resp != null) resp.Close(); cur = null; resp = null; }
+    public override int Read(byte[] b, int o, int n) {
+        for (int tries = 0; ; ) {
+            if (i >= urls.Count) return 0;
+            try {
+                if (cur == null) Open();
+                int r = cur.Read(b, o, n);
+                if (r > 0) { pos += r; return r; }
+                Close1(); i++; pos = 0;                                   // this part is done: next one
+            } catch (Exception ex) {
+                Close1();
+                if (++tries > 8) throw new Exception("The download keeps failing (" + ex.Message + "). Check the internet connection and press Make again.");
+                System.Threading.Thread.Sleep(Math.Min(30000, 1000 << tries));
+            }
+        }
+    }
+    protected override void Dispose(bool d) { Close1(); base.Dispose(d); }
     public override bool CanRead { get { return true; } } public override bool CanSeek { get { return false; } } public override bool CanWrite { get { return false; } }
     public override long Length { get { throw new NotSupportedException(); } } public override long Position { get { throw new NotSupportedException(); } set { throw new NotSupportedException(); } }
     public override void Flush() { } public override long Seek(long o, SeekOrigin s) { throw new NotSupportedException(); }

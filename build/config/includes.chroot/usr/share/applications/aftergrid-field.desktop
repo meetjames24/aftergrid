@@ -12,6 +12,6 @@ Comment[de]=Offline-Bibliothek, Karten, Medizin, Funk
 Comment[pt]=Biblioteca, mapas, médico e comunicação offline
 Comment[tr]=Çevrimdışı kütüphane, haritalar, tıbbi, iletişim
 Exec=xdg-open http://localhost/
-Icon=aftergrid-os
+Icon=aftergrid-field
 Type=Application
 Categories=Education;

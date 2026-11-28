@@ -23,6 +23,14 @@ case "$PROFILE" in
   *) echo "profile must be full, standard or lite"; exit 1;;
 esac
 
+echo "== 0/3 preflight"
+miss=0
+need(){ ls $1 >/dev/null 2>&1 || { echo "MISSING: $1  ($2)"; miss=1; }; }
+need "$B/config/includes.chroot/opt/llama/bin/llama-server" "./fetch-content.sh ai"
+need "$CONTENT/models/embed/*.gguf" "./fetch-content.sh ai"
+for m in $MODELS; do need "$CONTENT/models/$m/*.gguf" "./fetch-content.sh ai"; done
+[ $miss = 0 ] || { echo "Without these the offline AI will not start on the stick. Stopping."; exit 1; }
+
 echo "== 1/3 base system (live-build)"
 cd "$B"
 lb clean >/dev/null 2>&1 || true
@@ -62,12 +70,22 @@ if [ "${SPLIT:-1}" = 1 ]; then
   printf '@echo off\r\npowershell -NoProfile -ExecutionPolicy Bypass -File "%%~dp0flash-aftergrid.ps1"\r\n' > "$OUT/parts/FLASH-Aftergrid.bat"
   printf '@echo off\r\npowershell -NoProfile -ExecutionPolicy Bypass -File "%%~dp0flash-aftergrid.ps1" -ListOnly\r\n' > "$OUT/parts/LIST-USB.bat"
   # Aftergrid USB Maker (Windows): the program plus a manifest of the parts it writes and checks
-  python3 - "$OUT/parts" "$N" "$H" <<'PY'
+  # ... and the online catalog (out/latest.json) the one-file USB Maker reads when no image sits next to it.
+  #   Upload out/latest.json + the .part files; RELEASE_BASE = where the parts live (default: same folder).
+  python3 - "$OUT/parts" "$N" "$H" "$PROFILE" "${RELEASE_BASE:-}" "$OUT/latest.json" <<'PY'
 import json, os, sys
-d, name, sha = sys.argv[1:4]
+d, name, sha, profile, base, cat = sys.argv[1:7]
 parts = sorted(f for f in os.listdir(d) if f.startswith(name + ".") and f.endswith(".part"))
-json.dump({"name": name, "size": sum(os.path.getsize(os.path.join(d, f)) for f in parts), "sha256": sha,
+size = sum(os.path.getsize(os.path.join(d, f)) for f in parts)
+json.dump({"name": name, "size": size, "sha256": sha,
            "parts": [{"file": f} for f in parts]}, open(os.path.join(d, "aftergrid-image.json"), "w"), indent=1)
+TITLES = {"lite": "Lite: survival library + maps", "standard": "Standard: + WikiMed + Appropedia",
+          "full": "Full: everything + offline AI (recommended)"}
+ed = {"id": profile, "title": TITLES.get(profile, profile), "name": name, "size": size, "sha256": sha,
+      "parts": [{"url": base + f, "size": os.path.getsize(os.path.join(d, f))} for f in parts]}
+c = json.load(open(cat)) if os.path.exists(cat) else {"editions": []}
+c["editions"] = sorted([e for e in c["editions"] if e["id"] != profile] + [ed], key=lambda e: e["size"])
+json.dump(c, open(cat, "w"), indent=1); print("catalog:", cat, [e["id"] for e in c["editions"]])
 PY
   cp "$HERE/flasher/usbmaker/Aftergrid USB Maker.exe" "$OUT/parts/"
   printf 'Aftergrid USB Maker\r\n\r\n1. Keep every file in this folder together.\r\n2. Plug in a USB stick (16 GB or larger). It will be erased.\r\n3. Double-click "Aftergrid USB Maker.exe" and follow the steps.\r\n\r\nIt writes the stick, then reads it back and checks every byte.\r\n' > "$OUT/parts/READ ME FIRST.txt"

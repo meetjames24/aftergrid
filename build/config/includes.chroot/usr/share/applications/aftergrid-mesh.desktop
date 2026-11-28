@@ -2,6 +2,6 @@
 Name=Mesh Messenger
 Comment=Encrypted off-grid messaging (Reticulum / NomadNet)
 Exec=konsole -e nomadnet
-Icon=network-wireless
+Icon=aftergrid-mesh
 Type=Application
 Categories=Network;HamRadio;

@@ -2,10 +2,10 @@
 # Apply Aftergrid's look once per user, then never again.
 [ -f "$HOME/.config/aftergrid-branded" ] && exit 0
 sleep 4
-plasma-apply-lookandfeel -a org.kde.breeze.desktop >/dev/null 2>&1   # light, to match Field Mode
+plasma-apply-lookandfeel -a org.kde.breezedark.desktop >/dev/null 2>&1   # dark, to match Field Mode
 kwriteconfig6 --file ksplashrc --group KSplash --key Theme org.aftergrid.desktop
 kwriteconfig6 --file ksplashrc --group KSplash --key Engine KSplashQML
 plasma-apply-wallpaperimage /usr/share/wallpapers/Aftergrid >/dev/null 2>&1
-kwriteconfig6 --file kdeglobals --group General --key AccentColor "166,90,11"
+kwriteconfig6 --file kdeglobals --group General --key AccentColor "242,163,58"
 kwriteconfig6 --file kdeglobals --group General --key accentColorFromWallpaper false
 touch "$HOME/.config/aftergrid-branded"

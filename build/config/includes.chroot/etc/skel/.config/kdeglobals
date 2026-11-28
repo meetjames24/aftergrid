@@ -1,7 +1,7 @@
 [General]
-ColorScheme=BreezeLight
-AccentColor=166,90,11
+ColorScheme=BreezeDark
+AccentColor=242,163,58
 accentColorFromWallpaper=false
 
 [KDE]
-LookAndFeelPackage=org.kde.breeze.desktop
+LookAndFeelPackage=org.kde.breezedark.desktop

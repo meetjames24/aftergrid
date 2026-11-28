@@ -1,7 +1,7 @@
 // Aftergrid portal helpers: shared by every page. Works on the desktop (localhost)
 // and on phones connected to the Aftergrid hotspot (same origin, relative URLs).
-// Theme: light by default; Night mode when chosen, or automatically in low-power mode. Applied before anything draws.
-(() => { try { const t = localStorage.getItem('aftergrid-theme'); if (t === 'night') document.documentElement.dataset.theme = 'night'; } catch (e) {} })();
+// Theme: Night (dark) by default; Day mode when chosen. Applied before anything draws.
+(() => { try { const t = localStorage.getItem('aftergrid-theme'); if (t !== 'light') document.documentElement.dataset.theme = 'night'; } catch (e) { document.documentElement.dataset.theme = 'night'; } })();
 
 const Aftergrid = {
   index: null, books: [],

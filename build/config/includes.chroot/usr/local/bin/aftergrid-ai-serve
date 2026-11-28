@@ -1,6 +1,6 @@
 #!/bin/bash
 # Start the local AI (llama.cpp) on 127.0.0.1:8081 with the biggest model this PC can run well.
-#   aftergrid-ai-serve --check   exit 0 only if a model exists and (RAM >= 12 GB or /run/aftergrid/ai-force exists)
+#   aftergrid-ai-serve --check   exit 0 if a model exists, llama.cpp is installed and RAM >= 6 GB (or /run/aftergrid/ai-force exists)
 #   aftergrid-ai-serve --which   print the model it would use, and why
 # Override: put a model path in /etc/aftergrid/ai-model.
 RAM=$(awk '/MemTotal/{print int($2/1048576)}' /proc/meminfo)
@@ -35,9 +35,13 @@ MODEL=$(cat /etc/aftergrid/ai-model 2>/dev/null); WHY="set in /etc/aftergrid/ai-
 
 case "$1" in
   --which) echo "${MODEL:-none}  ($WHY)"; exit 0;;
-  --check) [ -f "$MODEL" ] || exit 1; [ "$RAM" -ge 12 ] || [ -e /run/aftergrid/ai-force ] || exit 1; exit 0;;
+  --check) [ -f "$MODEL" ] || { echo "Aftergrid AI: no model found"; exit 1; }
+           [ -x /opt/llama/bin/llama-server ] || { echo "Aftergrid AI: llama.cpp missing (/opt/llama)"; exit 1; }
+           # MemTotal reads ~0.4 GB under the label, so an "8 GB" PC reports 7.
+           [ "$RAM" -ge 6 ] || [ -e /run/aftergrid/ai-force ] || { echo "Aftergrid AI: only ${RAM} GB RAM"; exit 1; }; exit 0;;
 esac
 [ -f "$MODEL" ] || { echo "No AI model found. Aftergrid Control -> Download -> ai"; exit 1; }
+[ -x /opt/llama/bin/llama-server ] || { echo "llama.cpp is not installed in /opt/llama"; exit 1; }
 NGL=0; [ "$GPU" = 1 ] && NGL=99
 EXTRA=()
 # Qwen3 8B can "think" before answering; turn that off so answers start at once.

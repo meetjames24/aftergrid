@@ -1,4 +1,4 @@
-/* Aftergrid Field Mode. Light by default (warm paper), Night mode for dark rooms and low power.
+/* Aftergrid Field Mode. Night (dark) by default; Day mode (warm paper) for bright sunlight.
    Fonts are bundled (SIL OFL, see fonts/OFL.txt) so phones on the hotspot see the same design offline. */
 @font-face{font-family:"Inter";src:url(/fonts/inter-regular.woff2) format("woff2");font-weight:400;font-display:swap}
 @font-face{font-family:"Inter";src:url(/fonts/inter-medium.woff2) format("woff2");font-weight:500;font-display:swap}
@@ -49,13 +49,34 @@ button:hover,.btn:hover{filter:brightness(.97)}
 main{padding:24px 22px;max-width:1120px;margin:0 auto}
 h2{margin:30px 0 14px;font:600 21px/1.3 var(--serif);color:var(--txt);letter-spacing:0;text-transform:none}
 
-/* home tiles */
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
-.tile{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 18px;text-decoration:none;color:var(--txt);min-height:128px;display:flex;flex-direction:column;gap:6px;box-shadow:var(--shadow);transition:border-color .15s,transform .15s}
-.tile:hover,.tile:focus{border-color:var(--acc);outline:none;transform:translateY(-1px)}
-.tile .ico{font-size:30px;line-height:1}
-.tile b{font:600 19px/1.25 var(--serif)}
-.tile span{color:var(--dim);font-size:14px}
+/* home tiles: night landscape per feature (img/tiles), line icon badge, lift + glow on hover */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+.tile{position:relative;isolation:isolate;overflow:hidden;border-radius:18px;min-height:168px;padding:18px;display:flex;flex-direction:column;justify-content:flex-end;gap:4px;
+  text-decoration:none;color:#f4f1ea;background:#14171a;border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 1px 2px rgba(0,0,0,.25),0 8px 24px rgba(0,0,0,.18);
+  transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s,border-color .35s}
+.tile .bg{position:absolute;inset:0;z-index:-2;background-size:cover;background-position:center;transform:scale(1.02);transition:transform .9s cubic-bezier(.2,.8,.2,1),filter .5s;filter:saturate(.9) brightness(.92)}
+.tile::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(10,12,14,0) 20%,rgba(10,12,14,.55) 62%,rgba(10,12,14,.88))}
+.tile::after{content:"";position:absolute;top:0;left:-60%;width:45%;height:100%;z-index:0;pointer-events:none;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.13),transparent);transform:skewX(-18deg);opacity:0}
+.tile .ico{position:absolute;top:16px;left:16px;width:46px;height:46px;border-radius:13px;display:grid;place-items:center;color:var(--acc);
+  background:rgba(12,14,16,.55);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  transition:transform .35s cubic-bezier(.2,.8,.2,1),background .35s,color .35s,box-shadow .35s}
+.tile .ico svg{width:25px;height:25px}
+.tile b{font:600 19px/1.25 var(--serif);text-shadow:0 1px 8px rgba(0,0,0,.5)}
+.tile span{color:rgba(244,241,234,.74);font-size:14px;line-height:1.4}
+.tile .go{position:absolute;top:22px;right:18px;color:var(--acc);opacity:0;transform:translateX(-6px);transition:opacity .3s,transform .3s}
+.tile:hover,.tile:focus-visible{transform:translateY(-4px);border-color:rgba(242,163,58,.65);outline:none;
+  box-shadow:0 0 0 1px rgba(242,163,58,.35),0 14px 34px rgba(0,0,0,.35),0 0 36px rgba(242,163,58,.18)}
+.tile:hover .bg,.tile:focus-visible .bg{transform:scale(1.1);filter:saturate(1.15) brightness(1.05)}
+.tile:hover .ico,.tile:focus-visible .ico{transform:translateY(-2px) scale(1.06);background:var(--acc);color:#1a1300;box-shadow:0 6px 18px rgba(242,163,58,.4)}
+.tile:hover::after,.tile:focus-visible::after{animation:sheen .9s ease-out}
+.tile:hover .go,.tile:focus-visible .go{opacity:1;transform:none}
+.tile:active{transform:translateY(-1px) scale(.99)}
+@keyframes sheen{0%{left:-60%;opacity:0}20%{opacity:1}100%{left:120%;opacity:0}}
+.grid .tile{animation:rise .5s cubic-bezier(.2,.8,.2,1) backwards}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}}
+@media (prefers-reduced-motion:reduce){.tile,.tile .bg,.tile .ico,.grid .tile{transition:none;animation:none}.tile:hover::after{animation:none}}
 
 /* lists and results */
 .list{display:flex;flex-direction:column;gap:10px}

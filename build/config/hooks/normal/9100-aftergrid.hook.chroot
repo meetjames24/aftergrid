@@ -16,7 +16,8 @@ apt-get purge -y gnome-keyring 2>/dev/null || true
 # services
 systemctl enable aftergrid-repos.service aftergrid-refresh.service aftergrid-refresh.path aftergrid-kiwix.service aftergrid-ai.service aftergrid-embed.service aftergrid-semantic.service lighttpd.service
 # llama.cpp shared libraries
-echo /opt/llama/bin > /etc/ld.so.conf.d/aftergrid-llama.conf; ldconfig
+printf '/opt/llama/bin\n/opt/llama/lib\n' > /etc/ld.so.conf.d/aftergrid-llama.conf; ldconfig
+[ -x /opt/llama/bin/llama-server ] || { echo 'E: /opt/llama/bin/llama-server missing: run fetch-content.sh'; exit 1; }
 # lighttpd log dir
 mkdir -p /var/log/lighttpd && chown www-data:www-data /var/log/lighttpd
 # remove clamav auto-updates from hammering boot when offline

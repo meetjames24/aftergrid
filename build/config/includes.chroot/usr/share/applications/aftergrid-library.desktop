@@ -2,6 +2,6 @@
 Name=Offline Library
 Comment=Wikipedia, medicine, survival guides (Kiwix)
 Exec=xdg-open http://localhost/topic.html?t=library
-Icon=kiwix-desktop
+Icon=aftergrid-library
 Type=Application
 Categories=Education;

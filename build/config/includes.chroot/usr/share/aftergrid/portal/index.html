@@ -7,28 +7,32 @@
 </main>
 <script src="/aftergrid-i18n.js"></script><script src="/aftergrid.js"></script>
 <script>
+// [link, art (img/icons + img/tiles, made by content/tools/make_art.py), title, subtitle]
 const TILES = [
-  ['medical','✚','Medical','First aid, WikiMed, field surgery'],
-  ['water','💧','Water','Find, purify, store'],
-  ['food','🥫','Food','Preserve, cook, grow'],
-  ['shelter','⛺','Shelter & Survival','Disaster, fallout, knots'],
-  ['repair','🔧','Repair & Build','Tools, solar, appropriate tech'],
-  ['power','⚡','Power','Solar, batteries, generators'],
-  ['maps.html','🗺','Maps','Offline street maps'],
-  ['comms.html','📻','Comms','Radio frequencies & mesh'],
-  ['ask.html','💬','Ask Aftergrid','Local AI, answers from the library'],
-  ['library','📚','Everything','All books & manuals'],
-  ['gobag.html','🎒','Go-Bag','Your emergency card & documents'],
+  ['medical','medical','Medical','First aid, WikiMed, field surgery'],
+  ['water','water','Water','Find, purify, store'],
+  ['food','food','Food','Preserve, cook, grow'],
+  ['shelter','shelter','Shelter & Survival','Disaster, fallout, knots'],
+  ['repair','repair','Repair & Build','Tools, solar, appropriate tech'],
+  ['power','power','Power','Solar, batteries, generators'],
+  ['maps.html','maps','Maps','Offline street maps'],
+  ['comms.html','comms','Comms','Radio frequencies & mesh'],
+  ['ask.html','ask','Ask Aftergrid','Local AI, answers from the library'],
+  ['library','library','Everything','All books & manuals'],
+  ['gobag.html','gobag','Go-Bag','Your emergency card & documents'],
 ];
+const ICONS = {};
+const icon = n => ICONS[n] || (ICONS[n] = fetch('/img/icons/' + n + '.svg').then(r => r.text()).catch(() => ''));
 Aftergrid.load().then(() => {
   Aftergrid.header('Field Mode');
   const g = document.getElementById('tiles');
-  for (const [id, ico, t, s] of TILES) {
-    const a = document.createElement('a'); a.className = 'tile';
+  TILES.forEach(([id, art, t, s], n) => {
+    const a = document.createElement('a'); a.className = 'tile'; a.style.animationDelay = (n * 35) + 'ms';
     a.href = id.includes('.html') ? '/' + id : '/topic.html?t=' + id;
-    a.innerHTML = `<div class="ico">${ico}</div><b>${Aftergrid.T(t)}</b><span>${Aftergrid.T(s)}</span>`;
+    a.innerHTML = `<div class="bg" style="background-image:url(/img/tiles/${art}.svg)"></div><div class="ico" aria-hidden="true"></div><div class="go" aria-hidden="true">→</div><b>${Aftergrid.T(t)}</b><span>${Aftergrid.T(s)}</span>`;
+    icon(art).then(svg => { a.querySelector('.ico').innerHTML = svg; });
     g.append(a);
-  }
+  });
   const i = Aftergrid.index;
   document.getElementById('stats').textContent =
     `${Aftergrid.books.length} ${Aftergrid.T('libraries')} · ${(i.pdfs||[]).length} ${Aftergrid.T('manuals')} · ${(i.maps||[]).length} ${Aftergrid.T('map regions')} · ${Aftergrid.T(i.ai ? 'local AI ready' : 'local AI off')}` +

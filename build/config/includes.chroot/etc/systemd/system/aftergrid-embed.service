@@ -5,6 +5,7 @@ After=aftergrid-refresh.service
 ExecStart=/bin/sh -c 'M=$(ls /run/live/medium/aftergrid-library/models/embed/*.gguf /opt/aftergrid-library/models/embed/*.gguf 2>/dev/null | head -1); [ -n "$M" ] || exit 0; exec /opt/llama/bin/llama-server -m "$M" --host 127.0.0.1 --port 8082 --embedding --pooling cls -c 2048 -ub 512 -b 2048 -t 2 --no-webui'
 Restart=on-failure
 DynamicUser=yes
+RestartSec=5
 Nice=10
 [Install]
 WantedBy=multi-user.target

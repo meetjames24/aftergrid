@@ -4,10 +4,15 @@ After=aftergrid-refresh.service
 [Service]
 ExecCondition=/usr/local/bin/aftergrid-ai-serve --check
 ExecStart=/usr/local/bin/aftergrid-ai-serve
-ExecStartPost=/bin/sh -c 'sleep 20; /usr/local/bin/aftergrid-portal-refresh'
+# Tell the portal once the model has actually loaded (slow sticks can take a minute)
+ExecStartPost=/bin/sh -c 'for i in $(seq 90); do curl -sf http://127.0.0.1:8081/health >/dev/null && break; sleep 2; done; /usr/local/bin/aftergrid-portal-refresh'
 ExecStopPost=/usr/local/bin/aftergrid-portal-refresh
 Restart=on-failure
 DynamicUser=yes
+# GPU (Vulkan) access for the dynamic user
+SupplementaryGroups=render video
+RestartSec=5
+TimeoutStartSec=180
 Nice=5
 [Install]
 WantedBy=multi-user.target
