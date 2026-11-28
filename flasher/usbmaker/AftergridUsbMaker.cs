@@ -61,7 +61,7 @@ class Image {
     public string Title; public bool Remote;     // Remote: Files are URLs
     public override string ToString() { return (Title ?? Name) + "   (" + Drive.Gb(Size) + ")"; }
 
-    public const string CatalogUrl = "https://getaftergrid.com/releases/latest.json";
+    public const string CatalogUrl = "https://github.com/Meet-James-App-Dev/aftergrid-os/releases/latest/download/latest.json";
     // Catalog: {"editions":[{"id","title","name","size","sha256","parts":[{"url"}]}]}; part URLs may be relative to the catalog.
     public static List<Image> Catalog(string url) {
         ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;   // TLS 1.2 on .NET 4.x
