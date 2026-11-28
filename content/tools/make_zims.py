@@ -9,7 +9,8 @@ from datetime import date
 from libzim.writer import Creator, Item, StringProvider, Hint
 from PIL import Image, ImageDraw
 
-ROOT = "/home/claude/ark/content"
+REPO = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../.."))
+ROOT = f"{REPO}/content"
 OUT = f"{ROOT}/zim"
 STAMP = date.today().strftime("%Y-%m")
 CSS = """body{font:17px/1.55 system-ui,-apple-system,'Segoe UI',sans-serif;max-width:760px;margin:0 auto;padding:20px;color:#1f1e1c;background:#faf9f5}
@@ -90,10 +91,10 @@ MANUALS = {  # file stem -> (short title, path id)
     "US-Army-FM-21-10-Field-Hygiene-and-Sanitation": ("Field Hygiene and Sanitation (FM 21-10)", "fm21-10"),
     "Nuclear-War-Survival-Skills-Kearny": ("Nuclear War Survival Skills (Kearny)", "nwss"),
 }
-OCR = {"ST-31-91B-Special-Forces-Medical-Handbook": "/home/claude/ark/work/ocr"}
+OCR = {"ST-31-91B-Special-Forces-Medical-Handbook": f"{REPO}/work/ocr/ST-31-91B"}
 
 def pdf_pages(pdf, stem):
-    if stem in OCR:
+    if stem in OCR and os.path.isdir(OCR[stem]):
         d = OCR[stem]; n = len([f for f in os.listdir(d) if re.fullmatch(r"p\d+\.txt", f)])
         return [open(f"{d}/p{i}.txt", errors="ignore").read() for i in range(1, n + 1)]
     return subprocess.run(["pdftotext", "-enc", "UTF-8", pdf, "-"], capture_output=True, text=True).stdout.split("\f")

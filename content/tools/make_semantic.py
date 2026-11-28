@@ -7,7 +7,8 @@ import glob, html, json, os, re, sys, urllib.request
 import numpy as np
 from libzim.reader import Archive
 
-ROOT = "/home/claude/ark/content"
+REPO = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../.."))
+ROOT = f"{REPO}/content"
 OUT = f"{ROOT}/ai/semantic"
 BOOKS = ["aftergrid-firstaid_en", "aftergrid-manuals_en"]
 EMBED = "http://127.0.0.1:8082/v1/embeddings"
