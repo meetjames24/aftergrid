@@ -1,0 +1,30 @@
+#!/bin/bash
+# Open a part of Aftergrid from the desktop. If it isn't on this stick yet, offer to download it.
+#   aftergrid-open wikipedia | maps | ask | library | field
+P=http://localhost
+open(){ xdg-open "$1" >/dev/null 2>&1 & }
+book(){   # URL of the first library book whose name starts with one of the prefixes
+  curl -sf "$P/kiwix/catalog/v2/entries?count=-1" | python3 -c "
+import sys, xml.etree.ElementTree as E
+A='{http://www.w3.org/2005/Atom}'; pre=sys.argv[1:]
+for e in E.fromstring(sys.stdin.read()).iter(A+'entry'):
+    n=(e.findtext(A+'name') or '')
+    for p in pre:
+        if n.startswith(p):
+            for l in e.iter(A+'link'):
+                if l.get('type')=='text/html': print(l.get('href')); sys.exit()
+" "$@"; }
+case "${1:-field}" in
+  wikipedia)
+    L=$(book wikipedia_en_all wikipedia_el_all wikipedia_fr_all wikipedia_de_all wikipedia_pt_all wikipedia_tr_all)
+    if [ -n "$L" ]; then open "$P$L"
+    else kdialog --title Wikipedia --yesno "Wikipedia isn't on this stick yet.\n\nDownload English Wikipedia now? (every article, no images, about 14 GB; needs internet)\nYou can also pick the full version with images, or other languages." \
+         && exec aftergrid-get wikipedia-lite; fi;;
+  maps)
+    if python3 -c "import json,sys; sys.exit(0 if json.load(open('/run/aftergrid/index.json')).get('maps') else 1)" 2>/dev/null; then open "$P/maps.html"
+    else open "$P/maps.html"; kdialog --title Maps --passivepopup "Only the world overview is on this stick. For street-level maps: Get more → Maps." 8; fi;;
+  ask)     open "$P/ask.html"
+           systemctl is-active -q aftergrid-ai || kdialog --title "Ask Aftergrid" --passivepopup "The offline AI is starting or not installed. If answers don't come: Get more → Offline AI." 8;;
+  library) open "$P/topic.html?t=library";;
+  *)       open "$P/";;
+esac

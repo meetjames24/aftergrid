@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+Name=Wikipedia
+Name[el]=Βικιπαίδεια
+Name[fr]=Wikipédia
+Name[de]=Wikipedia
+Name[pt]=Wikipédia
+Name[tr]=Vikipedi
+Comment=Offline Wikipedia (download it once, then it's on the stick)
+Exec=aftergrid-open wikipedia
+Icon=aftergrid-wiki
+Terminal=false
+Categories=Education;X-Aftergrid;

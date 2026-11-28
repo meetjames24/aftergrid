@@ -19,9 +19,11 @@ jobs:
           A=/usr/lib/mono/4.7-api; cd flasher/usbmaker
           mcs -nostdlib -r:$A/mscorlib.dll -r:$A/System.dll -r:$A/System.Core.dll -r:$A/System.Windows.Forms.dll \
               -r:$A/System.Drawing.dll -r:$A/System.Management.dll -r:$A/System.Web.Extensions.dll \
-              -target:winexe -win32icon:aftergrid.ico -out:AftergridUSBMaker.exe AftergridUsbMaker.cs
+              -r:$A/System.IO.Compression.dll -r:$A/System.IO.Compression.FileSystem.dll \
+              -target:winexe -win32icon:aftergrid.ico -out:AftergridUSBMaker.exe AftergridUsbMaker.cs Packs.cs
+          cp ../../build/config/includes.chroot/usr/share/aftergrid/catalog.json .
       - uses: actions/upload-artifact@v4
-        with: { name: unsigned, path: flasher/usbmaker/AftergridUSBMaker.exe }
+        with: { name: unsigned, path: "flasher/usbmaker/AftergridUSBMaker.exe\nflasher/usbmaker/catalog.json" }
 
   sign-and-release:
     needs: build
@@ -64,6 +66,7 @@ jobs:
           files: |
             dist/AftergridUSBMaker.exe
             dist/SHA256SUMS.txt
+            dist/catalog.json
           body: |
-            **Download `AftergridUSBMaker.exe` and run it.** It downloads Aftergrid and writes it to the USB stick you choose, then checks every byte.
+            **Download `AftergridUSBMaker.exe` and run it.** It downloads Aftergrid, writes it to the USB stick you choose, checks every byte, and adds the packs you tick (Wikipedia, maps, offline AI, languages…).
             ${{ env.CAN_SIGN == 'true' && 'Signed installer.' || 'Note: this build is not code-signed yet; Windows may show "unknown publisher" (More info → Run anyway).' }}

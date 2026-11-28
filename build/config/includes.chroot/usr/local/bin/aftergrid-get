@@ -1,0 +1,32 @@
+#!/bin/bash
+# Aftergrid: get more (Wikipedia, maps, offline AI, languages, med school...) onto this stick's VAULT.
+#   aftergrid-get                 pick from the catalog
+#   aftergrid-get wikipedia-lite  start with that pack ticked
+# Works on the running live stick: no restart. If there's no VAULT yet, it offers to make one first
+# (same layout USB Maker makes: blank space reserved for encrypted saves, then the VAULT).
+CAT=/usr/share/aftergrid/catalog.json
+term(){ konsole --hold -e bash -c "$*"; }
+if ! mountpoint -q /vault; then
+  if lsblk -rno LABEL | grep -qx VAULT; then sudo systemctl start vault.mount; sleep 1; fi
+fi
+if ! mountpoint -q /vault; then
+  kdialog --title "Get more" --yesno "Downloads are kept in the VAULT: a part of this USB stick that also opens on Windows and Mac.\n\nThis stick doesn't have one yet. Create it now? (About a minute, no restart. Nothing else on the stick changes; space for encrypted saves is kept free.)" || exit 0
+  konsole -e bash -c "sudo /usr/local/sbin/aftergrid-setup-stick --vault-only --yes || { echo; read -rp 'Press Enter to close'; }"
+  sudo systemctl start vault.mount 2>/dev/null; sleep 1
+  mountpoint -q /vault || { kdialog --error "Couldn't create the VAULT. Open Aftergrid Control → Status check for details."; exit 1; }
+fi
+FREE=$(df -h --output=avail /vault | tail -1 | xargs)
+mapfile -t A < <(python3 - "$CAT" "${1:-}" <<'PY'
+import glob, json, os, sys
+cat, want = json.load(open(sys.argv[1])), sys.argv[2]
+have = {os.path.basename(f) for r in ("/vault", "/run/live/medium/aftergrid-library", "/opt/aftergrid-library") for f in glob.glob(r + "/**/*", recursive=True)}
+for k, v in cat["tiers"].items():
+    got = any(i.get("type") == "kiwix" and any(h.startswith(i["prefix"] + "_") for h in have) or
+              i.get("type") == "hf" and i["file"] in have or
+              i.get("type") == "pmtiles" and i["name"] + ".pmtiles" in have for i in v["items"])
+    print(k); print(("✓ have it · " if got else "") + v["label"]); print("on" if k == want else "off")
+PY
+)
+T=$(kdialog --title "Get more for Aftergrid" --geometry 760x560 --checklist "Pick what to download into the VAULT ($FREE free).\nNeeds internet once; stopped downloads resume next time." "${A[@]}") || exit 0
+eval "set -- $T"; [ $# -gt 0 ] || exit 0
+term "aftergrid-vault-sync --yes $* && echo && echo 'Done. New books, maps and models appear in Field Mode by themselves.'"

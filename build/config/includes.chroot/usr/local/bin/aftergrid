@@ -48,10 +48,7 @@ case $C in
   field)   xdg-open http://localhost/ >/dev/null 2>&1 & ;;
   status)  term aftergrid-status;;
   setup)   term sudo aftergrid-setup-stick;;
-  sync)    mapfile -t A < <(python3 -c "import json
-for k,v in json.load(open('/usr/share/aftergrid/catalog.json'))['tiers'].items(): print(k); print(v['label']); print('off')")
-           T=$(kdialog --title "Download" --checklist "Pick what to download (needs internet once):" "${A[@]}") && \
-             eval "set -- $T" && [ $# -gt 0 ] && term aftergrid-vault-sync "$@";;
+  sync)    aftergrid-get;;
   peer)    D=$(kdialog --title "Pick the other Aftergrid's VAULT drive" --getexistingdirectory /media) && term aftergrid-vault-sync --from "$D";;
   hotspot) if aftergrid-hotspot status | grep -q ON; then term aftergrid-hotspot off; else
              P=$(kdialog --title "Hotspot" --inputbox "Wi-Fi password for phones (8+ characters):" aftergrid) && term aftergrid-hotspot on Aftergrid-Library "$P"; fi;;

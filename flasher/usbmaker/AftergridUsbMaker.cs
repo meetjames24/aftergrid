@@ -1,6 +1,8 @@
 // Aftergrid USB Maker: writes the Aftergrid image to a USB stick on Windows and verifies it.
 // Build (any OS with Mono):  mcs -target:winexe -win32icon:aftergrid.ico -r:System.Windows.Forms.dll -r:System.Drawing.dll
-//                             -r:System.Management.dll -r:System.Web.Extensions.dll -out:"Aftergrid USB Maker.exe" AftergridUsbMaker.cs
+//                             -r:System.Management.dll -r:System.Web.Extensions.dll -r:System.IO.Compression.dll
+//                             -r:System.IO.Compression.FileSystem.dll -out:"Aftergrid USB Maker.exe" AftergridUsbMaker.cs Packs.cs
+// (see .github/workflows/release.yml for the exact command)
 // Runs on Windows 10/11 with the built-in .NET Framework 4.x. Restarts itself as administrator.
 //
 // Image, in this order:
@@ -111,7 +113,8 @@ class MainForm : Form {
     static readonly Color Paper = Color.FromArgb(21, 23, 26), Ink = Color.FromArgb(233, 231, 225), Dim = Color.FromArgb(162, 158, 149), Field = Color.FromArgb(31, 35, 39);
     static readonly Color Amber = Color.FromArgb(242, 163, 58), Red = Color.FromArgb(194, 64, 44), Green = Color.FromArgb(47, 138, 87);
     ComboBox drives = new ComboBox(), editions = new ComboBox(); Button refresh = new Button(), make = new Button();
-    Label imageInfo = new Label(), status = new Label(), detail = new Label();
+    Label imageInfo = new Label(), status = new Label(), detail = new Label(), packInfo = new Label();
+    CheckedListBox packs = new CheckedListBox(); List<Pack> chosen = new List<Pack>(); string summary;
     ProgressBar bar = new ProgressBar(); BackgroundWorker worker = new BackgroundWorker();
     Image image; string baseDir = AppDomain.CurrentDomain.BaseDirectory;
     const int Block = 4 << 20;   // 4 MiB
@@ -119,7 +122,7 @@ class MainForm : Form {
     public MainForm() {
         Text = "Aftergrid USB Maker"; BackColor = Paper; ForeColor = Ink; Font = new Font("Segoe UI", 10f);
         FormBorderStyle = FormBorderStyle.FixedSingle; MaximizeBox = false; StartPosition = FormStartPosition.CenterScreen;
-        ClientSize = new Size(620, 470); AutoScaleMode = AutoScaleMode.Dpi;
+        ClientSize = new Size(620, 720); AutoScaleMode = AutoScaleMode.Dpi;
         try { Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath); } catch { }
 
         var logo = new MarkPanel { Location = new Point(28, 24), Size = new Size(44, 44) };
@@ -133,19 +136,25 @@ class MainForm : Form {
         editions.SelectedIndexChanged += (s, e) => { image = editions.SelectedItem as Image; if (image != null) imageInfo.Text = "Downloads " + Drive.Gb(image.Size) + " while writing (no extra disk space needed). Internet must stay on."; };
         imageInfo.Location = new Point(60, 214); imageInfo.Size = new Size(530, 40); imageInfo.ForeColor = Dim;
         foreach (var c in new Control[] { drives, editions }) { c.BackColor = Field; c.ForeColor = Ink; }
-        var l3 = Step("3", "Make the stick (about 10 to 25 minutes, then it checks every byte).", 262);
-        make.Text = "Make Aftergrid USB"; make.Cursor = Cursors.Hand; make.Location = new Point(60, 294); make.Size = new Size(220, 40);
+        var l3 = Step("3", "Add to the stick (optional, downloaded for you, added to Aftergrid's VAULT):", 290);
+        packs.Location = new Point(60, 320); packs.Size = new Size(526, 172); packs.CheckOnClick = true; packs.BorderStyle = BorderStyle.FixedSingle;
+        packs.BackColor = Field; packs.ForeColor = Ink; packs.IntegralHeight = false;
+        packs.ItemCheck += (s, e) => BeginInvoke((Action)UpdatePackInfo);
+        packInfo.Location = new Point(60, 496); packInfo.Size = new Size(530, 40); packInfo.ForeColor = Dim; packInfo.Text = "Looking up packs…";
+        drives.SelectedIndexChanged += (s, e) => UpdatePackInfo();
+        var l4 = Step("4", "Make the stick (writes, checks every byte, then adds your packs).", 546);
+        make.Text = "Make Aftergrid USB"; make.Cursor = Cursors.Hand; make.Location = new Point(60, 576); make.Size = new Size(220, 40);
         make.FlatStyle = FlatStyle.Flat; make.BackColor = Amber; make.ForeColor = Color.FromArgb(42, 26, 4); make.Font = new Font("Segoe UI Semibold", 11f);
         make.FlatAppearance.BorderSize = 0;
-        bar.Location = new Point(60, 350); bar.Size = new Size(526, 18); bar.Maximum = 1000;
-        status.Location = new Point(60, 376); status.Size = new Size(526, 22); status.Font = new Font("Segoe UI Semibold", 10f);
-        detail.Location = new Point(60, 400); detail.Size = new Size(540, 64); detail.ForeColor = Dim;
-        Controls.AddRange(new Control[] { logo, title, sub, l1, drives, refresh, l2, editions, imageInfo, l3, make, bar, status, detail });
+        bar.Location = new Point(300, 588); bar.Size = new Size(286, 18); bar.Maximum = 1000;
+        status.Location = new Point(60, 626); status.Size = new Size(526, 22); status.Font = new Font("Segoe UI Semibold", 10f);
+        detail.Location = new Point(60, 650); detail.Size = new Size(540, 66); detail.ForeColor = Dim;
+        Controls.AddRange(new Control[] { logo, title, sub, l1, drives, refresh, l2, editions, imageInfo, l3, packs, packInfo, l4, make, bar, status, detail });
 
         refresh.Click += (s, e) => LoadDrives();
         make.Click += (s, e) => Start();
         worker.WorkerReportsProgress = true; worker.DoWork += Work; worker.ProgressChanged += Progress; worker.RunWorkerCompleted += Done;
-        Load += (s, e) => { LoadImage(); LoadDrives(); };
+        Load += (s, e) => { LoadImage(); LoadDrives(); LoadPacks(); };
     }
 
     Label Step(string n, string text, int y) {
@@ -162,10 +171,47 @@ class MainForm : Form {
         } catch (Exception ex) { imageInfo.Text = ex.Message; imageInfo.ForeColor = Red; image = null; }
     }
 
-    void LoadCatalog() {
+    string CatalogUrl() {
         var url = Image.CatalogUrl; var f = Path.Combine(baseDir, "aftergrid-catalog.txt");
         if (Environment.GetCommandLineArgs().Length > 1) url = Environment.GetCommandLineArgs()[1];
         else if (File.Exists(f)) url = File.ReadAllText(f).Trim();
+        return url;
+    }
+
+    // Packs: the OS's catalog.json, published next to latest.json.
+    void LoadPacks() {
+        var url = new Uri(new Uri(CatalogUrl()), "catalog.json").AbsoluteUri;
+        var bw = new BackgroundWorker();
+        bw.DoWork += (s, e) => e.Result = Pack.Load(url);
+        bw.RunWorkerCompleted += (s, e) => {
+            if (e.Error != null) { packs.Enabled = false; packInfo.Text = "Packs need internet. You can also add them later: Aftergrid Control → Download."; return; }
+            var list = (List<Pack>)e.Result;
+            foreach (var p in list) packs.Items.Add(p, p.Id == "ai");      // the offline AI is ticked by default
+            UpdatePackInfo();
+            var m = new BackgroundWorker();                                // then measure the real sizes quietly
+            m.DoWork += (s2, e2) => { foreach (var p in list) { try { p.Measure(); } catch { } } };
+            m.RunWorkerCompleted += (s2, e2) => UpdatePackInfo();
+            m.RunWorkerAsync();
+        };
+        bw.RunWorkerAsync();
+    }
+
+    void UpdatePackInfo() {
+        chosen = packs.CheckedItems.Cast<Pack>().ToList();
+        var d = drives.SelectedItem as Drive; double gb = chosen.Where(p => p.Gb > 0).Sum(p => p.Gb);
+        string sizes = chosen.Count == 0 ? "Nothing ticked: you can add packs later in Aftergrid Control → Download." :
+            chosen.Count + " pack(s), " + (chosen.All(p => p.Measured || p.Gb <= 0) ? "" : "about ") + gb.ToString("0.#") + " GB" + (chosen.Any(p => p.Gb <= 0) ? " + maps (size varies)" : "") + ".";
+        if (d != null && image != null) {
+            double free = (d.Size - image.Size - StickLayout.Reserve(d.Size)) / 1e9;
+            sizes += "  Room on this stick: about " + Math.Max(0, free).ToString("0") + " GB.";
+            packInfo.ForeColor = gb > free ? Red : Dim;
+            if (gb > free) sizes += "  Too much for this stick.";
+        } else packInfo.ForeColor = Dim;
+        packInfo.Text = sizes;
+    }
+
+    void LoadCatalog() {
+        var url = CatalogUrl();
         imageInfo.Text = "Looking up Aftergrid editions online…"; imageInfo.ForeColor = Dim;
         var bw = new BackgroundWorker();
         bw.DoWork += (s, e) => e.Result = Image.Catalog(url);
@@ -173,7 +219,7 @@ class MainForm : Form {
             if (e.Error != null) { imageInfo.ForeColor = Red; imageInfo.Text = "Couldn't reach " + new Uri(url).Host + ". Connect to the internet and restart this program, or put a downloaded Aftergrid image next to it."; return; }
             var list = (List<Image>)e.Result; editions.Items.Clear(); foreach (var i in list) editions.Items.Add(i);
             if (list.Count == 0) { imageInfo.ForeColor = Red; imageInfo.Text = "No editions are published yet."; return; }
-            editions.Visible = true; imageInfo.Top = 248; editions.SelectedIndex = list.Count - 1;   // the biggest edition is listed last
+            editions.Visible = true; imageInfo.Top = 246; imageInfo.Height = 40; editions.SelectedIndex = list.Count - 1; UpdatePackInfo();
         };
         bw.RunWorkerAsync();
     }
@@ -244,7 +290,9 @@ class MainForm : Form {
         var typed = Prompt.Show(this, "Everything on this drive will be erased:\n\n" + d + "\n\nType its size in GB (" + want + ") to continue:");
         if (typed == null) return;
         if (typed.Trim().Replace(',', '.') != want) { MessageBox.Show(this, "That didn't match " + want + ". Nothing was changed.", Text); return; }
-        make.Enabled = drives.Enabled = refresh.Enabled = editions.Enabled = false; status.ForeColor = Ink; detail.Text = "";
+        UpdatePackInfo();
+        if (packInfo.ForeColor == Red && MessageBox.Show(this, "The ticked packs probably won't all fit on this stick. Continue anyway? (Packs that don't fit are skipped.)", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
+        make.Enabled = drives.Enabled = refresh.Enabled = editions.Enabled = packs.Enabled = false; status.ForeColor = Ink; detail.Text = "";
         worker.RunWorkerAsync(d);
     }
 
@@ -256,7 +304,9 @@ class MainForm : Form {
         System.Threading.Thread.Sleep(2500);
 
         string path = @"\\.\PhysicalDrive" + d.Index;
-        var sha = SHA256.Create(); long total = image.Size, done = 0; var sw = Stopwatch.StartNew();
+        var sha = SHA256.Create(); var stick = SHA256.Create(); long total = image.Size, done = 0; var sw = Stopwatch.StartNew();
+        bool hasPacks = chosen.Count > 0; double wW = hasPacks ? .5 : .7, wV = hasPacks ? .2 : .3;   // progress bar shares
+        StickLayout layout = null;
         IntPtr buf = Native.VirtualAlloc(IntPtr.Zero, (UIntPtr)Block, Native.MEM_COMMIT | Native.MEM_RESERVE, Native.PAGE_READWRITE);
         var managed = new byte[Block];
         try {
@@ -264,7 +314,12 @@ class MainForm : Form {
                 using (var src = image.Remote ? (Stream)new WebPartsStream(image.Files) : new PartsStream(image.Files)) {   // the parts, read as one continuous image
                     int n;
                     while ((n = Fill(src, managed)) > 0) {
-                        sha.TransformBlock(managed, 0, n, null, 0);
+                        sha.TransformBlock(managed, 0, n, null, 0);        // fingerprint of the image as published
+                        if (done == 0) {                                     // first block: add the saves + VAULT partitions
+                            layout = StickLayout.Plan(managed, d.Size, total);
+                            if (layout.Skip == null) layout.Apply(managed);
+                        }
+                        stick.TransformBlock(managed, 0, n, null, 0);      // fingerprint of what the stick should hold
                         int len = (n + 4095) & ~4095;                        // raw disk writes must be whole sectors
                         if (len > n) Array.Clear(managed, n, len - n);
                         Marshal.Copy(managed, 0, buf, len);
@@ -272,15 +327,25 @@ class MainForm : Form {
                         if (!Native.WriteFile(h, buf, (uint)len, out w, IntPtr.Zero) || w != len)
                             throw new Exception("Writing failed at " + Drive.Gb(done) + " (Windows error " + Marshal.GetLastWin32Error() + "). The stick may be faulty or was unplugged.");
                         done += n;
-                        Report(Per(done, total) * 0.7, (image.Remote ? "Downloading and writing… " : "Writing… ") + Pct(done, total), Speed(done, total, sw));
+                        Report(Per(done, total) * wW, (image.Remote ? "Downloading and writing… " : "Writing… ") + Pct(done, total), Speed(done, total, sw));
                         if (worker.CancellationPending) return;
+                    }
+                }
+                // Blank the start and end of the new partitions, so old data on the stick can't look like a file system.
+                if (layout != null && layout.Skip == null) {
+                    Array.Clear(managed, 0, 1 << 20); Marshal.Copy(managed, 0, buf, 1 << 20);
+                    foreach (long off in new[] { layout.SavesStart * 512, (layout.SavesStart + layout.SavesSectors) * 512 - (1 << 20), layout.VaultOffset }) {
+                        long np; uint w;
+                        if (!Native.SetFilePointerEx(h, off, out np, 0) || !Native.WriteFile(h, buf, 1 << 20, out w, IntPtr.Zero))
+                            throw new Exception("Couldn't prepare the VAULT area (Windows error " + Marshal.GetLastWin32Error() + ").");
                     }
                 }
                 Native.FlushFileBuffers(h);
             }
             sha.TransformFinalBlock(new byte[0], 0, 0);
-            string written = Hex(sha.Hash);
-            if (image.Sha256 != null && image.Sha256 != "" && written != image.Sha256)
+            stick.TransformFinalBlock(new byte[0], 0, 0);
+            string written = Hex(stick.Hash);
+            if (image.Sha256 != null && image.Sha256 != "" && Hex(sha.Hash) != image.Sha256)
                 throw new Exception(image.Remote ? "The download arrived damaged (fingerprint mismatch). Press Make again to retry." : "The image files themselves are damaged (fingerprint mismatch). Download them again.");
 
             // Verify: read everything back straight from the stick, bypassing Windows' cache.
@@ -292,13 +357,46 @@ class MainForm : Form {
                     int use = (int)Math.Min(r, left);
                     Marshal.Copy(buf, managed, 0, use); check.TransformBlock(managed, 0, use, null, 0);
                     left -= use; got += use;
-                    Report(0.7 + Per(got, total) * 0.3, "Checking every byte… " + Pct(got, total), Speed(got, total, sw));
+                     Report(wW + Per(got, total) * wV, "Checking every byte… " + Pct(got, total), Speed(got, total, sw));
                 }
             }
             check.TransformFinalBlock(new byte[0], 0, 0);
             if (Hex(check.Hash) != written) throw new Exception("The stick doesn't read back what was written. It is probably faulty: try another stick.");
-            e.Result = d;
+            e.Result = d; summary = null;
+            AddVault(d, layout, wW + wV);
         } finally { Native.VirtualFree(buf, UIntPtr.Zero, Native.MEM_RELEASE); }
+    }
+
+    // VAULT + packs. The stick already boots at this point, so problems here are reported, not fatal.
+    void AddVault(Drive d, StickLayout layout, double from) {
+        if (layout == null || layout.Skip != null) {
+            summary = "No VAULT was added (" + (layout == null ? "unknown layout" : layout.Skip) + "). Aftergrid's setup creates it on first start; then use Aftergrid Control → Download.";
+            return;
+        }
+        string vault;
+        try {
+            Report(from, "Creating the VAULT…", "A Windows-readable space for the library, maps and AI models.");
+            vault = layout.FormatVault(d.Index);
+            foreach (var f in new[] { "zim", "maps", "models", @"library\survival", @"library\medical", "backups" }) Directory.CreateDirectory(Path.Combine(vault, f));
+        } catch (Exception ex) {
+            summary = ex.Message + " The stick still works: Aftergrid sets up the VAULT on first start, then use Aftergrid Control → Download."; return;
+        }
+        if (chosen.Count == 0) { summary = "VAULT ready (" + vault + "). Add packs later from Aftergrid Control → Download."; return; }
+        var failed = new List<string>(); int i = 0; double span = 1 - from;
+        foreach (var p in chosen) {
+            double a = from + span * i / chosen.Count, b = from + span * (i + 1) / chosen.Count; i++;
+            try {
+                foreach (Dictionary<string, object> it in p.Items) {
+                    if (worker.CancellationPending) return;
+                    Report(a, "Adding pack " + i + " of " + chosen.Count + ": " + p.Id, "Looking it up…");
+                    var job = Job.From(it, vault);
+                    job.Run((msg, f) => Report(f < 0 ? a : a + (b - a) * f, "Adding pack " + i + " of " + chosen.Count + ": " + p.Id, msg));
+                }
+            } catch (Exception ex) { failed.Add(p.Id + " (" + ex.Message + ")"); }
+        }
+        try { File.WriteAllText(Path.Combine(vault, "aftergrid-packs.txt"), "Added by Aftergrid USB Maker " + DateTime.Now.ToString("yyyy-MM-dd") + ":\r\n" + string.Join("\r\n", chosen.Select(p => p.Id).ToArray()) + "\r\n"); } catch { }
+        summary = failed.Count == 0 ? "All " + chosen.Count + " pack(s) added to the VAULT." :
+            "Some packs didn't finish: " + string.Join("; ", failed.ToArray()) + ". Add them later in Aftergrid Control → Download (it resumes).";
     }
 
     static SafeFileHandle Open(string path, bool write) {
@@ -327,11 +425,11 @@ class MainForm : Form {
         bar.Value = Math.Max(0, Math.Min(1000, e.ProgressPercentage)); var t = (string[])e.UserState; status.Text = t[0]; detail.Text = t[1];
     }
     void Done(object sender, RunWorkerCompletedEventArgs e) {
-        make.Enabled = drives.Enabled = refresh.Enabled = editions.Enabled = true;
+        make.Enabled = drives.Enabled = refresh.Enabled = editions.Enabled = true; packs.Enabled = packs.Items.Count > 0;
         if (e.Error != null) { status.ForeColor = Red; status.Text = "Not finished: " + e.Error.Message.Split(new[]{'\n'})[0]; detail.Text = e.Error.Message; bar.Value = 0; return; }
         bar.Value = 1000; status.ForeColor = Green; status.Text = "Done. The stick is ready and every byte checked out.";
-        detail.Text = "To start from it: plug it in, restart, and press the boot-menu key right away:\n" +
-                      "F12 Dell / Lenovo / Acer,  F9 HP,  F8 ASUS,  F11 MSI,  Esc others,  hold Option on an Intel Mac.  Pick the USB stick.";
+        detail.Text = (summary != null ? summary + "\n" : "") + "To start: plug it in, restart, press the boot-menu key right away:\n" +
+                      "F12 Dell / Lenovo / Acer,  F9 HP,  F8 ASUS,  F11 MSI,  Esc others,  Option on an Intel Mac.";
         LoadDrives();
     }
 

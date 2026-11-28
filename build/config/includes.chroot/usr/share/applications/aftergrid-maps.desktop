@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+Name=Maps
+Name[el]=Χάρτες
+Name[fr]=Cartes
+Name[de]=Karten
+Name[pt]=Mapas
+Name[tr]=Haritalar
+Comment=Offline street maps (works without internet)
+Exec=aftergrid-open maps
+Icon=aftergrid-maps
+Terminal=false
+Categories=Education;X-Aftergrid;

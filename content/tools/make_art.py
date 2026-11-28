@@ -29,11 +29,13 @@ GLYPH = {
  "control": '<path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/>',
  "mesh":    '<circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="12" cy="13" r="2"/><circle cx="6" cy="19.5" r="1.6"/><circle cx="18" cy="19.5" r="1.6"/><path d="M6.7 7.1l3.6 4.6M17.3 7.1l-3.6 4.6M7 6h10M10.8 14.6l-3.7 3.7M13.2 14.6l3.7 3.7"/>',
  "field":   '<circle cx="12" cy="12" r="8.5"/><path d="m15.5 8.5-2 5-5 2 2-5z"/>',
+ "wiki":    '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/>',
+ "download":'<path d="M12 3.5v11M7.5 10l4.5 4.5 4.5-4.5"/><path d="M4 15.5v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/>',
  "winlink": '<path d="M3 8.5h13v10H3z"/><path d="m3 8.5 6.5 5 6.5-5M19.5 3v11M17 5.5a3.5 3.5 0 0 1 5 0"/>',
 }
 # feature -> (hue, label for the scene's character)
 HUE = {"medical": 4, "water": 205, "food": 88, "shelter": 168, "repair": 215, "power": 46, "maps": 140,
-       "comms": 265, "ask": 32, "library": 24, "gobag": 18, "control": 32, "mesh": 190, "field": 32, "winlink": 230}
+       "comms": 265, "ask": 32, "library": 24, "gobag": 18, "control": 32, "mesh": 190, "field": 32, "winlink": 230, "wiki": 220, "download": 150}
 
 def hsl(h, s, l): return f"hsl({h} {s}% {l}%)"
 

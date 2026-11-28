@@ -2,18 +2,21 @@
 # aftergrid-setup-stick: add an encrypted persistence partition + an exFAT VAULT
 # partition to the free space on the Aftergrid USB drive (MBR max = 4 partitions:
 # existing ISO partitions are kept; two new ones are appended after them).
+# Sticks made by Aftergrid USB Maker already have both: a blank partition reserved for
+# the saves, then a filled VAULT. That blank partition is encrypted in place; the VAULT is kept.
 #   --device /dev/sdX   target disk (default: the disk Aftergrid booted from)
 #   --size 8G           persistence size (default: 8G under 40 GB, 16G under 100 GB, else 32G)
 #   --no-encrypt        unencrypted persistence (not recommended)
 #   --yes               skip the typed confirmation (for testing)
 #   --pass-stdin        read the encryption passphrase from standard input (used by the setup wizard)
+#   --vault-only        only make the VAULT now (no restart needed); the saves space is reserved, left blank
 set -euo pipefail
 ORIG_ARGS=("$@")
-DEV=""; SIZE=""; ENCRYPT=1; YES=0
+DEV=""; SIZE=""; ENCRYPT=1; YES=0; VONLY=0
 while [ $# -gt 0 ]; do case "$1" in
   --device) DEV="$2"; shift 2;; --size) SIZE="$2"; shift 2;;
-  --no-encrypt) ENCRYPT=0; shift;; --yes) YES=1; shift;; --pass-stdin) IFS= read -r AFTERGRID_PASS; export AFTERGRID_PASS; shift;;
-  -h|--help) sed -n '2,9p' "$0"; exit 0;; *) echo "unknown option $1"; exit 1;; esac; done
+  --no-encrypt) ENCRYPT=0; shift;; --vault-only) VONLY=1; shift;; --yes) YES=1; shift;; --pass-stdin) IFS= read -r AFTERGRID_PASS; export AFTERGRID_PASS; shift;;
+  -h|--help) sed -n '2,13p' "$0"; exit 0;; *) echo "unknown option $1"; exit 1;; esac; done
 [ "$(id -u)" = 0 ] || exec sudo -E "$0" "${ORIG_ARGS[@]}"
 die(){ echo -e "\n✗ $*" >&2; exit 1; }
 
@@ -25,9 +28,29 @@ fi
 [ -b "$DEV" ] || die "$DEV is not a block device"
 part(){ case "$DEV" in *[0-9]) echo "${DEV}p$1";; *) echo "${DEV}$1";; esac; }
 
-if lsblk -no LABEL "$DEV" | grep -qx VAULT || blkid -t TYPE=crypto_LUKS -o device | grep -q "^$DEV"; then
-  die "$DEV already has Aftergrid partitions. Nothing to do."
+blkid -t TYPE=crypto_LUKS -o device | grep -q "^$DEV" && die "$DEV already has encrypted saves. Nothing to do."
+REUSE=0
+VAULTP=$(lsblk -lnpo NAME,LABEL "$DEV" | awk '$2=="VAULT"{print $1}' | head -1); FMTVAULT=0
+# USB Maker reserved both partitions but Windows couldn't format the VAULT: two blank partitions at the end.
+if [ -z "$VAULTP" ] && [ "$(sfdisk -d "$DEV" 2>/dev/null | grep -c '^/dev')" = 4 ] && [ -b "$(part 4)" ] \
+   && [ -z "$(lsblk -no FSTYPE "$(part 3)")" ] && [ -z "$(lsblk -no FSTYPE "$(part 4)")" ]; then VAULTP=$(part 4); FMTVAULT=1; fi
+if [ -n "$VAULTP" ] && [ $VONLY = 1 ] && [ $FMTVAULT = 0 ]; then echo "VAULT already exists ($VAULTP)."; exit 0; fi
+if [ -n "$VAULTP" ]; then
+  VN=${VAULTP##*[!0-9]}; P3=$(part $((VN - 1)))
+  [ "$VN" -ge 2 ] && [ -b "$P3" ] && [ -z "$(lsblk -no FSTYPE "$P3")" ] || die "$DEV already has Aftergrid partitions. Nothing to do."
+  # the reserved partition must start after every Aftergrid system partition
+  SYSEND=$(partx -g -o NR,START,SECTORS "$DEV" | awk -v n=$((VN - 1)) '$1<n{e=$2+$3; if(e>m)m=e} END{print m+0}')
+  [ "$(partx -g -o START -n $((VN - 1)) "$DEV" | tr -d ' ')" -ge "$SYSEND" ] || die "$P3 overlaps the Aftergrid system; refusing to touch it."
+  REUSE=1; P4=$VAULTP
 fi
+if [ $REUSE = 1 ]; then
+  echo "Aftergrid stick setup"
+  echo "  Drive:        $DEV  ($(lsblk -dno MODEL,SIZE "$DEV" | xargs))"
+  echo "  Saves:        $P3, $(lsblk -no SIZE "$P3" | xargs) reserved by USB Maker $( [ $ENCRYPT = 1 ] && echo '(LUKS2 encrypted)' || echo '(NOT encrypted)')"
+  echo "  VAULT:        $P4, kept as is (your downloaded library stays)"
+  if [ $YES = 0 ]; then read -rp $'\nType YES to continue: ' A; [ "$A" = YES ] || die "Cancelled."; fi
+  wipefs -qa "$P3"
+else
 NPARTS=$(sfdisk -d "$DEV" 2>/dev/null | grep -c '^/dev' || true)
 LABEL=$(sfdisk -d "$DEV" | awk '/^label:/{print $2}')
 [ "$LABEL" = dos ] && [ "$NPARTS" -gt 2 ] && die "Expected at most 2 partitions on a freshly flashed Aftergrid stick, found $NPARTS."
@@ -61,23 +84,29 @@ for p in "$P3" "$P4"; do
   wipefs -qa "$p"
 done
 [ -b "$P3" ] && [ -b "$P4" ] || die "New partitions did not appear ($P3, $P4). Reboot and run again."
+fi
 
-if [ $ENCRYPT = 1 ]; then
+if [ $VONLY = 1 ]; then
+  wipefs -qa "$P3"   # reserved for encrypted saves: 'Set up this stick' encrypts it later
+elif [ $ENCRYPT = 1 ]; then
   echo -e "\nChoose your Aftergrid passphrase. You'll type it at every boot. If you lose it, the saved data is gone."
   if [ -n "${AFTERGRID_PASS:-}" ]; then printf %s "$AFTERGRID_PASS" | cryptsetup luksFormat --type luks2 --batch-mode "$P3" -
                                    printf %s "$AFTERGRID_PASS" | cryptsetup open "$P3" aftergridpersist -
   else cryptsetup luksFormat --type luks2 --verify-passphrase "$P3"; cryptsetup open "$P3" aftergridpersist; fi
   PDEV=/dev/mapper/aftergridpersist
 else PDEV=$P3; fi
+if [ $VONLY = 0 ]; then
 mkfs.ext4 -q -F -L persistence "$PDEV"
 M=$(mktemp -d); mount "$PDEV" "$M"; echo "/ union" > "$M/persistence.conf"; umount "$M"; rmdir "$M"
 [ $ENCRYPT = 1 ] && cryptsetup close aftergridpersist
+fi
 
-mkfs.exfat -n VAULT "$P4" >/dev/null
-mkdir -p /vault; mount -o uid=1000,gid=1000,umask=022 "$P4" /vault 2>/dev/null || true
+{ [ $REUSE = 0 ] || [ $FMTVAULT = 1 ]; } && mkfs.exfat -n VAULT "$P4" >/dev/null
+mkdir -p /vault; mountpoint -q /vault || mount -o uid=1000,gid=1000,umask=022 "$P4" /vault 2>/dev/null || true
 if mountpoint -q /vault; then
   mkdir -p /vault/{zim,maps,models,library/{survival,medical},backups}
   cp -r /usr/share/aftergrid/docs /vault/library/Aftergrid-guide 2>/dev/null || true
 fi
 sync
+[ $VONLY = 1 ] && { systemctl start aftergrid-refresh.service 2>/dev/null; echo -e "\n✓ VAULT ready at /vault. Downloads go there; no restart needed."; exit 0; }
 echo -e "\n✓ Done. Next:\n  1) Reboot, pick 'Aftergrid - Encrypted persistence', type your passphrase.\n  2) Open Aftergrid Control -> 'Download offline library' (needs internet once)."

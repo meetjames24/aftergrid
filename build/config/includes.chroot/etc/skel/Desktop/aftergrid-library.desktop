@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+Name=Library
+Name[el]=Βιβλιοθήκη
+Name[fr]=Bibliothèque
+Name[de]=Bibliothek
+Name[pt]=Biblioteca
+Name[tr]=Kütüphane
+Comment=All books, manuals and encyclopedias on this stick
+Exec=aftergrid-open library
+Icon=aftergrid-library
+Terminal=false
+Categories=Education;X-Aftergrid;

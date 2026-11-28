@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+Name=Get More
+Name[el]=Λήψη περισσότερων
+Name[fr]=Télécharger plus
+Name[de]=Mehr herunterladen
+Name[pt]=Baixar mais
+Name[tr]=Daha fazlasını indir
+Comment=Download Wikipedia, maps, offline AI, languages to this stick
+Exec=aftergrid-get
+Icon=aftergrid-download
+Terminal=false
+Categories=Education;X-Aftergrid;

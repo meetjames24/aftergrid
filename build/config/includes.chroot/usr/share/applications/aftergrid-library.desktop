@@ -1,7 +1,13 @@
 [Desktop Entry]
-Name=Offline Library
-Comment=Wikipedia, medicine, survival guides (Kiwix)
-Exec=xdg-open http://localhost/topic.html?t=library
-Icon=aftergrid-library
 Type=Application
-Categories=Education;
+Name=Library
+Name[el]=Βιβλιοθήκη
+Name[fr]=Bibliothèque
+Name[de]=Bibliothek
+Name[pt]=Biblioteca
+Name[tr]=Kütüphane
+Comment=All books, manuals and encyclopedias on this stick
+Exec=aftergrid-open library
+Icon=aftergrid-library
+Terminal=false
+Categories=Education;X-Aftergrid;

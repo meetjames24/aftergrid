@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+Name=Ask Aftergrid
+Name[el]=Ρώτα το Aftergrid
+Name[fr]=Demander à Aftergrid
+Name[de]=Aftergrid fragen
+Name[pt]=Perguntar ao Aftergrid
+Name[tr]=Aftergrid'e sor
+Comment=Offline AI: answers with sources from the library
+Exec=aftergrid-open ask
+Icon=aftergrid-ask
+Terminal=false
+Categories=Education;X-Aftergrid;
