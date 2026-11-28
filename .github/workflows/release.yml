@@ -1,0 +1,60 @@
+# Push a tag like v1.1 -> builds Aftergrid USB Maker, signs it (when signing secrets are set),
+# and publishes a GitHub Release. The ISO parts + latest.json are uploaded afterwards from the
+# build machine with ./release.sh (the ISO needs root + ~20 GB, too big for hosted runners).
+name: release
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build USB Maker (Mono, .NET 4.7 API)
+        run: |
+          sudo apt-get update -q && sudo apt-get install -y -q mono-mcs mono-devel
+          A=/usr/lib/mono/4.7-api; cd flasher/usbmaker
+          mcs -nostdlib -r:$A/mscorlib.dll -r:$A/System.dll -r:$A/System.Core.dll -r:$A/System.Windows.Forms.dll \
+              -r:$A/System.Drawing.dll -r:$A/System.Management.dll -r:$A/System.Web.Extensions.dll \
+              -target:winexe -win32icon:aftergrid.ico -out:AftergridUSBMaker.exe AftergridUsbMaker.cs
+      - uses: actions/upload-artifact@v4
+        with: { name: unsigned, path: flasher/usbmaker/AftergridUSBMaker.exe }
+
+  sign-and-release:
+    needs: build
+    runs-on: windows-latest
+    env:
+      CAN_SIGN: ${{ secrets.AZURE_CLIENT_ID != '' }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with: { name: unsigned, path: dist }
+      # Azure Artifact Signing (formerly Trusted Signing): removes the "unknown publisher" SmartScreen warning.
+      - name: Sign
+        if: env.CAN_SIGN == 'true'
+        uses: azure/trusted-signing-action@v0.5.1
+        with:
+          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          azure-client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+          endpoint: ${{ secrets.SIGNING_ENDPOINT }}
+          trusted-signing-account-name: ${{ secrets.SIGNING_ACCOUNT }}
+          certificate-profile-name: ${{ secrets.SIGNING_PROFILE }}
+          files-folder: dist
+          files-folder-filter: exe
+          file-digest: SHA256
+          timestamp-rfc3161: http://timestamp.acs.microsoft.com
+          timestamp-digest: SHA256
+      - name: Checksums
+        shell: bash
+        run: cd dist && sha256sum AftergridUSBMaker.exe > SHA256SUMS.txt && cat SHA256SUMS.txt
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/AftergridUSBMaker.exe
+            dist/SHA256SUMS.txt
+          body: |
+            **Download `AftergridUSBMaker.exe` and run it.** It downloads Aftergrid and writes it to the USB stick you choose, then checks every byte.
+            ${{ env.CAN_SIGN == 'true' && 'Signed installer.' || 'Note: this build is not code-signed yet; Windows may show "unknown publisher" (More info → Run anyway).' }}

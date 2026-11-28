@@ -1,0 +1,14 @@
+#!/bin/bash
+# Why isn't the offline AI running? Prints each check; paste the output when asking for help.
+ok(){ echo "  OK   $*"; }; no(){ echo "  FAIL $*"; }
+echo "Aftergrid AI doctor"
+echo "RAM: $(awk '/MemTotal/{printf "%.1f GB", $2/1048576}' /proc/meminfo)"
+[ -x /opt/llama/bin/llama-server ] && ok "llama.cpp installed ($(/opt/llama/bin/llama-server --version 2>&1 | grep -m1 version))" || no "llama.cpp missing at /opt/llama/bin/llama-server"
+/opt/llama/bin/llama-server --version >/dev/null 2>&1 || { no "llama-server won't run:"; /opt/llama/bin/llama-server --version 2>&1 | head -3 | sed 's/^/       /'; }
+M=$(cat /run/aftergrid/models.list 2>/dev/null)
+[ -n "$M" ] && ok "models found:" && echo "$M" | sed 's/^/       /' || no "no chat model on the stick or VAULT (this edition may not include the AI: Control -> Download -> ai)"
+echo "  ...  would use: $(/usr/local/bin/aftergrid-ai-serve --which)"
+/usr/local/bin/aftergrid-ai-serve --check && ok "start check passes" || no "start check fails (reason above)"
+systemctl is-active -q aftergrid-ai && ok "service running" || no "service not running: $(systemctl show -p Result --value aftergrid-ai)"
+curl -sf http://127.0.0.1:8081/health >/dev/null && ok "AI answering on :8081" || no "AI not answering on :8081"
+echo "--- last log lines"; journalctl -u aftergrid-ai -b --no-pager -n 25 2>/dev/null | tail -25

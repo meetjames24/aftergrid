@@ -65,9 +65,12 @@ class Image {
     // Catalog: {"editions":[{"id","title","name","size","sha256","parts":[{"url"}]}]}; part URLs may be relative to the catalog.
     public static List<Image> Catalog(string url) {
         ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;   // TLS 1.2 on .NET 4.x
-        string j; using (var wc = new WebClient()) { wc.Headers["User-Agent"] = "AftergridUsbMaker/2"; j = wc.DownloadString(url); }
+        // Follow redirects (getaftergrid.com -> GitHub Releases) and resolve part URLs against where we landed.
+        string j; Uri baseUri;
+        var rq = (HttpWebRequest)WebRequest.Create(url); rq.UserAgent = "AftergridUsbMaker/2"; rq.Timeout = 30000;
+        using (var resp = (HttpWebResponse)rq.GetResponse()) using (var rd = new StreamReader(resp.GetResponseStream())) { j = rd.ReadToEnd(); baseUri = resp.ResponseUri; }
         var root = (Dictionary<string, object>)new JavaScriptSerializer { MaxJsonLength = 1 << 24 }.DeserializeObject(j);
-        var list = new List<Image>(); var baseUri = new Uri(url);
+        var list = new List<Image>();
         foreach (Dictionary<string, object> e in (object[])root["editions"]) {
             var img = new Image { Remote = true, Name = (string)e["name"], Title = e.ContainsKey("title") ? (string)e["title"] : null,
                                   Size = Convert.ToInt64(e["size"]), Sha256 = ((string)e["sha256"]).ToUpperInvariant() };
